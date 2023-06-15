@@ -1,0 +1,23 @@
+{%- include 'product-single-fre-bought-content' -%}
+{%- if fre_show > 0 or settings.cross_sell_rule == 'auto' -%}
+<div class="container{% render 'wide-css-class' %} fre-bought freb{% unless layout_name contains 'layout4' %} big-gutter-top{% else %} big-gutter-top gutter-ele-top-tbs{% endunless %} big-gutter-bottom">
+	<div class="row">
+		<div class="col-xs-12">
+      <h2 class="section__title__text gutter-bottom distance-top-ele">
+      	{{ 'products.product.cross_sell_block_title' | t }}
+      </h2>
+    	<div class="freb__border gutter-ele-small-top">
+    		<div class="row freb__inner margin0 flex gutter-ele-top">
+					{%- if fre_show > 0 -%}
+						{{ fre_bought_content }}
+					{%- else -%}
+						<div class="loading-not-full load-crossell" data-handle="{{ product.handle | escape }}" data-product-id="{{ product.id }}" data-view="recommendation_widget" data-limit="{{ settings.cross_sell_limit_product_page }}" style="margin-top:50px;">
+	            <i class="loading-ajax"></i>
+	          </div>	
+					{%- endif -%}
+				</div>
+    	</div>
+		</div>
+	</div>
+</div>
+{%- endif %}

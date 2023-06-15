@@ -1,0 +1,69 @@
+<div class="grid__item item">
+  <div class="item__info w100 dib{% if article.image %} article__info{% endif %}">
+    <h2 class="article__title article__title--list gutter-ele-bottom margin0 secondary-font fw-bold">
+      <a href="{{ article.url }}">{{ article.title }}</a>
+    </h2>
+
+    <div class="gutter-bottom gutter-ele-bottom-tbs flex flex-align-space-between">
+      {% if blog_show_date %}
+        <span class="article__date article__date--list flex flex-align-ver">
+          {%- render 'icon-calendar' -%}
+          {{ article.published_at | time_tag: format: 'month_day_year' }}
+        </span>
+      {% endif %}
+      <div class="article__comment-count article__comment-count--list">
+        {% if article.comments_enabled? and article.comments_count == 0 %}
+          <a href="{{ article.url }}#comment_form" title="{{ 'blogs.comments.no_comment' | t | escape }}" class="no-gutter flex flex-align-ver">
+            {%- render 'icon-comment' with add_class: 'article__comment-icon' -%}<span>{{ 'blogs.comments.no_comment' | t }}</span>
+          </a>
+        {% endif %}
+
+        {% if article.comments_enabled? and article.comments_count > 0 %}
+          <a href="{{ article.url }}#comments" title="{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count | escape }}" class="no-gutter flex flex-align-ver">
+            {%- render 'icon-comment' with add_class: 'article__comment-icon' -%}<span>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {%- if article.image -%}
+  <div class="gutter-top gutter-ele-top-tbs w100">
+    <div class="article__image-wrapper js item__media">
+      <a href="{{ article.url }}" style="padding-top:{{ 1 | divided_by: article.image.aspect_ratio | times: 100}}%;" class="article__image-container img-container loading">
+        {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        <img data-src="{{ img_url }}" 
+             class="article__image lazyload img-abs w100"
+             src="{{ article.image | img_url: '300x' }}"
+             alt="{{ article.image.alt | escape }}" 
+             data-aspectratio="{{ image.aspect_ratio }}" 
+             data-sizes="auto">
+      </a>
+    </div>
+  </div>
+  {%- endif -%}
+  <div class="gutter-top{% if article.image %} article__bottom{% endif %}{% unless forloop.last %} big-gutter-bottom gutter-ele-bottom-tbs{% endunless %}">
+    <div class="item__info w100 dib{% if article.image %} article__info{% endif %}">
+      {%- if layout == 'list' or multi_mode -%}
+      <div class="article__excerpt gutter-ele-top gutter-ele-bottom-tbs{% if layout != 'list' %} hide{% endif %}">
+        {% if article.excerpt.size > 0 %}
+          {{ article.excerpt }}
+        {% else %}
+          {{ article.content | strip_html | truncate: 150 }}
+        {% endif %}
+      </div>
+      {%- endif -%}
+
+      <div class="gutter-top gutter-ele-top-tbs dib w100{% unless forloop.last %} gutter-ele-bottom-tbs{% endunless %} flex flex-align-space-between">
+        <a href="{{ article.url }}" class="article__read-more">
+          <strong>{{ 'blogs.article.read_more' | t }} {% unless enable_rtl %}→{% else %}←{% endunless %}</strong>
+        </a>
+        {%- if article.image != blank -%}
+          {%- render 'social-sharing' with share_permalink: article.url, share_title: article.title, share_image: article.image -%}
+        {%- else -%}
+          {%- render 'social-sharing' with share_permalink: article.url, share_title: article.title -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- unless forloop.last -%}<hr>{%- endunless -%}
+</div>

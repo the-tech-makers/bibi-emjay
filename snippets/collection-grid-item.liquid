@@ -1,0 +1,47 @@
+{%- if custom_image != blank -%}
+  {%- assign collection_image = custom_image -%}
+{%- elsif collection.image -%}
+  {%- assign collection_image = collection.image -%}
+{%- elsif collection.products.first and collection.products.first.images != empty -%}
+  {%- assign collection_image = collection.products.first.featured_image -%}
+{%- else -%}
+  {%- assign collection_image = blank -%}
+{%- endif -%}
+{%- if custom_title != blank %}
+  {%- assign collection_title = custom_title -%}
+{% elsif collection.title != blank %}
+  {%- assign collection_title = collection.title -%}
+{%- else -%}
+  {%- assign collection_title = 'homepage.onboarding.collection_title' | t -%}  
+{% endif %}
+<div class="collection-grid-item por w100">
+  <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link border-inner{% unless collection_image == blank %} loading{% endunless %}" title="{% if collection.title != blank %}{{ collection.title | escape }}{% endif %}">
+    {% unless collection_image == blank %}
+      <div class="collection-grid-item__overlay box ratio-container lazyload js lazy-bkg lazy-bkg--cover por db w100 h100 transition ignore-effect op1"
+         data-bgset="{% render 'bgset' with collection_image as image %}"
+         data-sizes="auto"
+         data-parent-fit="cover" data-expand="-100">
+      </div>
+   {% else %}
+     {% if collection == empty %}
+        <div class="collection-grid-item__overlay por db w100 h100 transition">
+          {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+          {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% else %}
+         <div class="collection-grid-item__overlay por db w100 h100 transition" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
+      {% endif %}
+   {% endunless %}
+  </a>
+  {%- if show_btn -%}
+  <a class="collection-grid-item__btn{% if custom_reply_btn_class %} {{ custom_reply_btn_class }}{% endif %} flex flex-align-ver flex-align-hoz hidden-xs hidden-sm hidden-md effect-hover__content" href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" title="{% if collection.title != blank %}{{ collection.title | escape }}{% endif %}">
+    {%- render 'icon-reply' -%}
+  </a>
+  {%- endif -%}
+</div>
+<a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" title="{{ collection_title | escape }}">
+  <h3 class="collection-grid-item__title collection-grid-item__title--style1 fw-bold gutter-top gutter-ele-top-tbs text-uppercase margin0{% if custom_title_class %} {{ custom_title_class }}{% else %} fs-mb{% endif %}"{% if collection_color_title != blank or collection_fs_title != blank %} style="{% if collection_color_title != blank %}color:{{ collection_color_title }};{% endif %}{% if collection_fs_title != blank %}font-size: {{ collection_fs_title }}px;{% endif %}"{% endif %}>
+    {{ collection_title | raw }}
+  </h3>
+  <span class="collection-grid-item__products_count collection-grid-item__products_count--style1 text-uppercase lh1 gutter-top gutter-ele-top-tbs db{% if custom_count_class %} {{ custom_count_class }}{% endif %}"{% if collection_color_count != blank %} style="color:{{ collection_color_count }};"{% endif %}>{{ 'collections.general.items_with_count' | t: count: collection.all_products_count }}</span>
+</a>

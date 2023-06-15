@@ -1,0 +1,45 @@
+{%- if settings.enable_review -%}
+<div class="pg__review-stars">
+	{%- case settings.review_app -%}
+	  {%- when 'product_review' -%}
+	  	{%- if product.metafields.spr.reviews -%}
+	     	<span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+	    {%- else -%}
+				<span>{{ 'products.product.no_rating' | t }}</span> 	
+	    {%- endif -%} 
+	  {%- when 'ali_reviews' -%}
+	    <div product-id="{{ product.id }}" class="arv-collection arv-collection--{{ product.id }}"></div>
+	  {%- when 'ryviu' -%}
+	  	{%- if product.metafields.ryviu.reviews -%}
+	    	<div class="ryviu-collection-widget" data="collection_product_reviews" product-handle="{{product.handle}}"></div>
+	    {%- else -%}
+				<span>{{ 'products.product.no_rating' | t }}</span> 	
+	    {%- endif -%}
+	  {%- when 'yotpo' -%}
+	  	<div class="yotpo bottomLine" data-product-id="{{ product.id }}">
+			{%- assign yotpo_offload_content = shop.metafields.yotpo.yotpo_offload_content %}
+			{%- assign time_now = 'now' | date: '%s' %}
+			{%- assign yotpo_live_time = shop.metafields.yotpo.yotpo_live | date: '%s' %}
+			{%- assign diff_seconds_from_live = time_now | minus: yotpo_live_time %}
+			{%- assign yotpo_bottomline_last_updated = product.metafields.yotpo.catalog_bottomline_update_time | date: '%s' %}
+			{%- assign diff_seconds_from_last_bottomline_update = time_now | minus: yotpo_bottomline_last_updated %}
+			{%- if yotpo_live_time and diff_seconds_from_live < 86400 or yotpo_bottomline_last_updated and diff_seconds_from_last_bottomline_update < 86400 -%}
+			  {%- assign yotpo_bottomline_obsolete = false %}
+			{%- else %}
+			  {%- assign yotpo_bottomline_obsolete = true %}
+			{%- endif %}
+			{%- if yotpo_offload_content == 'yes' and yotpo_bottomline_obsolete != true -%}
+			  {{ product.metafields.yotpo.catalog_bottomline }}
+			{%- endif %}
+			</div>   
+		{%- when 'loox' -%}
+			{%- if product.metafields.loox.num_reviews -%}
+				<div class="loox-rating" data-fetch data-id="{{ product.id }}"></div>	
+			{%- else -%}
+				<span>{{ 'products.product.no_rating' | t }}</span>
+			{%- endif -%}	
+	  {%- else -%}
+	    {%- comment -%}Add your custom code{%- endcomment -%}
+	{%- endcase -%}
+</div>
+{%- endif -%}

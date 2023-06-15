@@ -1,0 +1,25 @@
+{%- if settings.news_platform == 'shopify' -%}
+	{% form 'customer', id: news_form_id, class: 'newsletter-form' %}
+    {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' }}
+    {%- if form.posted_successfully? -%}
+      <div class="note form-success alert alert-success w100 center-block" style="margin:0;">
+        {{ 'general.newsletter_form.confirmation' | t }}
+      </div>
+    {%- endif -%}
+		<div class="field field--float-label" style="margin-top: 0;">
+			<label for="{{ news_input_id }}" style="color:inherit;">{{ 'general.newsletter_form.email_placeholder' | t }}</label>
+      <div class="por">
+    		<input type="email" name="contact[email]" id="{{ news_input_id }}" class="w100{% if form.errors contains 'email' %} input--error{% endif %} news__input" autocapitalize="off" required>
+        <button type="submit" class="button flex flex-align-ver newsletter__submit button--icon" name="commit" aria-label="button" style="background:none;color:{{ settings.color_footer_column_content }};position:absolute;{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}:0;border:none;height:40px;bottom:0;padding:0 15px;">
+          {%- render 'icon-paper-plane' -%}
+        </button>
+      </div>
+		</div>
+    {%- assign news_terms_input_id = news_form_id | append: '-terms' -%}
+    {%- render 'newsletter-terms' with inputId: news_terms_input_id -%}
+	{% endform %}
+{%- elsif settings.news_platform == 'klaviyo' and settings.news_klaviyo_code != blank -%}
+	{{ settings.news_klaviyo_code }}	
+{%- elsif settings.news_platform == 'mailchimp' -%}
+	{{ settings.news_mailchimp_html | raw }}
+{%- endif -%}

@@ -1,0 +1,2 @@
+{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+<img data-src="{{ img_url }}" class="lazyload img-responsive{% if add_classes != blank %} {{ add_classes }}{% endif %}" alt="{{ image.alt | escape }}" data-aspectratio="{{ image.aspect_ratio }}" data-sizes="auto"/>

@@ -1,0 +1,120 @@
+<div class="container{% render 'wide-css-class' %}">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="page-title text-center big-gutter-bottom">
+        {%- if search.performed -%}
+          {%- if search.types.size == 1 and search.types contains 'product' and section.settings.enable_auto_filter -%}
+            {{ 'general.search.results_no_count' | t: terms: search.terms }}
+          {%- else -%}
+            {{ 'general.search.results_with_count' | t: count: search.results_count, terms: search.terms }}
+          {%- endif -%}
+        {%- else -%}
+          {{ 'general.search.title' | t }}  
+        {%- endif -%}
+      </h1>
+      <div class="page-content w100">
+        <div class="search__form center-block col-xs-12 col-sm-8 no-gutter" style="float:none;">
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search">
+            <div class="row flex flex-wrap">
+              <div class="col-xs-12 col-sm-6">
+                <input type="search"
+                  id="SearchInput"
+                  name="q"
+                  value="{{ search.terms | escape }}"
+                  placeholder="{{ 'general.search.placeholder' | t }}"
+                  aria-label="{{ 'general.search.placeholder' | t }}"
+                  autofocus class="w100 h100 search__input" style="border-radius:25px;text-indent: 10px;box-sizing: border-box;height:100%;min-height:45px;padding: 0 15px;">
+                <input type="hidden" name="options[prefix]" value="last" aria-hidden="true" />    
+              </div>
+              <div class="col-xs-6 col-sm-3 gutter-ele-top-mb">
+                <div class="w100 h100 select select--search-wrap">
+                  <select name="type" class="w100 h100 select__search-page" style="background: none;">
+                    <option value="product"{% if search.types contains 'product' and search.types.size == 1 %}{% if search.types contains 'product' %} selected="selected"{% endif %}{% endif %}>{{ 'general.search.product' | t }}</option>
+                    <option value="article"{% if search.types contains 'article' and search.types.size == 1 %}{% if search.types contains 'article' %} selected="selected"{% endif %}{% endif %}>{{ 'general.search.article' | t }}</option>
+                    <option value="page"{% if search.types contains 'page' and search.types.size == 1 %}{% if search.types contains 'page' %} selected="selected"{% endif %}{% endif %}>{{ 'general.search.page' | t }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 gutter-ele-top-mb">
+                <button class="button button--style1 w100 flex h100 search__button" type="submit" style="width:auto;"><span class="ver-sub">{{ 'general.search.submit' | t }}</span></button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="search__result search__items big-gutter-top collection__content">
+          {%- if search.performed -%}
+            {%- if search.results_count == 0 -%}
+              <p class="alert alert-success">{{ 'general.search.no_results_html' | t: terms: search.terms, link: routes.root_url }}</p>
+            {%- else -%}
+              {%- if search.types.size == 1 -%}
+                {%- if search.types contains 'product' -%}
+                  {%- if section.settings.enable_auto_filter -%}
+                  {%- liquid 
+                    unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+                      assign enable_rtl = false
+                      assign left_holder = 'left'
+                      assign right_holder = 'right'
+                    else
+                      assign enable_rtl = true
+                      assign left_holder = 'right'
+                      assign right_holder = 'left'
+                    endunless
+                  -%}
+                  <div class="row">
+                    {%- assign page_limit = search.results_count | at_most: 1000 -%}
+                    {%- paginate search.results by page_limit -%}
+                    {%- include 'collection-products-filter' with products: search.results, layout_name: 'left_sidebar' with full_url: full_url, enable_sidebar: true, enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder -%}
+                    {%- endpaginate -%}
+                  </div>
+                  {%- else -%}
+                    {%- render 'search-result-product' -%}
+                  {%- endif -%}
+                {%- elsif search.types contains 'article' -%}
+                  {%- render 'search-result-article' -%}
+                {%- else -%}
+                  {%- render 'search-result-page' -%}    
+                {%- endif -%}
+              {%- else -%}
+                {%- render 'search-result-combine' -%}  
+              {%- endif -%}
+            {%- endif -%}
+          {%- elsif settings.search_suggest_collection -%}
+            {%- assign suggest_collection = collections[settings.search_suggest_collection] -%}
+            <h4 class="gutter-ele-bottom">{{ settings.search_suggest_suggest_title }}</h6>
+            <div class="grid grid--medium">
+              {%- for product in suggest_collection.products limit: section.settings.limit -%}
+                {%- render 'product-grid-item' with
+                  product: product, 
+                  use_slider: false, 
+                  limit_first: 0, 
+                  index: forloop.index, 
+                  lazy_index: lazy_index,
+                  column_count: column_count, 
+                  main_thumbnail: section.settings.main_thumbnail, 
+                  image_size: '1x', 
+                  truncate_count: section.settings.product_name_size, enable_product_options: section.settings.enable_product_options,
+                  show_review_stars: section.settings.show_review_stars,
+                  enable_small_images: false,
+                  show_wishlist_btn: section.settings.show_wishlist_btn,
+                  small_image: '1x',
+                  show_label : section.settings.show_label,
+                  show_cart_btn: section.settings.show_cart_btn,
+                  show_wishlist : false,
+                  show_compare_btn: section.settings.show_compare_btn,
+                  show_qs_btn: section.settings.show_qs_btn,
+                  show_desc: true,
+                  additional_classes: 'transition'
+                -%}
+              {%- endfor -%}
+            </div>
+            {%- if suggest_collection.products.size > section.settings.limit -%}
+              <div class="w100 text-center big-gutter-top">
+                <a href="{{ suggest_collection.url }}" class="button button--style1 button--rad" title="{{ 'collections.general.view_all' | t | escape }}"><span class="ver-sub">{{ 'collections.general.view_all' | t }}</span></a>
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

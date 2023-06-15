@@ -1,0 +1,3 @@
+{%- if block.settings.text_align_mobile != 'left' -%}
+.footer__img-align-{{ block.id }}{margin:{%- if block.settings.text_align_mobile == 'center' -%}0 auto{%- else -%}0 0 0 auto{%- endif -%};}
+{%- endif -%}

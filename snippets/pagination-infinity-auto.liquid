@@ -1,0 +1,42 @@
+{%- assign total_pages = total | times: 1.00 | divided_by: limit | ceil -%}
+{%- if current_page < total_pages -%}
+	{%- assign next_page = current_page | plus: 1 -%}
+	{%- assign pagination_current_page = 'btpage%3D' | append: current_page -%}
+	{%- assign pagination_next_page = 'btpage%3D' | append: next_page -%}
+	{%- if filter_param_value != '' and filter_param_value != blank -%}
+		{%- assign filter_param_value = filter_param_value | url_encode -%}
+		{%- if filter_param_value contains pagination_current_page -%}
+			{%- assign filter_param_value = filter_param_value | replace: pagination_current_page, pagination_next_page -%}
+		{%- else -%}
+			{%- assign filter_param_value = filter_param_value | append: '%2C' | append: pagination_next_page -%}	
+		{%- endif -%}
+	{%- else -%}
+		{%- assign filter_param_value = pagination_next_page -%}		
+	{%- endif -%}
+	{%- assign url_params = 'f=' | append: filter_param_value -%}
+	{%- if collection and collection.sort_by != blank and collection.sort_by != collection.default_sort_by -%}
+		{%- assign url_params = url_params | append: '&sort_by=' | append: collection.sort_by -%}	
+	{%- endif -%}
+	{%- assign url_params = url_params | append: '&view=ajax' -%}
+	{%- unless full_url -%}
+		{%- assign next_url = collection.url -%}
+		{%- if current_tags -%}
+			{%- assign tag_handle = current_tags | join: '___' | handleize | replace: '___','+' -%}
+			{%- assign next_url = next_url | append: '/' | append: tag_handle -%}
+		{%- endif -%}
+		{%- unless collection.url contains '?' -%}
+			{%- assign next_url = next_url | append: '?' | append: url_params -%}
+		{%- else -%}
+			{%- assign next_url = next_url | append: '&' | append: url_params -%}	
+		{%- endunless -%}
+	{%- else -%}
+		{%- assign next_url = full_url | append: '&' | append: url_params -%}
+	{%- endunless -%}	
+	{%- if infinity_action == 'click' -%}
+		{%- render 'product-tabs-more-btn' with href: next_url -%}
+	{%- else -%}
+		<a class="infinite-scroll collection__scroll loading-not-full" href="{{ next_url }}" data-id=".collection__scroll" data-id-save="{% if dataIdSave %}{{ dataIdSave }}{% else %}{{ section.id }}{% endif %}">
+			<i class="loading-ajax"></i>
+		</a>
+	{%- endif -%}
+{%- endif -%}

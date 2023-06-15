@@ -1,0 +1,95 @@
+$bkg_body: {{ settings.body_bkg_color | default: '#fff' }};
+$color_general: {{ settings.color_general | default: '#222' }};
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      -webkit-#{$property}: $value;
+    } 
+    @else if $prefix == moz {
+      -moz-#{$property}: $value;
+    } 
+    @else if $prefix == ms {
+      -ms-#{$property}: $value;
+    } 
+    @else if $prefix == o {
+      -o-#{$property}: $value;
+    } 
+    @else if $prefix == spec {
+      #{$property}: $value;
+    } 
+    @else  {
+      @warn 'Unrecognized prefix: #{$prefix}';
+    }
+  }
+}
+@mixin opacity($v1, $v2) {
+  opacity: $v1;
+  filter: alpha(opacity=$v2);
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=$v2)";
+}
+.cfs__dropdown__content {
+	display: none;
+	max-height: 300px;
+	overflow-y: auto;
+}
+.cfs__dropdown {
+	padding: 5px 10px;
+  border: 1px solid $color_general;
+  border-radius: 3px;
+  background: $bkg_body;
+  position: absolute;
+  z-index: 1;
+  &.active {
+  	border-color: {{ settings.color_link_alternative }};
+  	z-index: 2;
+  	.cfs__dropdown__content {
+			display: block;
+		}
+    .cfs__item__arrow {
+      transform: rotate(180deg);
+      color: {{ settings.color_link_alternative }};
+    }
+  }
+}
+.cfs__dropdown__trigger {
+	padding: 3px;
+  height: 35px;
+}
+.cfs__dropdown__value {
+  display: none;
+}
+.cfs__dropdown__title--top + .cfs__dropdown__value {
+  display: block;
+}
+.cfs__dropdown__value, .cfs__link {
+  text-transform: capitalize;
+}
+.cfs__item__index--right-border {
+  padding-right: 15px;
+  border-right: 1px solid $color_general;
+}
+.cfs__item__index--left-border {
+  padding-left: 15px;
+  border-left: 1px solid $color_general;
+}
+.cfs__item__title-value {
+  flex-grow: 1;
+  padding: 0 15px;
+}
+.cfs__dropdown__title--top {
+	font-size: 0.8em;
+}
+.cfs__dropdown-wrap {
+	height: 47px;
+}
+.cfs__link {
+	padding: 5px;
+	&:hover {
+		background: {{ settings.color_general | color_modify: 'alpha', 0.6 }};
+		color: $bkg_body;
+	}
+	&.selected {
+		background: {{ settings.color_link_alternative }};
+		color: $bkg_body;
+	}
+}

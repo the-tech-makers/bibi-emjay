@@ -1,0 +1,10 @@
+<div class="bottom-fixed hidden-xs hidden-sm" style="{% unless enable_rtl %}right{% else %}left{% endunless %}:20px;">
+	{%- if template.name != 'cart' -%}
+	{%- render 'cart-fixed' with enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder -%}
+	{%- endif -%}
+	<div id="back-top" class="w100{% if template.name == 'product' %} ele-fixed-distance{% endif %}">
+		<a href="javascript:void(0);" title="{{ 'general.accessibility.back_to_top' | t | escape }}" class="back-top__button flex flex-align-ver flex-align-hoz">
+			{% render 'icon-arrow-up' %}
+		</a>
+	</div>
+</div>

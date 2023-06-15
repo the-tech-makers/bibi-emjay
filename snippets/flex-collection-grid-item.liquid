@@ -1,0 +1,106 @@
+{%- liquid
+  assign collection_image = settings_image 
+  assign collection = collections[settings_collection] 
+  if collection_image == blank and collection != blank and collection.image != blank 
+    assign collection_image = collection.image 
+  endif 
+  if collection.products == empty 
+    assign collection_url = '#' 
+  else 
+    assign collection_url = collection.url 
+  endif 
+  if collection.title == blank 
+    assign collection_title = 'homepage.onboarding.collection_title' | t 
+  else 
+    assign collection_title = collection.title 
+  endif
+  unless enable_rtl and revert_in_rtl
+    assign real_settings_pos = settings_pos
+  else
+    assign real_settings_pos = settings_pos | replace: 'left','holder' | replace: 'right','left' | replace: 'holder','right'
+  endunless  
+-%} 
+<div class="w100 h100 zoom-effect" style="position:relative;{% if no_margin_bottom %}margin-bottom:0;{% endif %}{% unless collection_image == blank %}max-width:{{ collection_image.width }}px;max-height:{{ collection_image.height }}px;{% endunless %}">
+  {%- unless collection_image == blank -%}
+    {%- assign img_url = collection_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    <a class="img-container zoom-effect__inner loading" style="padding-top:{{ 1 | divided_by: collection_image.aspect_ratio | times: 100}}%;" href="{{ collection_url }}" title="{{ collection_title | escape }}">
+      <img  data-aspectratio="{{ collection_image.aspect_ratio }}"
+              data-src="{{ img_url }}"
+              data-sizes="auto" class="img-abs img-responsive lazyload" alt="{{ collection_image.alt | escape }}" width="{{ collection_image.width }}" height="{{ collection_image.height }}" style="height:100%;"{% render 'img-one-pixel' %} data-expand="-50"/>
+    </a>
+  {%- else -%}
+   {% if collection == empty %}
+      <div class="collection-grid-item__overlay">
+        {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+        {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {% else %}
+       <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
+    {% endif %}
+  {%- endunless -%}
+  {%- assign style_collection_text = 'position:absolute;' -%}
+  {%- assign text_align = 'left' -%}
+  {%- case real_settings_pos -%}
+  {%- when 'top-left' -%}
+    {%- assign style_collection_text = style_collection_text | append: 'top:0;left:0;' -%}
+  {%- when 'top-right' -%}
+    {%- assign style_collection_text = style_collection_text | append: 'top:0;right:0' -%}
+    {%- assign text_align = 'right' -%}
+  {%- when 'bottom-left' -%}
+    {%- assign style_collection_text = style_collection_text | append: 'bottom:0;left:0;' -%}
+  {%- when 'bottom-right' -%}
+    {%- assign style_collection_text = style_collection_text | append: 'bottom:0;right:0;' -%}
+    {%- assign text_align = 'right' -%}
+  {%- else -%}
+    {%- assign style_collection_text = style_collection_text | append: 'display: flex;flex-direction: column;justify-content: center;' -%}
+    {%- case real_settings_pos -%}
+      {%- when 'top-center' -%}
+        {%- assign style_collection_text = style_collection_text | append: 'top:0;left:0;right:0;margin: 0 auto;' -%}
+        {%- assign text_align = 'center' -%}
+      {%- when 'center-left' -%}
+        {%- assign style_collection_text = style_collection_text | append: 'left:0;top:0;bottom:0;margin:auto;' -%}
+      {%- when 'center-center' -%}
+        {%- assign style_collection_text = style_collection_text | append: 'top:0;bottom:0;left:0;right:0;margin:auto;' -%}
+        {%- assign text_align = 'center' -%}
+      {%- when 'center-right' -%}
+        {%- assign style_collection_text = style_collection_text | append: 'top:0;bottom:0;right:0;margin:auto;' -%}
+        {%- assign text_align = 'right' -%}
+      {%- else -%}
+        {%- comment -%}bottom-center{%- endcomment -%}
+        {%- assign style_collection_text = style_collection_text | append: 'bottom:0;left:0;right:0;margin: 0 auto;' -%}
+        {%- assign text_align = 'center' -%}
+    {%- endcase -%}
+  {%- endcase -%}
+  {%- liquid
+    assign title_class = 'fcl__title-' | append: block.id | append: '-' | append: index
+    assign btn_class = 'fcl__btn-' | append: block.id | append: '-' | append: index
+    unless enable_rtl and revert_in_rtl
+      assign real_text_align = text_align
+    else
+      assign real_text_align = text_align | replace: 'left','holder' | replace: 'right','left' | replace: 'holder','right'
+    endunless  
+  -%}
+  <div style="{{ style_collection_text }}">
+    <div style="margin:auto;padding:15px;{% if collection_use_bkg != blank %}background:{{ collection_bkg_title }};{% endif %}">
+      <a href="{{ collection_url }}" class="db text-{{ real_text_align }} text-uppercase {{ title_class }}" title="{{ collection_title | escape }}">
+        {{ collection_title }}
+      </a>
+      {%- if show_button -%}
+        <a href="{{ collection_url }}" class="db text-{{ real_text_align }} {{ btn_class }}" title="{{ 'sections.flex_collection_list.shop_btn' | t | escape }}">
+          <span>{{ 'sections.flex_collection_list.shop_btn' | t }}{%- if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}<i class="lnr-angle-double-left fcl__arrow" style="margin-right: 5px;"></i>{%- else -%}<i class="lnr-angle-double-right fcl__arrow" style="margin-left: 5px;"></i>{%- endif -%}</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% style %}
+.{{ title_class }}{font-size:{{ collection_fs_title_mobile }}px;{%- if collection_color_title != blank -%}color:{{ collection_color_title }};{%- endif -%}{%- if show_button and distance_btn_mobile > 0 -%}margin-bottom:{{ distance_btn_mobile }}px;{%- endif -%} }.{{ btn_class }}{font-size:{{ btn_fs_mobile }}px;{%- if collection_color_title != blank -%}color:{{ collection_color_title }};{%- endif -%} }
+{%- assign flex_collection_styles = flex_collection_styles | append: flex_inline_css -%}
+{%- assign has_distance_tb = false -%}
+{%- if show_button and distance_btn != distance_btn_mobile -%}{%- if distance_btn > 0 or distance_btn_mobile > 0 -%}{%- assign has_distance_tb = true -%}{%- endif -%}{%- endif -%}
+{%- if collection_fs_title != collection_fs_title_mobile or btn_fs != btn_fs_mobile or has_distance_tb -%}
+@media(min-width: 768px){
+{%- if collection_fs_title != collection_fs_title_mobile or has_distance_tb -%}.{{ title_class }}{ {%- if collection_fs_title != collection_fs_title_mobile -%}font-size:{{ collection_fs_title }}px;{%- endif -%}{%- if has_distance_tb -%}margin-bottom:{{ distance_btn }}px;{%- endif -%} }{%- endif -%}{%- if btn_fs != btn_fs_mobile -%}.{{ btn_class }}{font-size:{{ btn_fs }}px;}{%- endif -%}
+}
+{%- endif -%}
+{% endstyle %}

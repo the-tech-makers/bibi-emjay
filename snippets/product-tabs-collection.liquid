@@ -1,0 +1,93 @@
+{%- if collection != blank -%}
+  {%- if collection.products.size > 0 -%}
+    <div class='products grid grid--{{ item_size }}{% if use_loading_data and use_infinite_scroll == false %} waiting-data{% endif %}{% if use_slider %} use-slider product-list-slider{% if slick_fluid %} slick-fluid{% endif %}{% unless block.settings.slider_rows > 1 and block.settings.slider_center_focus == false %} use-touch-mobile{% endunless %} need-refresh slick-shadow{% if block.settings.slider_center_focus %} slick-focus-push-top{% endif %}{% if block.settings.slider_rows > 1 and block.settings.slider_center_focus == false %} slick-rows{% endif %}' data-slider='{{ data_slider }}{% else %} grid--not-empty{% endif %}' id="product-tabs-collections-{{ block.id }}">
+      {%- if use_loading_data -%}
+        {%- unless use_infinite_scroll -%}
+          {%- unless first_tab -%}
+            <div class="loading-not-full waiting-tab-data" {% render 'product-tabs-ajax-params', collection: collection, section: section, use_more_btn: use_more_btn, limit: limit, use_slider: use_slider, lazy_index: lazy_index, column_count: column_count, main_thumbnail: main_thumbnail, use_infite_scroll: false %} style="margin-bottom: 20px;margin-top:70px;" data-limit-holder-desktop="{% if use_slider %}{{ column_count }}{% else %}{{ limit | at_most: collection.products.size }}{% endif %}" data-limit-holder-mobile="{% if use_slider %}{% if column_count > 2 %}2{% else %}1{% endif %}{% else %}{{ limit | at_most: collection.products.size | at_most: 6 }}{% endif %}">
+              <i class="loading-ajax"></i>
+            </div>
+          {%- else -%}
+            {%- if use_slider -%}
+              {%- assign placeholder_limit = column_count -%}
+              {%- for product in collection.products limit: placeholder_limit -%}
+                {%- assign additional_classes = '' -%}
+                {%- if forloop.index > column_count_mobile -%}
+                  {%- assign additional_classes = 'ov-slider-mb' -%}
+                {%- endif -%}
+                {%- render 'product-grid-item-loading' with 
+                  product as product,
+                  main_thumbnail: main_thumbnail,
+                  additional_classes: additional_classes
+                -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for product in collection.products limit: limit -%}
+                {%- render 'product-grid-item-loading' with 
+                  product as product,
+                  main_thumbnail: main_thumbnail
+                -%}
+              {%- endfor -%}  
+            {%- endif -%}
+            <span class="waiting-tab-data"></span>
+          {%- endunless -%}
+        {%- endunless -%}
+      {%- else -%}
+        {% for product in collection.products limit: limit %}
+        {%- render 'product-grid-item' with
+          product as product, 
+          use_slider: use_slider, 
+          index: forloop.index, 
+          lazy_index: lazy_index,
+          column_count: column_count, 
+          main_thumbnail: main_thumbnail, 
+          truncate_count: section.settings.product_name_size, enable_product_options: section.settings.enable_product_options, 
+          show_review_stars: section.settings.show_review_stars,
+          enable_small_images: false,
+          show_wishlist_btn: section.settings.show_wishlist_btn,
+          small_image: '1x',
+          show_label : section.settings.show_label,
+          show_cart_btn: section.settings.show_cart_btn,
+          show_compare_btn: section.settings.show_compare_btn,
+          show_qs_btn: section.settings.show_qs_btn,
+          small_image_slider: false,
+          show_countdown_timer: section.settings.show_countdown_timer,
+          show_vendor: section.settings.show_vendor,
+          collection as withinCollection
+        -%}
+        {% endfor %}
+      {%- endif -%}    
+    </div>
+    {%- if use_more_btn and collection.products.size > limit -%}
+      {%- render 'product-tabs-more-btn', collection: collection, section: section, limit: limit, use_slider: use_slider -%}
+    {%- elsif use_infinite_scroll -%}
+      {%- if use_loading_data -%}
+        {%- assign scroll_href = 'href="' | append: routes.root_url | append: '?page=1&view=dynamic_ajax&q=' -%}
+      {%- elsif collection.products.size > limit -%}
+        {%- assign scroll_href = 'href="' | append: routes.root_url | append: '?page=2&view=dynamic_ajax&q=' -%}
+      {%- else -%}
+        {%- assign scroll_href = '' -%}  
+      {%- endif -%}
+      {%- if scroll_href != '' -%}
+        {%- capture ajax_params -%}{% render 'product-tabs-ajax-params', collection: collection, section: section, use_more_btn: false, use_infite_scroll: true, limit: limit, use_slider: use_slider, lazy_index: lazy_index, column_count: column_count, main_thumbnail: main_thumbnail %}{%- endcapture -%}  
+        <a class="{% unless forloop.first %}wait-{% endunless %}infinite-scroll infinite-scroll--{{ collection.id }} loading-not-full" {{ ajax_params | replace: 'data-ajax-params="', scroll_href }} data-id=".infinite-scroll--{{ collection.id }}" data-id-save="{{ section.id }}" style="margin-bottom:20px;">
+          <i class="loading-ajax"></i>
+        </a>
+      {%- endif -%}    
+    {%- endif -%} 
+
+    {%- if block.settings.layout == 'grid_view_all' or block.settings.layout == 'slider_view_all' -%}
+    <div class="w100 text-center big-gutter-top">
+      <a href="{{ collection.url }}" class="button button--style1 button--rad" title="{{ 'collections.general.view_all' | t | escape }}"><span class="ver-sub">{{ 'collections.general.view_all' | t }}</span></a>
+    </div>
+    {%- endif -%}
+  {%- else -%}
+    <p class="alert alert-warning"><span class="brackets">{{ 'collections.general.no_matches' | t }}</span></p>
+  {%- endif -%}  
+{%- else -%}
+  <div class='products grid grid--{{ item_size }}{% if use_slider %} use-slider{% unless block.settings.slider_rows > 1 and block.settings.slider_center_focus == false %} use-touch-mobile{% endunless %} need-refresh slick-shadow{% if block.settings.slider_center_focus %} slick-focus-push-top{% endif %}{% if block.settings.slider_rows > 1 and block.settings.slider_center_focus == false %} slick-rows{% endif %}' data-slider='{{ data_slider }}{% else %} grid--not-empty{% endif %}'>
+    {%- for i in (1..limit) -%}
+      {%- render 'product-grid-item-placeholder' -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}

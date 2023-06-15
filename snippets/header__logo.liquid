@@ -1,0 +1,9 @@
+<div class="header__logo">
+	{%- if settings.show_logo and settings.logo != blank -%}
+	<a href="{{ routes.root_url }}" class="header__logo__image dib" title="{{ shop.name | escape }}">        
+		<img srcset="{% render 'img-srcset' with image: settings.logo %}" sizes="(max-width: 991px) 0,{{ settings.logo.width }}px" alt="{{ settings.logo.alt | default: shop.name | escape }}" class="img-responsive" width="{{ settings.logo.width }}" height="{{ settings.logo.height }}"{% render 'img-one-pixel' %}>
+	</a>
+	{%- else -%}
+	<a class="header__logo__link" href="{{ routes.root_url }}" title="{{ shop.name | escape }}">{{ shop.name }}</a>
+	{%- endif -%}
+</div>

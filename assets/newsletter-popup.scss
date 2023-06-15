@@ -1,0 +1,113 @@
+$fw_bold: 700;
+$fm_second: "'Playfair Display', serif";
+/* Responsive screen */
+$mobile_width: 767px;
+$min_tablet_small_width: 768px;
+$max_tablet_small_width: 991px;
+$min_tablet_large_width: 992px;
+$max_tablet_large_width: 1199px;
+$desktop_width: 1200px;
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      -webkit-#{$property}: $value;
+    } 
+    @else if $prefix == moz {
+      -moz-#{$property}: $value;
+    } 
+    @else if $prefix == ms {
+      -ms-#{$property}: $value;
+    } 
+    @else if $prefix == o {
+      -o-#{$property}: $value;
+    } 
+    @else if $prefix == spec {
+      #{$property}: $value;
+    } 
+    @else  {
+      @warn 'Unrecognized prefix: #{$prefix}';
+    }
+  }
+}
+@mixin border-radius($border-radius) {
+  @include prefix(border-radius, $border-radius, ms webkit spec); 
+}
+.newsletterPopup {
+  text-align: center;
+  .modal-dialog {
+    @media(min-width: 768px) {
+      width: 750px;
+    }
+    .modal-body {
+      @media(min-width: $min_tablet_small_width) {
+        padding: 0;
+      }
+    }
+  }
+}
+@media(min-width: $min_tablet_small_width) {
+  .news-popup__info {
+    padding: 0 40px 0 60px;
+  }
+  .news-popup__info--no-image {
+    padding-top: 20px;
+  }
+}
+.news-popup__image {
+  img {
+    width: 100%;
+  }
+}
+.news-popup__text {
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: $fw_bold;
+  line-height: 1.2em;
+  @media(min-width: $min_tablet_small_width) {
+    font-size: 24px;
+  }
+}
+.news-popup__form-wrap {
+  margin-top: 45px;
+  margin-bottom: 45px;
+  position: relative;
+}
+.newsletter__submit--popup {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  width: 50px;
+  font-size: 20px;
+  border: none;
+  background: none;
+}
+#newsPopupEmail {
+  height: 50px;
+  line-height: 50px;
+  width: 100%;
+  padding: 15px;
+  font-size: 13px;
+  border: none;
+}
+#newsPopupHide {
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    bottom: -18px;
+    left: -18px;
+  }
+}
+.news-popup__checkbox {
+  position: absolute;
+  bottom: -10px;
+  left: 15px;
+  right: 15px;
+  @media(min-width: $min_tablet_small_width) {
+    bottom: 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+  }
+}

@@ -1,0 +1,11 @@
+{%- if section.settings.show_store_pickup and template.suffix != 'quick_view' -%}
+<div class="store-availability-container hide{% if custom_classes %} {{ custom_classes }}{% endif %}{% if product.has_only_default_variant %} hide-default-title{% endif %}">
+	{%- if show_top_line -%}
+		<hr{% if custom_top_line_classes %} class="{{ custom_top_line_classes }}"{% endif %}>
+	{%- endif -%}
+	<div class="store-availability-inner"></div>
+	{%- if show_bottom_line -%}
+		<hr{% if custom_bottom_line_classes %} class="{{ custom_bottom_line_classes }}"{% endif %}>
+	{%- endif -%}
+</div>
+{%- endif -%}

@@ -1,0 +1,4 @@
+<div class="{% include 'rich-banner-item-size' %} banner-item banner-item--{{ block.id }}{% if block.settings.hide_on_mobile %} hidden-xs{% endif %}{% if block.settings.hide_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %}{% if section.settings.enable_slider %}{{ slider_class }}{% if current_index_mobile > lazyload_index_mobile %} ov-slider-mb{% endif %}{% if current_index_tb > lazyload_index %} ov-slider-tb{% endif %}{% endif %}" {{ block.shopify_attributes }}>
+	{%- assign collection = collections[block.settings.collection] -%}
+  {%- include 'collection-grid-item-2' with collection_bkg_title: block.settings.bkg_title, collection_color_title: block.settings.color_title, collection_fs_title: block.settings.font_size, enable_bkg: block.settings.enable_bkg -%}
+</div>

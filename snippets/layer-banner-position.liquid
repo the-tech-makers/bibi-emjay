@@ -1,0 +1,57 @@
+{%- liquid
+assign style_layer_position = 'position: absolute;'
+unless block.settings.bkg_banner
+	assign style_layer_position = style_layer_position | append: 'padding:0;'
+endunless
+if block.settings.custom_pos
+	unless enable_rtl and section.settings.revert_in_rtl
+		if block.settings.pos_left >= 0
+			assign style_layer_position = style_layer_position | append: 'left:calc(' | append: block.settings.pos_left | append: '% + delta);'
+		else if block.settings.pos_right >= 0
+			assign style_layer_position = style_layer_position | append: 'right:calc(' | append: block.settings.pos_right | append: '% + delta);'		
+		endif
+	else
+		if block.settings.pos_left >= 0
+			assign style_layer_position = style_layer_position | append: 'right:calc(' | append: block.settings.pos_left | append: '% + delta);'
+		else if block.settings.pos_right >= 0
+			assign style_layer_position = style_layer_position | append: 'left:calc(' | append: block.settings.pos_right | append: '% + delta);'		
+		endif	
+	endunless	
+	if block.settings.pos_top >= 0
+		assign style_layer_position = style_layer_position | append: 'top:calc(' | append: block.settings.pos_top | append: '% + delta);'
+	else if block.settings.pos_bottom >= 0
+		assign style_layer_position = style_layer_position | append: 'bottom:calc(' | append: block.settings.pos_bottom | append: '% + delta);'			
+	endif
+else
+	unless enable_rtl and section.settings.revert_in_rtl
+		assign standard_pos = block.settings.standard_pos
+	else
+		assign standard_pos = block.settings.standard_pos | replace: 'left', 'holder' | replace: 'right', 'left' | replace: 'holder', 'right'	
+	endunless
+	case standard_pos
+	  when 'top-left'
+	    assign style_layer_position = style_layer_position | append: 'top:delta;left:delta;'
+	  when 'top-right'
+	  	assign style_layer_position = style_layer_position | append: 'top:delta;right:delta'
+	  when 'bottom-left'
+	  	assign style_layer_position = style_layer_position | append: 'bottom:delta;left:delta;'
+	  when 'bottom-right'
+	  	assign style_layer_position = style_layer_position | append: 'bottom:delta;right:delta;'
+	  else
+	  	assign style_layer_position = style_layer_position | append: 'display: flex;display:-webkit-flex;display: -ms-flex;flex-direction: column;justify-content: center;'
+	    case standard_pos
+	    	when 'top-center'
+	    		assign style_layer_position = style_layer_position | append: 'top:delta;left:0;right:0;margin: 0 auto;'
+	    	when 'center-left'
+	    		assign style_layer_position = style_layer_position | append: 'left:delta;top:0;bottom:0;margin:auto;'
+	    	when 'center-center'
+	    		assign style_layer_position = style_layer_position | append: 'top:0;bottom:0;left:0;right:0;margin:auto;'
+	    	when 'center-right'
+	    		assign style_layer_position = style_layer_position | append: 'top:0;bottom:0;right:delta;margin:auto;'
+	    	else
+	    		assign style_layer_position = style_layer_position | append: 'bottom:delta;left:0;right:0;margin: 0 auto;'				
+	    endcase
+	endcase
+endif
+assign style_layer_position = style_layer_position | replace: 'delta', padding_delta
+-%}

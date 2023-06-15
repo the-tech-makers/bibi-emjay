@@ -1,0 +1,14 @@
+{%- layout none -%}
+[
+{%- assign cart_handles = ',' -%}
+{%- for item in cart.items -%}
+{%- for tag in item.product.tags -%}
+{%- if tag contains 'upsell_' -%}
+{%- assign tag_compare = ',' | append: tag | append: ',' -%}
+{%- unless cart_handles contains tag_compare -%}
+{%- if cart_handles != ',' -%},{%- endif -%}{{ tag | json }}{%- assign cart_handles = cart_handles | append: tag | append: ',' -%}
+{%- endunless -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+]

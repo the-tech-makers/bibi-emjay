@@ -1,0 +1,31 @@
+{%- if settings.enable_language_picker and shop.published_locales.size > 1 -%}
+<div class="bt-dropdown language-switcher lp{% unless no_full_height %} h100{% endunless %}{% if wrap_class %} {{ wrap_class }}{% endif %}"{% if data_group %} data-group="{{ data_group | escape }}"{% endif %} style="position:relative;">
+	<a class="bt-dropdown__trigger{% if flex_trigger %} flex flex-align-ver{% else %} dib{% endif %}{% if addition_classes %} {{ addition_classes }}{% endif %}" title="{{ 'general.language.link' | t | escape }}" href="javascript:void(0);">
+		{%- if show_language_icon -%}
+			{%- render 'icon-language' with add_class: 'ver-sub' -%}
+		{%- endif -%}
+		{%- unless hide_language_code -%}
+		<span class="lp__language-name{% if hide_language_name %} hide{% endif %}">
+			{{ request.locale.endonym_name | split: ' (' | first }}
+		</span>
+		{%- endunless -%}
+	</a>
+	<div class="bt-dropdown__content bt-dropdown__content--auto-center" style="min-width:auto;">
+		<ul>
+			{%- assign remove_iso_code = request.locale.iso_code | downcase -%}
+			{%- assign remove_lang_code = '/' | append: remove_iso_code -%}
+			{%- for locale in shop.published_locales -%}
+				{%- if locale.iso_code != request.locale.iso_code or hide_language_code -%}
+				<li class="lp__language-item">
+					{%- if locale.iso_code != request.locale.iso_code -%}
+						<a data-code="{{ locale.iso_code | escape }}" href="{% unless locale.primary %}{{ locale.root_url }}{% if request.path != '/' %}{{ request.path | remove_first: remove_lang_code }}{% endif %}{% else %}{%- assign url_code = request.path | remove_first: remove_lang_code -%}{{ url_code }}{% if url_code == '' %}/{% endif %}{% endunless %}" class="lp__code">{{ locale.endonym_name }}</a>
+					{%- else -%}
+						<span class="alternative">{{ locale.endonym_name }}</span>	
+					{%- endif -%}
+				</li>
+				{%- endif -%}
+			{%- endfor -%}
+		</ul>
+	</div>
+</div>
+{%- endif -%}

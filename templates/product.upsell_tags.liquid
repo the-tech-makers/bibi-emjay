@@ -1,0 +1,10 @@
+{%- assign flag = false -%}
+{%- layout none -%}
+[
+{%- for tag in product.tags -%}
+{%- if tag contains 'upsell_' -%}
+{%- if flag == true -%},{%- endif -%}{{ tag | json }}
+{%- assign flag = true -%}
+{%- endif -%}
+{%- endfor -%}
+]

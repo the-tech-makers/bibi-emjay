@@ -1,0 +1,324 @@
+{%- render 'section-background-start' -%}
+{%- liquid
+  assign is_customize_page = false
+  if section.blocks.size > 0
+    assign first_block = section.blocks | first
+    if first_block.shopify_attributes != blank
+      assign is_customize_page = true
+    endif
+  endif 
+-%}
+<div id="logo-bar-{{ section.id }}" class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if is_customize_page %} customize-page{% endif %}" data-section-id="{{ section.id }}" data-section-type="logo-bar">
+  <div class="row flex">
+    {%- assign heading_pos = section.settings.heading_pos -%}
+    {%- if heading_pos == 'left' and section.settings.title != blank -%}
+    <div class="col-xs-12 col-sm-5">
+      {%- render 'section-heading' with heading_align: 'left' -%}
+    </div>
+    {%- endif -%}
+    {%- if heading_pos == 'above' and section.settings.title != blank -%}
+    <div class="col-xs-12">
+      {%- render 'section-heading' -%}
+    </div>
+    {%- endif -%}
+    {%- if heading_pos == 'right' and section.settings.title != blank -%}
+    <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
+      {%- render 'section-heading' -%}
+    </div>
+    {%- endif -%}
+    <div class="section__content col-xs-12{% if heading_pos != 'above' %} col-sm-7{% endif %}">
+      {%- if section.blocks.size > 0 -%}
+        {%- assign item_size = section.settings.item_size -%}
+        {%- if item_size == 'very-small' -%}
+          {%- assign column_count_org = 6 -%}
+          {%- assign threshold_mobile = 2 -%}
+        {%- elsif item_size == 'small' -%}
+          {%- assign column_count_org = 5 -%}
+          {%- assign threshold_mobile = 2 -%}
+        {%- elsif item_size == 'medium' -%}
+          {%- assign column_count_org = 4 -%}
+          {%- assign threshold_mobile = 2 -%}
+        {%- elsif item_size == 'large' -%}
+          {%- assign column_count_org = 3 -%}
+          {%- assign threshold_mobile = 2 -%}
+        {%- else -%}
+          {%- assign column_count_org = 2 -%}
+          {%- assign threshold_mobile = 1 -%}  
+        {%- endif -%}
+        {%- assign total_line = 1 -%}
+        {%- if section.settings.slider_enable and section.settings.slider_two_line -%}
+          {%- assign total_line = 2 -%}
+        {%- endif -%}
+        {%- if section.settings.slider_enable -%}
+          {%- unless total_line > 1 -%}
+            {%- assign data_slider = '{"adaptiveHeight":false,"autoplay": true,"autoplaySpeed": 2000,"slidesToShow": ' | append: column_count_org | append: ',"slidesToScroll":1,"responsive":[{"breakpoint": 768,"settings": {"slidesToShow":3}}]}' -%}
+          {%- else -%} 
+            {%- assign data_slider = '{"adaptiveHeight":false,"autoplay": true,"autoplaySpeed": 2000,"slidesToShow": 1,"slidesToScroll":1,"rows":2,"slidesPerRow":' | append: column_count_org | append: ',"responsive":[{"breakpoint": 768,"settings": {"slidesToShow": 1,"slidesToScroll":1,"slidesPerRow":3}}]}' -%} 
+          {%- endunless -%}
+        {%- endif -%}
+        <div class="grid grid--{{ section.settings.item_size }} logo-bar{% if section.settings.slider_enable %} use-slider{% if total_line > 1 %} slick-rows{% endif %}{% endif %}"{% if section.settings.slider_enable %} data-slider='{{ data_slider }}'{% endif %}>
+          {%- for block in section.blocks -%}
+            {%- assign mod = forloop.index | modulo: total_line -%}
+            {%- assign threshold = column_count_org | times: total_line -%}
+            {%- assign threshold_mobile = threshold_mobile | times: total_line -%}
+            {%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <div class="grid__item{% if forloop.index > threshold %} ov-slider-tb{% endif %}{% if forloop.index > threshold_mobile %} ov-slider-mb{% endif %}" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank and block.settings.image.alt != blank -%}
+                {%- assign logo_image_title = block.settings.image.alt -%}
+              {%- elsif block.settings.image != blank -%}
+                {%- assign logo_image_title = block.settings.image.src | split: '/' | last -%}
+              {%- else -%}
+                {%- assign logo_image_title = 'logo brand' -%}  
+              {%- endif -%}
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="logo-bar__link img-container" title="{{ logo_image_title | escape }}" style="padding-top:{{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100}}%;">
+              {%- else -%}
+                <div class="img-container"{% if block.settings.image != blank %} style="padding-top:{{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100}}%;"{% endif %}>
+              {%- endif -%}
+              {%- if block.settings.image != blank -%}
+                <img data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+              data-src="{{ img_url }}"
+              data-sizes="auto" class="logo-bar__image img-responsive img-abs lazyload w100" alt="{{ logo_image_title }}"{% render 'img-one-pixel' %}/>
+              {%- else -%}
+                  {{ 'logo' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+              {% if block.settings.link != blank %}
+                </a>
+              {%- else -%}
+                </div>  
+              {% endif %}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if section.blocks.size == 0 -%}
+        {%- render 'no-blocks' -%}
+      {%- endif -%}
+    </div>
+    {%- if heading_pos == 'right' and section.settings.title != blank -%}
+    <div class="col-xs-12 col-sm-5 hidden-xs">
+      {%- render 'section-heading' with heading_align: 'right' -%}
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% style %}{%- render 'preload-logo-bar.scss' -%}{% endstyle %}
+{% schema %}
+  {
+    "name": "Logo list",
+    "class": "index-section",
+    "max_blocks": 20,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/banner-and-image/logo-list)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Logo list"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "select",
+        "id": "heading_pos",
+        "label": "Heading position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "above",
+            "label": "Above"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "select",
+        "id": "item_size",
+        "label": "Choose item size",
+        "info": "You can change item size to change the number of products per row",
+        "options": [
+          {
+            "value": "very-small",
+            "label": "Very Small"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "very-large",
+            "label": "Very Large"
+          }
+        ],
+        "default": "large"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Slider Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "slider_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "slider_two_line",
+        "label": "Show logo list in two lines",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "logo_image",
+        "name": "Logo",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link",
+            "info": "Optional"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Logo list",
+        "category": "Image",
+        "blocks": [
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          },
+          {
+            "type": "logo_image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

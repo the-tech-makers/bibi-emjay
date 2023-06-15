@@ -1,0 +1,49 @@
+{%- capture vedette_sub_info -%}
+{%- if section.settings.show_vendor -%}
+  <p class="product-single__sub-info dib">
+    <span>{{ 'products.product.brand' | t }}:</span>
+    <a href="{{ product.vendor | url_for_vendor }}">{{ product.vendor }}</a>
+  </p>
+{%- endif -%}
+{%- if section.settings.show_sku -%}
+  <p class="product-single__sub-info{% if current_variant.sku == blank %} hide{% endif %} dib">
+    <span>{{ 'customer.order.sku' | t }}:</span>
+    <span>{{ current_variant.sku }}</span>
+  </p>
+{%- endif -%}
+{%- if section.settings.show_collections and product.collections.size > 0 -%}
+	<div class="product-single__sub-info dib">
+    <span>{{ 'products.product.collections' | t }}:</span>
+    <div class="dib">
+    	{%- for collection in product.collections -%}
+			  <a href="{{ collection.url }}" title="{{ collection.title }}">{{ collection.title }}</a>{%- unless forloop.last -%},&nbsp;{%- endunless -%}
+			{%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+{%- if section.settings.show_product_tags and product.tags.size > 0 -%}
+	{%- assign has_tag = false -%}
+	{%- capture product_tags -%}
+		{%- for tag in product.tags -%}
+  		{%- unless tag contains 'upsell_' -%}
+  			{%- if has_tag -%},&nbsp;{%- endif -%}
+		  	<a href="{{ routes.all_products_collection_url }}/{{ tag | handleize }}" title="{{ tag | escape }}">{{ tag }}</a>
+		  	{%- assign has_tag = true -%}
+  		{%- endunless -%}
+		{%- endfor -%}
+	{%- endcapture -%}
+	{%- if product_tags != '' -%}
+		<div class="product-single__sub-info dib">
+	    <span>{{ 'products.product.tags' | t }}:</span>
+	    <div class="dib">{{ product_tags }}</div>
+	  </div>
+  {%- endif -%}
+{%- endif -%}
+{%- endcapture -%}
+{%- if vedette_sub_info != '' -%}
+<div class="gutter-ele-top{% unless no_padding_bottom %} gutter-ele-bottom {% endunless %} clearfix">
+	<div class="product-single__sub">	
+		{{ vedette_sub_info | raw }}
+	</div>
+</div>
+{%- endif -%}

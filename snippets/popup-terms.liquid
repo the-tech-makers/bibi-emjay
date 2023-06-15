@@ -1,0 +1,25 @@
+<div class="modal fade termsPopup" tabindex="-1" role="dialog" id="termsPopup" style="top:25%;">
+  <div class="modal-dialog modal-lg modal-full" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% render 'icon-close', add_class: 'flex flex-align-hoz' %}</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-5 text-center center-block" style="float: none;">
+            <p class="alert alert-danger">
+              {{ settings.cart_terms_error_msg }}
+            </p>
+          </div>
+          <div class="col-xs-12 col-sm-5 text-center center-block flex flex-align-ver flex-align-hoz" style="float: none;">
+            <input type="checkbox" id="terms-check-popup" name="terms-check-popup" class="terms-check redirect">
+            <label for="terms-check-popup" style="padding: 0 10px;">
+              {%- assign term_url = settings.cart_terms_url | default: '#' -%}
+              {{ 'cart.general.terms_label_html' | t: term_url: term_url }}
+            </label>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

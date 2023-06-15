@@ -1,0 +1,310 @@
+{%- liquid
+  assign new_comment = false
+  if comment and comment.created_at
+    assign new_comment = true
+    assign new_comment_id = comment.id
+  endif
+
+  if new_comment
+    assign duplicate_comment = false
+    for comment in article.comments
+      if comment.id == new_comment_id
+        assign duplicate_comment = true
+        break
+      endif
+    endfor
+
+    if duplicate_comment
+      assign number_of_comments = article.comments_count
+    else
+      assign number_of_comments = article.comments_count | plus: 1
+    endif
+  else
+    assign number_of_comments = article.comments_count
+  endif
+
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign enable_rtl = false
+  else
+    assign enable_rtl = true
+  endunless  
+-%}
+<div data-section-id="{{ section.id }}" data-section-type="blog-template">
+  <div class="container{% render 'wide-css-class' %}">
+    <div class="row">
+      <div class="col-xs-12{% if section.settings.enable_sidebar %} col-md-8{% if enable_rtl %} f-right{% endif %}{% endif %}">
+        <div class="item__info w100 dib{% if article.image %} article__info{% endif %}">
+          <h1 class="article__title article__title--list gutter-ele-bottom">{{ article.title }}</h1>
+
+          <div class="gutter-bottom gutter-ele-bottom-tbs flex flex-align-space-between">
+            {% if section.settings.blog_show_date %}
+              <span class="article__date article__date--list flex flex-align-ver">
+                {%- render 'icon-calendar' -%}
+                {{ article.published_at | time_tag: format: 'month_day_year' }}
+              </span>
+            {% endif %}
+            <div class="article__comment-count article__comment-count--list dib">
+              {% if article.comments_enabled? and article.comments_count == 0 %}
+                <a href="{{ article.url }}#comment_form" title="{{ 'blogs.comments.no_comment' | t | escape }}" class="no-gutter flex flex-align-ver">
+                  {%- render 'icon-comment' with add_class: 'article__comment-icon' -%}<span>{{ 'blogs.comments.no_comment' | t }}</span>
+                </a>
+              {% endif %}
+
+              {% if article.comments_enabled? and article.comments_count > 0 %}
+                <a href="{{ article.url }}#comments" title="{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count | escape }}" class="no-gutter">
+                  {%- render 'icon-comment' with add_class: 'article__comment-icon' -%}<span>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {%- if article.image and section.settings.blog_show_featured_image -%}
+        <div class="gutter-top gutter-ele-top-tbs w100">
+          <div class="article__image-wrapper js item__media">
+            <a href="{{ article.url }}" style="padding-top:{{ 1 | divided_by: article.image.aspect_ratio | times: 100}}%;" class="article__image-container img-container">
+              {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <img data-src="{{ img_url }}" 
+                   class="article__image lazyload img-abs w100"
+                   src="{{ article.image | img_url: '300x' }}"
+                   alt="{{ article.image.alt | escape }}" 
+                   data-aspectratio="{{ image.aspect_ratio }}" 
+                   data-sizes="auto">
+            </a>
+          </div>
+        </div>
+        {%- endif -%}
+
+        <div class="gutter-top{% if article.image %} article__bottom{% endif %}">
+          <div class="item__info w100 dib{% if article.image %} article__info{% endif %}">
+            <article class="rte article__excerpt gutter-ele-top gutter-ele-bottom-tbs">
+              {{ article.content }}
+            </article>
+          </div>
+        </div>
+
+        <div class="gutter-top">
+          <span class="dib text-uppercase">{{ 'general.social.share_on' | t }}</span>
+          {%- if article.image != blank -%}
+            {%- render 'social-sharing' with share_permalink: article.url, share_title: article.title, share_image: article.image -%}
+          {%- else -%}
+            {%- render 'social-sharing' with share_permalink: article.url, share_title: article.title -%}
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.blog_show_author or article.tags.size > 0 -%}
+          <div class="big-gutter-top">
+            {% if section.settings.blog_show_author %}
+              {%- assign blog_title_escape = blog.title | escape -%}
+              <div class="article__author">{{ 'blogs.article.by_author_html' | t: author: article.author, blog_url: blog.url, blog_title: blog.title, blog_title_escape: blog_title_escape }}</div>
+            {% endif %}
+
+            {%- if article.tags.size > 0 -%}
+              <div class="article__tags gutter-top">
+                <ul class="no-gutter" style="margin: 0 -5px;">
+                {%- for tag in article.tags -%}
+                  <li class="article__tag-li">
+                    <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article__tag">{{ tag }}</a>
+                  </li>
+                {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <hr style="margin: 40px 0;">
+
+        {%- if blog.previous_article or blog.next_article -%}
+        <div class="flex flex-align-space-between gutter-top gutter-ele-top-tbs gutter-bottom gutter-ele-bottom-tbs">
+          {%- if blog.previous_article -%}
+            <div class="blog-nav blog-nav--previous flex flex-align-ver flex-align-space-between">
+              <div class="blog-nav__arrow">
+                {%- unless enable_rtl -%}
+                  {%- render 'icon-arrow-left' -%}
+                {%- else -%}
+                  {%- render 'icon-arrow-right' -%}  
+                {%- endunless -%}
+              </div>
+              <div class="blog-nav__info text-right">
+                <span class="blog-nav__text db">{{ 'blogs.article.previous' | t }}</span>
+                <a href="{{ blog.previous_article.url }}" title="{{ blog.previous_article.title | escape }}" class="blog-nav__title db">{{ blog.previous_article.title }}</a>
+              </div>
+            </div>
+          {%- endif -%}
+          {%- if blog.next_article -%}
+            <div class="blog-nav blog-nav--next flex flex-align-ver flex-align-space-between">
+              <div class="blog-nav__info text-left">
+                <span class="blog-nav__text db">{{ 'blogs.article.next' | t }}</span>
+                <a href="{{ blog.next_article.url }}" title="{{ blog.next_article.title | escape }}" class="blog-nav__title db">{{ blog.next_article.title }}</a>
+              </div>
+              <div class="blog-nav__arrow">
+                {%- unless enable_rtl -%}
+                  {%- render 'icon-arrow-right' -%}
+                {%- else -%}
+                  {%- render 'icon-arrow-left' -%}  
+                {%- endunless -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+        {%- endif -%}
+
+        {% if blog.comments_enabled? %}
+          <div class="row">
+            <div class="col-xs-12{% unless section.settings.enable_sidebar %} col-md-6{% endunless %} gutter-ele-top">
+              {% if number_of_comments > 0 %}
+                <div class="article__comment-list w100 gutter-top">
+                  <h3 class="article__comment-heading"><strong>{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }}</strong></h3>
+
+                  {% paginate article.comments by 5 %}
+                    {% comment %}
+                      #comments is required, it is used as an anchor link by Shopify.
+                    {% endcomment %}
+                    <div id="comments" class="gutter-top">
+
+                      {% if new_comment %}
+                        <p class="note form-success alert alert-success">
+                          {% if blog.moderated? %}
+                            {{ 'blogs.comments.success_moderated' | t }}
+                          {% else %}
+                            {{ 'blogs.comments.success' | t }}
+                          {% endif %}
+                        </p>
+                      {% endif %}
+
+                      <ul class="comments">
+                        {% comment %}
+                          If a comment was just submitted with no blank field, show it.
+                        {% endcomment %}
+                        {% if new_comment %}
+                          <li id="{{ comment.id }}" class="comment">
+                            {% render 'comment' with comment %}
+                          </li>
+                        {% endif %}
+
+                        {% for comment in article.comments %}
+                          {% unless comment.id == new_comment_id %}
+                            <li id="{{ comment.id }}" class="comment{% unless forloop.first %} gutter-top{% endunless %}">
+                              {% render 'comment' with comment %}
+                            </li>
+                          {% endunless %}
+                        {% endfor %}
+                      </ul>
+
+                      {% if paginate.pages > 1 %}
+                        {% render 'pagination', paginate: paginate %}
+                      {% endif %}
+
+                    </div>
+                  {% endpaginate %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="col-xs-12{% unless section.settings.enable_sidebar %} col-md-6{% endunless %}">
+              <div class="article__comment-form w100 gutter-ele-top">
+                {% form 'new_comment', article %}
+                  <h3 class="article__comment-heading"><strong>{{ 'blogs.comments.title' | t }}</strong></h3>
+                  <p style="font-style: italic;"><strong>{{ 'blogs.article.note' | t }}</strong></p>
+                  {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' | replace: 'href="','class="alert-link" href="' }}
+
+                  <div class="row">
+                    <div class="col-xs-12 col-md-6 field field--float-label">
+                      <label for="CommentAuthor">{{ 'blogs.comments.name' | t }}</label>
+                      <input type="text" name="comment[author]" id="CommentAuthor" class="input-full{% if form.errors contains 'author' %} input--error{% endif %} w100" value="{{ form.author }}">
+                      <span class="field__focus"></span>
+                    </div>
+                    <div class="col-xs-12 col-md-6 field field--float-label field--comment-email">
+                      <label for="CommentEmail">{{ 'blogs.comments.email' | t }}</label>
+                      <input type="email" name="comment[email]" id="CommentEmail" class="input-full{% if form.errors contains 'email' %} input--error{% endif %} w100" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+                      <span class="field__focus"></span>
+                    </div>
+                    <div class="col-xs-12 field field--text-area gutter-top">
+                      <label for="CommentBody" class="w100" style="padding-bottom:7px;">{{ 'blogs.comments.message' | t }}</label>
+                      <textarea name="comment[body]" id="CommentBody" class="input-full{% if form.errors contains 'body' %} input--error{% endif %} w100">{{ form.body }}</textarea>
+                    </div>
+                  </div>
+
+                  {% if blog.moderated? %}
+                    <p class="fine-print" style="font-style: italic;">{{ 'blogs.comments.moderated' | t }}</p>
+                  {% endif %}
+                  <div class="gutter-top">
+                    <input type="submit" class="button button--style1" value="{{ 'blogs.comments.post' | t }}">
+                  </div>
+                {% endform %}
+              </div>    
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      {%- render 'blog-sidebar', blog: blog, enable_sidebar: section.settings.enable_sidebar, show_filter_tags: section.settings.show_filter_tags, show_recent_posts: section.settings.show_recent_posts, recent_post_limit: section.settings.recent_post_limit -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Posts",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/posts)"
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_featured_image",
+        "label": "Show featured image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_author",
+        "label": "Show author",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Sidebar"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sidebar",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_recent_posts",
+        "label": "Show recent posts",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "recent_post_limit",
+        "label": "The recent post limit",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "show_filter_tags",
+        "label": "Show filter tags",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

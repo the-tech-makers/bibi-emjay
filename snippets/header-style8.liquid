@@ -1,0 +1,115 @@
+{%- if shop.customer_accounts_enabled or settings.enable_compare -%}
+	<div class="header__top{% if settings.use_sticky %} hide-in-sticky{% endif %}">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-12 flex flex-align-space-between">
+					<div class="header__top__left flex flex-align-ver header__top__ele-wrap">
+						{%- if settings.header_text != blank -%}
+						<div class="header__link-text header__top__typo text-center header__top__ele">{{ settings.header_text | raw }}</div>
+						{%- endif -%}
+					</div>
+					<div class="header__top__right flex flex-align-ver header__top__ele-wrap">
+						<div class="header__top__ele">
+							{%- render 'header-social-links' -%}
+						</div>
+						{%- render 'language-picker', data_group: 'header__links', show_language_icon: false, hide_language_code: false, wrap_class: 'flex flex-align-ver header__top__ele', addition_classes: 'header__link header__top__typo bt-dropdown__trigger--arrow' -%}
+						{%- render 'currency-switcher', addition_classes: 'header__top__typo bt-dropdown__trigger--arrow', add_wrap_classes: 'header__top__ele', data_group: 'header__links', currency_dropdown_align: 'bt-dropdown__content--right bt-dropdown__content--right-fluid' -%}
+						{%- if shop.customer_accounts_enabled -%}
+							<div class="bt-dropdown h100 flex flex-align-ver header__top__ele" data-group="header__links">
+								{%- if customer -%}
+									<a class="bt-dropdown__trigger header__link header__top__typo" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_url }}">
+										{%- unless enable_rtl -%}
+											{%- render 'icon-account' -%}
+											{{ 'customer.account.title' | t }}
+										{%- else -%}
+											{{ 'customer.account.title' | t }}
+											{%- render 'icon-account' -%}
+										{%- endunless -%}
+									</a>
+									<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid" style="white-space:nowrap;min-width:auto;">
+										<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+											{%- unless enable_rtl -%}
+												{% render 'icon-account' %}&nbsp;<span>{{ 'customer.account.title' | t }}</span>
+											{%- else -%}
+												<span>{{ 'customer.account.title' | t }}</span>&nbsp;{% render 'icon-account' %}
+											{%- endunless -%}
+										</a>
+										<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+											{%- unless enable_rtl -%}
+												{%- render 'icon-sign-out' -%}&nbsp;<span>{{ 'layout.customer.log_out' | t }}</span>
+											{%- else -%}
+												<span>{{ 'layout.customer.log_out' | t }}</span>&nbsp;{%- render 'icon-sign-out' -%}
+											{%- endunless -%}
+										</a>
+									</div>
+								{%- else -%}
+									<a class="bt-dropdown__trigger header__link header__top__typo flex flex-align-ver" title="{{ 'customer.login.title' | t | escape }}" href="{{ routes.account_login_url }}">
+										{%- render 'icon-account' -%}
+										{{ 'customer.login.title' | t }}
+									</a>
+									<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+										{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+									</div>
+								{%- endif -%}
+							</div>
+						{%- endif -%}
+					</div>
+				</div>
+			</div>
+		</div>				
+	</div>
+{%- endif -%}
+<div class="header__bottom">
+	<div class="container-fluid">
+		<div class="row header__wrap flex flex-align-space-between{% if settings.use_sticky %} use-sticky--desktop{% endif %}">
+			<div class="col-xs-2">
+				<div class="flex flex-align-ver header__wrap-logo h100">{% render 'header__logo' %}</div>
+			</div>
+			<div class="col-xs-7 position-static flex flex-align-hoz">
+				{% section 'navigation' %}
+			</div>
+			<div class="col-xs-3 flex flex-wrap" style="justify-content: flex-end;">
+				<div class="header__icons header__links--flex flex por">
+					{%- if settings.enable_compare -%}
+						<a href="javascript:void(0);" class="por header__link header__link--compare header__link--bottom" title="{{ 'collections.product_item.compare' | t | escape }}">
+							{%- render 'icon-compare' -%}
+							<span class="compare-number abs-number"></span>
+						</a>
+					{%- endif -%}
+					{%- if settings.enable_wishlist -%}
+						<a href="javascript:void(0);" class="por header__link header__link--wishlist header__link--bottom" title="{{ 'collections.product_item.wishlist' | t | escape }}">
+							{%- render 'icon-wishlist' -%}
+							<span class="wishlist-number abs-number"></span>
+						</a>
+					{%- endif -%}
+					
+					{%- render 'header-cart', data_group: 'header__links', cart_dropdown_direction: 'bt-dropdown__content--right bt-dropdown__content--right-fluid', addition_classes: 'header__link--bottom', cart_combine_text_number: true, combine_text_total: true -%}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="header__search header-search-bkg{% if settings.use_sticky %} hide-in-sticky{% endif %}">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="flex flex-align-space-between flex-align-ver header__search__inner">
+					{% section 'navigation-vertical' %}
+					{%- render 'search-form' with search_form_abs: true -%}
+					{%- if settings.header_style8_text1 != blank -%}
+						<div class="header__search__icon-text flex flex-align-ver flex-align-space-between hidden-md">
+							{%- render 'icon-like' -%}
+							<span class="header__search__text">{{ settings.header_style8_text1 }}</span>
+						</div>
+					{%- endif -%}
+					{%- if settings.header_style8_text2 != blank -%}
+						<div class="header__search__icon-text flex flex-align-ver flex-align-space-between hidden-md">
+							{%- render 'icon-smile' -%}
+							<span class="header__search__text">{{ settings.header_style8_text2 }}</span>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

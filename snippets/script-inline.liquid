@@ -1,0 +1,236 @@
+<script>
+  var theme = {
+    strings: {
+      addToCart: {{ 'products.product.add_to_cart' | t | json }},
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      showMore: {{ 'general.filters.show_more' | t | json }},
+      showLess: {{ 'general.filters.show_less' | t | json }},
+      addressError: {{ 'sections.map.address_error' | t | json }},
+      addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+      addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+      authError: {{ 'sections.map.auth_error_html' | t | json }},
+      addCartMsg: {{ 'cart.message.added' | t: product_title: 'product_title' | json }},
+      upsellTitle: {{ 'products.product.upsell_block_title' | t: product_title: 'product_title' | json }},
+      previous: {{ 'general.pagination.previous' | t | json }},
+      next: {{ 'general.pagination.next' | t | json }},
+      wishlistEmpty: {{ 'products.product.wishlist_empty' | t | json }},
+      addWishlistTitle: {{ 'collections.product_item.add_to_wishlist' | t | json }},
+      addedWishlistTitle: {%- capture added_to_wishlist_text -%}{{ 'collections.product_item.added_to_wishlist' | t }}{%- endcapture -%}{%- unless added_to_wishlist_text contains 'translation missing' -%}{{ added_to_wishlist_text | json }}{%- else -%}{{ 'Added to wishlist' | json }}{%- endunless -%},
+      countdownTplHour: {{ 'products.product.countdown_hour_template' | t | json }},
+      countdownTplDay: {{ 'products.product.countdown_day_template' | t | json }},
+      countdownTplWeek: {{ 'products.product.countdown_week_template' | t | json }},
+      countdownExpiredMsg: {{ 'products.product.countdown_expired_message' | t | json }},
+      preOrderText: {{ 'products.product.pre_order' | t | json }},
+      cartTermsErrorMsg: {{ settings.cart_terms_error_msg | escape | json }},
+      instockText: {{ 'products.product.instock' | t | json }}
+    },
+    enableWishlist: {{ settings.enable_wishlist | json }},
+    enableFreeShipping: {{ settings.cart_free_shipping_enable | json }},
+    freeShippingGoal: {{ settings.cart_free_shipping_goal | times: 100 }},
+    freeShippingGoalText: {{ settings.cart_free_shipping_goal_text | json }},
+    freeShippingProgressText: {{ settings.cart_free_shipping_progress_text | json }},
+    rootUrl: '{{ routes.root_url | append: '/' | replace: '//', '/' }}',
+    collectionAllUrl: '{{ routes.all_products_collection_url }}',
+    recommendationUrl: '{{ routes.product_recommendations_url }}',
+    searchUrl: '{{ routes.search_url }}',
+    cartUrl: '{{ routes.cart_url }}',
+    cartJsonUrl: '{{ routes.cart_url }}.js',
+    cartAddUrl: '{{ routes.cart_add_url }}.js',
+    cartChangeUrl: '{{ routes.cart_change_url }}.js',
+    cartUpdateUrl: '{{ routes.cart_url }}/update.js',
+    cartClearUrl: '{{ routes.cart_clear_url }}.js',
+    cartNumber: {{ cart.item_count }},
+    cartAction: {{ settings.add_cart_action | json }},
+    cartTerms: {% if settings.cart_terms_enable %}true{% else %}false{% endif %},
+    cartTermsUrl: {{ settings.settings.cart_terms_url | json }},
+    moneyFormat: {% if shop.money_format contains 'money' %}{{ shop.money_format | json }}{% else %}{{ '<span class="money">' | append: shop.money_format | append: '</span>' | json }}{% endif %},
+    currencyServices: ['https://ipinfo.io/json'],
+    favicon: {
+      enable: {% if settings.badge_enable %}true{% else %}false{% endif %},
+      pos: "{{ settings.badge_pos }}",
+      bkgColor: "{{ settings.badge_bkg_color }}",
+      textColor: "{{ settings.badge_text_color }}"
+    },
+    libs: {
+      "photoswipe": {
+        "css": ["{{ 'photoswipe.css' | asset_url }}","{{ 'photoswipe-default-skin.css' | asset_url }}"],
+        "js": "{{ 'bt-photoswipe.min.js' | asset_url }}"
+      },
+      "lightgallery": {
+        "css": ["{{ 'lightgallery.min.css' | asset_url }}"],
+        "js": "{{ 'lightgallery.min.js' | asset_url }}"
+      },
+      "modalvideo": {
+        "css": ["{{ 'modal-video.min.css' | asset_url }}"],
+        "js": "{{ 'jquery-modal-video.min.js' | asset_url }}"
+      },
+      "recommendedProducts": {
+        "css": ["{{ 'recommended-products.scss.css' | asset_url }}"],
+        "js": "{{ 'bt-sales-notification.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "googleMaps": {
+        "css": ["{{ 'google-maps.scss.css' | asset_url }}"]
+      },
+      "newsletterPopup": {
+        "css": ["{{ 'newsletter-popup.scss.css' | asset_url }}"],
+        "js": "{{ 'bt-newsletter-popup.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "youtube": {
+        "js": "//youtube.com/iframe_api"
+      },
+      "vimeo": {
+        "js": "//player.vimeo.com/api/player.js"
+      }{%- if template.name != 'product' -%},
+      "quickViewPopup": {
+        "css": ["{{ 'cloudzoom.scss.css' | asset_url }}","{{ 'quick-view.scss.css' | asset_url }}"]
+      }
+      {%- endif -%}
+      ,"modelViewerUiStyles": {
+        "css": ["//cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css"]
+      },
+      "product-global": {
+        "js": "{{ 'bt-product-global.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "waypoint": {
+        "js": "{{ 'jquery.waypoints.min.js' | asset_url }}"
+      },
+      "infinite": {
+        "js": "{{ 'infinite.min.js' | asset_url }}"
+      },
+      "nouislider": {
+        "css": ["{{ 'nouislider.min.css' | asset_url }}"],
+        "js": "{{ 'nouislider.min.js' | asset_url }}"
+      },
+      "navigation-section": {
+        "js": "{{ 'bt-section-navigation.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "navigation-vertical-section": {
+        "js": "{{ 'bt-section-navigation-vertical.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "navigation-mobile-section": {
+        "js": "{{ 'bt-section-navigation-mobile.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "product-tabs-section": {
+        "js": "{{ 'bt-section-product-tabs.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "instagram-section": {
+        "js": "{{ 'bt-section-instagram.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "rich-banner-text-section": {
+        "js": "{{ 'bt-section-rich-banner-text.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "layer-banner-section": {
+        "js": "{{ 'bt-section-layer-banner.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "simple-product-slider-section": {
+        "js": "{{ 'bt-section-simple-product-slider.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "product-columns-section": {
+        "js": "{{ 'bt-section-product-columns.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "map-section": {
+        "js": "{{ 'bt-section-map.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "quotes-section": {
+        "js": "{{ 'bt-section-quotes.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "logo-bar-section": {
+        "js": "{{ 'bt-section-logo-bar.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "single-deal-section": {
+        "js": "{{ 'bt-section-single-deal.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "about-section": {
+        "js": "{{ 'bt-section-about.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "newsletter-section": {
+        "js": "{{ 'bt-section-newsletter.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "collection-filter-section": {
+        "css": ["{{ 'bt-section-collection-filter.scss.css' | asset_url }}"],
+        "js": "{{ 'bt-section-collection-filter.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "footer-section": {
+        "js": "{{ 'bt-section-footer.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "product-section": {
+        "js": "{{ 'bt-section-product.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "collection-template-section": {
+        "js": "{{ 'bt-collection.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "search-template-section": {
+        "js": "{{ 'bt-search.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "cart-template-section": {
+        "js": "{{ 'bt-cart-page.js' | asset_url | append: 'enable_js_minification=1' }}"
+      },
+      "faq-section": {
+        "js": "{{ 'bt-section-faq.js' | asset_url | append: '&enable_js_minification=1' }}"
+      },
+      "zoom": {
+        "js": "{{ 'cloudzoom.js' | asset_url }}"
+      }
+    },
+    loadedLibs: [],
+    pendingJsLibs: [],
+    loadedCssLibs: [],
+    requireCss: [],
+    review: {
+      enable: {% if settings.enable_review %}true{% else %}false{% endif %},
+      app: {{ settings.review_app | json }}
+    },
+    searchSuggest: {
+      enable: {% if settings.search_suggest_enable %}true{% else %}false{% endif %},
+      limit: "{{ settings.search_suggest_limit }}"
+    },
+    enableCookieConsent: {% if settings.cookie_consent_enable and settings.cookie_consent_content != blank %}true{% else %}false{% endif %},
+    enableNewsPopup: {% if settings.news_popup_enable %}true{% else %}false{% endif %},
+    enableRecommendedProducts: {% if settings.rp_active and settings.rp_collection %}true{% else %}false{% endif %},
+    newsTerms: {% if settings.news_terms_enable and settings.news_platform == 'shopify' %}true{% else %}false{% endif %},
+    enableRecentView: {% if settings.recent_view_enable %}true{% else %}false{% endif %},
+    disableCopy: {% if settings.disable_copy %}true{% else %}false{% endif %},
+    preOrder: {% if settings.pre_order_enable %}true{% else %}false{% endif %}
+  };
+  var enableCurrencyConverter = {% if settings.currency_converter_engine == 'shopify' %}{% if settings.enable_currency_auto or settings.show_multiple_currencies %}true{% else %}false{% endif %}{% else %}false{% endif %};
+  var enableCurrencyAuto = {% if settings.enable_currency_auto and settings.currency_converter_engine == 'shopify' %}true{% else %}false{% endif %};
+  var currencyFormat = '{{ settings.currency_format | default: 'money_with_currency_format' }}';
+  var shopCurrency = '{% if settings.currency_converter_engine == 'shopify' %}{{ shop.currency }}{% else %}{{ cart.currency.iso_code }}{% endif %}';
+  var defaultCurrency = '{{ settings.default_currency | default: shop.currency }}';
+  var cookieCurrency;
+  var currencyFormat1 = {{ shop.money_with_currency_format | strip_html | json }};
+  var currencyFormat2 = {{ shop.money_format | strip_html | json }};
+
+  var upsellRandom = {% if settings.upsell_random_enable %}true{% else %}false{% endif %};
+  var rtl = {% if enable_rtl %}true{% else %}false{% endif %};
+
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+
+  var topbarConfig = {
+    autoRun      : true,
+    barThickness : 3,
+    barColors    : {
+        '0'      : '{{ settings.topbar_stage1_color }}',
+        '.25'    : '{{ settings.topbar_stage2_color }}',
+        '.50'    : '{{ settings.topbar_stage3_color }}',
+        '.75'    : '{{ settings.topbar_stage4_color }}',
+        '1.0'    : '{{ settings.topbar_stage5_color }}'
+    },
+    shadowBlur   : 10,
+    shadowColor  : '{{ settings.color_general | color_modify: 'alpha', 0.6 }}'
+  };
+  window.lazySizesConfig = window.lazySizesConfig || {};
+  window.lazySizesConfig['data-widths'] =  [180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048];
+  window.lazySizesConfig.loadMode = 1;
+  window.lazySizesConfig.expand = -100;
+  window.lazySizesConfig.loadHidden = false;
+  var isIE = (!!window.MSInputMethodContext && !!document.documentMode) || (navigator.appVersion.indexOf('Edge') > -1);
+  var isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
+  if (isIE || isFirefox) {
+    const cssLinks = document.querySelectorAll(".preload-css");
+    for (var i = 0; i < cssLinks.length; i++) {
+      cssLinks[i].rel = 'stylesheet';
+    }
+  }
+</script>

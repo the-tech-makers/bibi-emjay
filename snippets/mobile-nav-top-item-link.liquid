@@ -1,0 +1,8 @@
+<div class="mobile-nav__top-link-wrap flex flex-align-ver w100 flex-align-space-between">
+	<a href="{{ url }}" title="{%- render 'nav-shortcode-ign', str: title -%}" class="mobile-nav__item__top-link mobile-nav__item__top-link--{{ item_id }} text-uppercase por">
+		{%- render 'mobile-nav-label' with str: title, custom_label_classes: custom_label_classes -%}
+	</a>
+	{% if has_children %}
+		<a href="#" class="mobile-nav__arrow mobile-nav__arrow--{{ item_id }} mobile-nav__arrow--level1 h100 lnr-chevron-down flex flex-align-ver flex-align-hoz transition" title="{{ 'layout.navigation.arrow' | t | escape }}"></a>
+	{% endif %}
+</div>

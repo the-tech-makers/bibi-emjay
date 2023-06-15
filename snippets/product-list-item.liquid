@@ -1,0 +1,51 @@
+{%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+  {%- assign featured_image = product.featured_image -%}
+{%- else -%}
+  {%- assign featured_image = product.first_available_variant.featured_image -%}
+{%- endif -%}
+{%- if column_count > 2 -%}
+  {%- assign column_count_mobile = 2 -%}
+{%- else -%}
+  {%- assign column_count_mobile = 1 -%}  
+{%- endif -%}
+{%- if withinCollection -%}
+  {%- assign product_url = product.url | within: withinCollection -%}
+{%- else -%}
+  {%- assign product_url = product.url -%}
+{%- endif -%}
+<div class="{% unless no_grid_item_class %}grid__item {% endunless %}effect-hover item {% if use_slider %}{% if index > column_count_mobile %} ov-slider-mb{% endif %}{% if index > column_count %} ov-slider-tb{% endif %}{% endif %} pg{% if additional_classes %} {{ additional_classes }}{% endif %}" data-product-handle="{{ product.handle }}"{% if additional_data %} {{ additional_data }}{% endif %}>
+	<div class="flex flex-wrap flex-align-space-between">
+    <div class="col-xs-12 col-sm-4 no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">
+      {%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+        {%- assign featured_image = product.featured_image -%}
+      {%- else -%}
+        {%- assign featured_image = product.first_available_variant.featured_image -%}
+      {%- endif -%}
+      {%- assign img_url = featured_image | product_img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      <a href="{{ product_url }}" class="item__image img-container" title="{{ product.title | escape }}" style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;">
+        <img  data-aspectratio="{{ featured_image.aspect_ratio }}"
+          data-src="{{ img_url }}"
+          data-sizes="auto" class="img-abs img-responsive lazyload" alt="{{ featured_image.alt | default: product.title | escape }}" width="{{ featured_image.width }}" height="{{ featured_image.height }}"{% render 'img-one-pixel' %}/>
+        {%- render 'product-labels' with product as product, show_label: show_label -%}
+      </a>
+    </div>
+    <div class="pcol__item__right col-xs-12 col-sm-8 no-gutter mobile-text-center">
+      <a class="item__name item__name-list--{{ section.id }} no-gutter-top" href="{{ product_url }}" title="{{ product.title | escape }}">
+        {%- if truncate_count > 0 -%}
+          {{ product.title | truncatewords: truncate_count }}
+        {%- else -%}
+          {{ product.title }}
+        {%- endif -%}  
+      </a>
+      {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}
+      <div class="gutter-ele-small-top">
+        {%- render 'product-price-varies' with product as product -%} 
+      </div>
+      {%- if show_review_stars -%}
+      <div class="gutter-ele-small-top">
+        {%- render 'product-review' with product as product -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,493 @@
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign page_url_str = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first -%}
+{%- capture filter_param_value -%}{%- render 'read-url-param' with param_name: 'f', page_url_str: page_url_str -%}{%- endcapture -%}
+{%- if filter_param_value -%}
+	{%- assign filter_param_value = filter_param_value | strip | url_decode | downcase -%}
+{%- endif -%}
+{%- liquid
+	assign display_filter_option_names = ''
+	assign count_product_types_str = ';'
+	assign count_product_brands_str = ';'
+	assign count_product_metafields_str = ';'
+	assign count_product_ratings_str = ';'
+	assign metafields_item_names = ''
+	assign metafields_string_type = ''
+	assign metafields_json_type = ''
+	assign min_query_rating = 6.00
+	assign max_query_rating = 0
+	assign rating_name_query_index = 'ratings='
+	assign current_page = 1
+	if filter_param_value contains 'btpage'
+		assign current_page = filter_param_value | split: 'btpage=' | last | split: ',' | first | default: 1 | plus: 0
+		assign pagination_compare = 'btpage=' | append: current_page
+		assign pagination_compare_head = ',' | append: pagination_compare
+		assign pagination_compare_last = pagination_compare | append: ','
+		assign filter_param_value = filter_param_value | replace: pagination_compare_head, '' | replace: pagination_compare_last, '' | replace: pagination_compare, ''
+	endif
+	for block in section.blocks
+		if block.settings.enable
+			assign item_name = ''
+			if block.type == 'filter-item-swatch' or block.type == 'filter-item-checkbox'
+				assign item_name = block.settings.auto_filter_option_name
+			elsif block.type == 'filter-item-price'
+				assign item_name = 'price'
+			elsif block.type == 'filter-item-product-type'
+				unless collection.current_type
+					assign item_name = 'type'
+				endunless
+			elsif block.type == 'filter-item-product-brand'
+				unless collection.current_vendor
+					assign item_name = 'brand'
+				endunless
+			elsif block.type == 'filter-item-ratings'
+				if settings.review_app != 'other'
+					assign item_name = 'ratings'	
+				endif	
+			elsif block.type == 'filter-item-metafields'
+				assign namespace = block.settings.namespace | handleize
+				assign key = block.settings.key | handleize
+				assign item_name = 'field-' | append: namespace | append: '-' | append: key
+				if metafields_item_names == ''
+					assign metafields_item_names = item_name
+				else
+					assign metafields_item_names = metafields_item_names | append: ';' | append: item_name
+				endif
+				if block.settings.type == 'string'
+					if metafields_string_type == ''
+						assign metafields_string_type = item_name
+					else
+						assign metafields_string_type = metafields_string_type | append: ';' | append: item_name
+					endif
+				elsif block.settings.type == 'json'
+					if metafields_json_type == ''
+						assign metafields_json_type = item_name
+					else
+						assign metafields_json_type = metafields_json_type | append: ';' | append: item_name
+					endif
+				endif
+			endif
+			if item_name != ''
+				if display_filter_option_names == ''
+					assign display_filter_option_names = item_name
+				else
+					assign display_filter_option_names = display_filter_option_names | append: ';' | append: item_name	
+				endif
+			endif
+		endif	
+	endfor
+	assign metafields_item_names_array = metafields_item_names | split: ';'
+	assign display_filter_option_names_array = display_filter_option_names | downcase | split: ';'
+	assign filter_options_str = ';'
+	assign filter_param_array = filter_param_value | split: ','
+	assign filter_item_name_with_values = ''
+	if filter_param_value contains rating_name_query_index
+		assign query_rating_values = filter_param_value | split: rating_name_query_index | last | split: ',' | first | split: '+'
+		for query_item_value in query_rating_values
+			assign filter_item_rating_number = query_item_value | plus: 0.00
+			if filter_item_rating_number < min_query_rating
+				assign min_query_rating = filter_item_rating_number
+			endif
+			if filter_item_rating_number > max_query_rating
+				assign max_query_rating = filter_item_rating_number
+			endif	
+		endfor
+	endif
+	assign max_query_rating = max_query_rating | plus: 1.00 | at_most: 6.00
+
+	assign filter_type_values = blank
+	if filter_param_value contains 'type='
+		assign filter_type_values = filter_param_value | split: 'type=' | last | split: ',' | first | split: '+'
+	endif
+
+	assign filter_brand_values = blank
+	if filter_param_value contains 'brand='
+		assign filter_brand_values = filter_param_value | split: 'brand=' | last | split: ',' | first | split: '+'
+	endif
+
+	assign item_size = section.settings.item_size
+	if item_size == 'small'
+	  assign column_count = 5
+	elsif item_size == 'medium'
+	  assign column_count = 4
+	elsif item_size == 'large'
+	  assign column_count = 3
+	else
+	  assign column_count = 2  
+	endif
+	assign lazy_index = 999
+	if section.settings.use_lazyload and template.suffix == blank
+	  assign lazy_index = column_count | times: 3
+	endif
+	assign price_min = 0
+	assign price_max = 0
+	assign total = 0
+	assign limit = section.settings.limit | divided_by : 1
+
+	assign start_offset = current_page | minus: 1 | times: limit
+	assign end_offset = start_offset | plus: limit
+	capture collection_products
+		for product in products
+			assign result_check = true
+			assign result_item_fail_options = ''
+			for filter_item in filter_param_array
+				assign filter_item_parts = filter_item | split: '='
+				assign filter_item_name = filter_item_parts[0] | strip | downcase
+				if display_filter_option_names_array contains filter_item_name
+					case filter_item_name
+						when 'price'
+							assign filter_item_values = filter_item_parts[1] | split: '-'
+							assign query_price_min = filter_item_values[0] | plus: 0
+							assign query_price_max = filter_item_values[1] | plus: 0
+							unless product.price_min >= query_price_min and product.price_min <= query_price_max
+								assign result_item_fail_options = result_item_fail_options | append: 'price'
+							endunless
+						when 'type'
+							assign product_type = product.type | downcase
+							unless filter_type_values contains product_type
+								assign result_item_fail_options = result_item_fail_options | append: 'type'
+							endunless
+						when 'brand'
+							assign product_brand = product.vendor | downcase
+							unless filter_brand_values contains product_brand
+								assign result_item_fail_options = result_item_fail_options | append: 'brand'
+							endunless
+						when 'ratings'
+							capture rating_value
+								render 'get-product-rating-value' with product: product
+							endcapture
+							if rating_value != blank
+								assign rating_value = rating_value | times: 1.00
+								unless min_query_rating <= rating_value and rating_value < max_query_rating
+									assign result_item_fail_options = result_item_fail_options | append: 'ratings'
+								endunless
+							else
+								assign result_item_fail_options = result_item_fail_options | append: 'ratings'	
+							endif			
+						else
+							unless metafields_item_names_array contains filter_item_name
+								assign filter_item_values = filter_item_parts[1] | split: '+'
+								assign product_option_values = blank
+								for option in product.options_with_values
+									assign option_index_downcase = option.name | downcase
+									if option_index_downcase == filter_item_name
+										assign product_option_values = option.values
+										break
+									endif
+								endfor
+								assign result_item_option_check = false
+								if product_option_values != blank
+									assign product_options_values_handle = product_option_values | join: ';' | downcase | split: ';'
+									for filter_item_value in filter_item_values
+										if product_options_values_handle contains filter_item_value
+											assign result_item_option_check = true
+											break
+										endif
+									endfor
+								endif
+								unless result_item_option_check
+									assign result_item_fail_options = result_item_fail_options | append: filter_item_name
+								endunless
+							else
+								assign filter_item_values = filter_item_parts[1] | split: '+'
+								assign filter_item_name_parts = filter_item_name | split: 'field-' | last | split: '-'
+								assign product_metafield_value = product.metafields[filter_item_name_parts[0]][filter_item_name_parts[1]]
+								if product_metafield_value != blank
+									assign result_item_value_check = false
+									for filter_item_value in filter_item_values
+										if metafields_string_type contains filter_item_name
+											assign product_metafield_value_handle = product_metafield_value | downcase | replace: ', ',',' | split: ','
+											if product_metafield_value_handle contains filter_item_value
+												assign result_item_value_check = true
+												break
+											endif
+										elsif metafields_json_type contains filter_item_name
+											assign checking_json_type = false
+											for key_value in product_metafield_value
+												assign key_value_compare = key_value[1] | downcase
+												if key_value_compare == filter_item_value
+													assign checking_json_type = true
+													break
+												endif
+								      endfor
+								      if checking_json_type
+								      	assign result_item_value_check = true
+								      	break
+								      endif
+										else
+											assign filter_item_value_int = filter_item_value | plus: 0
+											if product_metafield_value == filter_item_value_int
+												assign result_item_value_check = true
+												break
+											endif
+										endif
+									endfor
+									unless result_item_value_check
+										assign result_item_fail_options = result_item_fail_options | append: filter_item_name
+									endunless
+								else	
+									assign result_item_fail_options = result_item_fail_options | append: filter_item_name
+								endif
+							endunless		
+					endcase	
+				endif	
+			endfor
+			if result_item_fail_options != ''
+				assign result_check = false
+			endif
+			for product_option in product.options_with_values
+				assign option_name_downcase = product_option.name | downcase
+				if display_filter_option_names_array contains option_name_downcase
+					assign will_add = false
+					if result_check
+						assign will_add = true
+					elsif result_item_fail_options == option_name_downcase
+						assign will_add = true	
+					endif
+					if will_add
+						for value in product_option.values
+			        assign value_index = option_name_downcase | append: '%5f' | append: value | append: '%5f' | downcase
+			        assign compare_value_index = value_index | prepend: ';'
+			        if filter_options_str contains compare_value_index
+			        	assign count = filter_options_str | split: value_index | last | split: ';' | first | plus: 0
+			        	assign old_value_index = value_index | append: count | append: ';'
+			        	assign count = count | plus: 1
+			        	assign new_value_index = value_index | append: count | append: ';'
+			        	assign filter_options_str = filter_options_str | replace: old_value_index, new_value_index
+			        else
+			        	assign filter_options_str = filter_options_str | append: value_index | append: 1 | append: ';'
+			        endif
+		      	endfor
+		      endif
+				endif
+			endfor
+			if metafields_item_names != ''
+				for metafield in metafields_item_names_array
+					assign will_add = false
+					if result_check
+						assign will_add = true
+					elsif result_item_fail_options == metafield
+						assign will_add = true	
+					endif
+					if will_add
+						assign metafield_parts = metafield | split: 'field-' | last | split: '-'
+						assign product_metafield_value = product.metafields[metafield_parts[0]][metafield_parts[1]]
+						if product_metafield_value != blank
+							unless metafields_json_type contains metafield or product_metafield_value contains ','
+								assign value_index = metafield_parts[0] | append: '-' | append: metafield_parts[1] | append: '%5f' | append: product_metafield_value | append: '%5f' | downcase
+								assign compare_value_index = value_index | prepend: ';'
+								if count_product_metafields_str contains compare_value_index
+									assign count = count_product_metafields_str | split: value_index | last | split: ';' | first | plus: 0
+									assign old_value_index = value_index | append: count | append: ';'
+				        	assign count = count | plus: 1
+				        	assign new_value_index = value_index | append: count | append: ';'
+				        	assign count_product_metafields_str = count_product_metafields_str | replace: old_value_index, new_value_index
+				        else
+				        	assign count_product_metafields_str = count_product_metafields_str | append: value_index | append: 1 | append: ';'
+								endif
+							else
+								unless metafields_json_type contains metafield
+									assign product_metafield_value_array = product_metafield_value | downcase | replace: ', ',',' | split: ','
+								else
+									assign product_metafield_value_array = product_metafield_value
+								endunless	
+								for product_metafield_value_item in product_metafield_value_array
+									unless metafields_json_type contains metafield
+										assign value_index = metafield_parts[0] | append: '-' | append: metafield_parts[1] | append: '%5f' | append: product_metafield_value_item | append: '%5f' | downcase
+									else
+										assign value_index = metafield_parts[0] | append: '-' | append: metafield_parts[1] | append: '%5f' | append: product_metafield_value_item[1] | append: '%5f' | downcase	
+									endunless 
+									assign compare_value_index = value_index | prepend: ';'
+									if count_product_metafields_str contains compare_value_index
+										assign count = count_product_metafields_str | split: value_index | last | split: ';' | first | plus: 0
+										assign old_value_index = value_index | append: count | append: ';'
+					        	assign count = count | plus: 1
+					        	assign new_value_index = value_index | append: count | append: ';'
+					        	assign count_product_metafields_str = count_product_metafields_str | replace: old_value_index, new_value_index
+					        else
+					        	assign count_product_metafields_str = count_product_metafields_str | append: value_index | append: 1 | append: ';'
+									endif
+								endfor
+							endunless	
+						endif
+					endif
+				endfor
+			endif
+			if display_filter_option_names_array contains 'type' and product.type != blank
+				assign will_add = false
+				if result_check
+					assign will_add = true
+				elsif result_item_fail_options == 'type'
+					assign will_add = true	
+				endif
+				if will_add
+					assign product_type_index_compare = ';' | append: product.type | append: '%5f' | downcase
+					if count_product_types_str contains product_type_index_compare
+						assign count = count_product_types_str | split: product_type_index_compare | last | split: ';' | first | plus: 0
+          	assign old_value_index = product_type_index_compare | append: count | append: ';'
+          	assign count = count | plus: 1
+          	assign new_value_index = product_type_index_compare | append: count | append: ';'
+          	assign count_product_types_str = count_product_types_str | replace: old_value_index, new_value_index
+	        else
+           	assign product_type_index = product.type | append: '%5f' | downcase
+            assign count_product_types_str = count_product_types_str | append: product_type_index | append: 1 | append: ';'	
+	        endif
+				endif
+			endif
+			if display_filter_option_names_array contains 'brand' and product.vendor != blank
+				assign will_add = false
+				if result_check
+					assign will_add = true
+				elsif result_item_fail_options == 'brand'
+					assign will_add = true	
+				endif
+				if will_add
+					assign product_brand_index_compare = ';' | append: product.vendor | append: '%5f' | downcase
+					if count_product_brands_str contains product_brand_index_compare
+						assign count = count_product_brands_str | split: product_brand_index_compare | last | split: ';' | first | plus: 0
+	          assign old_value_index = product_brand_index_compare | append: count | append: ';'
+	          assign count = count | plus: 1
+	          assign new_value_index = product_brand_index_compare | append: count | append: ';'
+	          assign count_product_brands_str = count_product_brands_str | replace: old_value_index, new_value_index
+		      else
+	          assign product_brand_index = product.vendor | append: '%5f' | downcase
+	          assign count_product_brands_str = count_product_brands_str | append: product_brand_index | append: 1 | append: ';'	
+					endif
+				endif
+			endif
+			if result_check or result_item_fail_options == 'price'
+				if price_min == 0 or price_min > product.price_min
+					assign price_min = product.price_min
+				endif
+				if price_max < product.price_min
+					assign price_max = product.price_min
+				endif
+			endif
+			if display_filter_option_names_array contains 'ratings'
+				assign will_add = false
+				if result_check
+					assign will_add = true
+				elsif result_item_fail_options == 'ratings'
+					assign will_add = true	
+				endif
+				if will_add
+					unless filter_param_value contains rating_name_query_index
+						capture rating_value
+							render 'get-product-rating-value' with product: product
+						endcapture
+						assign rating_value = rating_value | times: 1.00
+					endunless
+					if rating_value != blank and rating_value > 0
+						assign round_rating_value = rating_value | floor
+						assign rating_value_index = round_rating_value | append: '%5f'
+						if count_product_ratings_str contains rating_value_index
+							assign count = count_product_ratings_str | split: rating_value_index | last | split: ';' | first | plus: 0
+		        	assign old_value_index = rating_value_index | append: count | append: ';'
+		        	assign count = count | plus: 1
+		        	assign new_value_index = rating_value_index | append: count | append: ';'
+		        	assign count_product_ratings_str = count_product_ratings_str | replace: old_value_index, new_value_index
+		        else
+		        	assign count_product_ratings_str = count_product_ratings_str | append: rating_value_index | append: 1 | append: ';'	
+						endif
+					endif
+				endif
+			endif
+			if result_check
+				if total >= start_offset and total < end_offset
+					if total == 0
+						if section.settings.main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank
+						  assign featured_image = product.featured_image
+						else
+						  assign featured_image = product.first_available_variant.featured_image
+						endif
+						render 'lcp-mark' with image: featured_image, sizes: '50vw'
+						assign is_lcp = true
+					else
+						assign is_lcp = false	
+					endif
+					render 'product-grid-item' with product: product, use_slider: false, limit_first: 0, item_size: item_size, index: forloop.index, lazy_index: lazy_index, column_count: column_count, main_thumbnail: section.settings.main_thumbnail, image_size: section.settings.image_size, truncate_count: section.settings.product_name_size, enable_product_options: section.settings.enable_product_options, show_review_stars: section.settings.show_review_stars, enable_small_images: false, show_wishlist_btn: section.settings.show_wishlist_btn, small_image: '1x', show_label : section.settings.show_label, show_cart_btn: section.settings.show_cart_btn, show_compare_btn: section.settings.show_compare_btn, show_qs_btn: section.settings.show_qs_btn, show_desc: true, show_countdown_timer: section.settings.show_countdown_timer, show_vendor: section.settings.show_vendor, withinCollection: collection, additional_classes: 'transition', highlight_text: search.terms, is_lcp: is_lcp
+	      endif
+	      assign total = total | plus: 1
+			endif
+		endfor
+	endcapture
+	for query_item in filter_param_array
+		assign query_item_parts = query_item | split: '='
+		assign query_item_values = query_item_parts[1] | split: '+'
+		if query_item_parts[0] == 'type'
+			for query_item_value in query_item_values
+				assign type_index = query_item_value | append: '%5f'
+				unless count_product_types_str contains type_index
+					assign count_product_types_str = count_product_types_str | append: type_index | append: '0' | append: ';'
+				endunless
+				assign filter_item_name_with_values = filter_item_name_with_values | append: 'type%5f' | append: query_item_value | append: ';'
+			endfor
+		elsif query_item_parts[0] == 'brand'
+			for query_item_value in query_item_values
+				assign brand_index = query_item_value | append: '%5f'
+				unless count_product_brands_str contains brand_index
+					assign count_product_brands_str = count_product_brands_str | append: brand_index | append: '0' | append: ';'
+				endunless
+				assign filter_item_name_with_values = filter_item_name_with_values | append: 'brand%5f' | append: query_item_value | append: ';'
+			endfor
+		elsif query_item_parts[0] contains 'field-'
+			assign field_prefix_index = query_item_parts[0] | split: 'field-' | last | append: '%5f'
+			for query_item_value in query_item_values
+				assign field_index = field_prefix_index | append: query_item_value
+				assign filter_item_name_with_values = filter_item_name_with_values | append: field_index | append: ';'
+				assign field_index = field_index | append: '%5f'
+				unless count_product_metafields_str contains field_index
+					assign count_product_metafields_str = count_product_metafields_str | append: field_index | append: '0' | append: ';'
+				endunless
+			endfor
+		elsif query_item_parts[0] == 'ratings'
+			assign rating_index = 'ratings%5f'
+			for query_item_value in query_item_values
+				assign filter_item_name_with_values = filter_item_name_with_values | append: rating_index | append: query_item_value | append: ';'
+			endfor	
+		else
+			unless query_item_parts[0] contains 'price-'
+				assign option_prefix_index = query_item_parts[0] | append: '%5f'
+				for query_item_value in query_item_values
+					assign option_index = option_prefix_index | append: query_item_value
+					assign filter_item_name_with_values = filter_item_name_with_values | append: option_index | append: ';'
+					assign option_index = option_index | append: '%5f'
+					unless filter_options_str contains option_index
+						assign filter_options_str = filter_options_str | append: option_index | append: '0' | append: ';'
+					endunless
+				endfor
+			endunless
+		endif
+	endfor
+-%}
+{%- capture sidebar_content -%}{% include 'collection-filter-auto' with filter_param_value: filter_param_value, filter_options_str: filter_options_str, filter_item_name_with_values: filter_item_name_with_values, filter_param_value: filter_param_value, price_min: price_min, price_max: price_max, count_product_types_str: count_product_types_str, count_product_brands_str: count_product_brands_str, count_product_metafields_str: count_product_metafields_str, count_product_ratings_str: count_product_ratings_str, layout_name: layout_name %}{%- endcapture -%}
+{%- capture collection_sidebar -%}{%- include 'collection-sidebar' with sidebar_content: sidebar_content, layout_name: layout_name, enable_sidebar: enable_sidebar -%}{%- endcapture -%}
+{%- if layout_name == 'left_sidebar' or layout_name == 'no_sidebar' -%}
+  {{ collection_sidebar }}
+{%- endif -%}
+<div class="col-xs-12{% if layout_name != 'no_sidebar' %} col-md-9 col-lg-10{% endif %}{% if enable_rtl and layout_name == 'right_sidebar' %} f-right{% endif %} gutter-ele-top-tbs">
+  {%- render 'collection-toolbar', collection: collection, toolbar_enable: section.settings.toolbar_enable , item_size: section.settings.item_size sort_enable: section.settings.sort_enable, has_filter: section.settings.tags_enable, isAuto: true, products_count: total, layout_name: layout_name -%}
+  <div class="collection__products">
+  	{%- render 'collection-filter-item-auto-current-inline' with filter_param_value: filter_param_value, layout_name: layout_name -%}
+  	{%- if total > 0 -%}
+  		<div class="grid grid--{{ item_size }} grid--products products grid--not-empty">
+  			{{ collection_products }}
+  		</div>
+  		{%- if total > limit -%}
+  			{%- if section.settings.enable_infinity_loading -%}
+  				{%- render 'pagination-infinity-auto' with infinity_action: section.settings.infinity_action, total: total, limit: limit, current_page: current_page, filter_param_value: filter_param_value, full_url: full_url -%}
+		    {%- else -%}
+		    	{%- render 'pagination-auto' with total: total, limit: limit, current_page: current_page, enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder -%}
+		    {%- endif -%}
+			{%- endif -%}
+  	{%- else -%}
+  		<div class="grid grid--{{ item_size }} grid--products grid--full products">
+			  <div class="grid__item" style="width:100%;">
+			    <div class="alert alert-danger">{{ 'collections.general.no_matches' | t }}</div>
+			  </div>
+			</div>	
+  	{%- endif -%}	
+  </div>
+</div>
+{%- if layout_name == 'right_sidebar' -%}
+  {{ collection_sidebar }}
+{%- endif -%}

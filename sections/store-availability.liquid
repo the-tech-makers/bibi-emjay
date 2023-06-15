@@ -1,0 +1,93 @@
+{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+<div>
+{%- if pick_up_availabilities.size > 0 -%}
+  <div class="store-availability-information">
+    {%- assign closest_location = pick_up_availabilities.first -%}
+      <div class="store-availability-information-container">
+        {%- if closest_location.available -%}
+          <p class="store-availability-information__title">
+            {% render 'icon-check' with add_classes: 'store-availability-information__title__stock-icon' %}
+            {{ 'store_availability.general.pick_up_available_at_html' | t: location_name: closest_location.location.name }}
+          </p>
+          <p class="store-availability-information__stock store-availability-small-text">
+            {{ closest_location.pick_up_time }}
+          </p>
+          <button class="store-availability-information__button button button--style1" aria-haspopup="dialog">
+            {%- if pick_up_availabilities.size == 1 -%}
+              {{ 'store_availability.general.view_store_info' | t }}
+            {%- else -%}
+              {{ 'store_availability.general.check_other_stores' | t }}
+            {%- endif -%}
+          </button>
+        {%- else -%}
+          <p class="store-availability-information__title">
+            {% render 'icon-forbidden' with add_classes: 'store-availability-information__title__outstock-icon' %}
+            {{ 'store_availability.general.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}
+          </p>
+          {%- if pick_up_availabilities.size > 1 -%}
+            <button class="store-availability-information__button button button--style1" aria-haspopup="dialog">
+              {{ 'store_availability.general.check_other_stores' | t }}
+            </button>
+          {%- endif -%}
+      {%- endif -%}
+      </div>
+  </div>
+  <div class="modal fade storePickupPopup" tabindex="-1" role="dialog" id="storePickupPopup">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% render 'icon-close' with add_class: 'flex flex-align-hoz' %}</button>
+        </div>
+        <div class="modal-body">
+          <div class="store-availabilities-modal__header">
+            <h2 class="store-availabilities-modal__product-title">{%- if product -%}{{ product.title }}{%- endif -%}</h2>
+            <p
+              class="store-availabilities-modal__variant-title store-availability-small-text"
+            >
+              {{ product_variant.title }}
+            </p>
+            <hr>
+          </div>
+          <ul class="store-availabilities-list margin0 no-gutter" role="list">
+            {%- for availability in pick_up_availabilities -%}
+              <li class="store-availability-list__item">
+                <h3 class="store-availability-list__location">
+                  {{availability.location.name}}
+                </h3>
+                <div class="store-availability-list__stock store-availability-small-text">
+                  {%- if availability.available -%}
+                    {% render 'icon-check' with add_classes: 'store-availability-information__title__stock-icon' %} {{ 'store_availability.general.pick_up_available' | t }}, {{ availability.pick_up_time | downcase }}
+                  {%- else -%}
+                    {% render 'icon-forbidden' with add_classes: 'store-availability-information__title__outstock-icon' %} {{ 'store_availability.general.pick_up_currently_unavailable' | t }}
+                  {%- endif -%}
+                </div>
+                {%- assign address = availability.location.address -%}
+                <address class="store-availability-list__address">
+                  {{ address | format_address }}
+                </address>
+                {%- if address.phone.size > 0 -%}
+                  <p class="store-availability-list__phone store-availability-small-text">
+                    {{ address.phone }}<br>
+                  </p>
+                {%- endif -%}
+                {%- unless availability.location.latitude and availability.location.longitude -%}
+                  <p class="store-availability-list__confirm-address store-availability-small-text">
+                    {% render 'icon-unverified-address' %} {{ 'store_availability.general.confirm_address' | t }}
+                  </p>
+                {%- endunless -%}
+                {%- unless forloop.last -%}<hr>{%- endunless -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+</div>
+{% schema %}
+{
+  "name": {},
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+<ul class="footer__contact no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">
+{%- if block.settings.address != blank -%}
+  <li class="footer__contact__item">
+    {%- render 'icon-marker' -%}
+    <span>{{ block.settings.address }}</span>
+  </li>
+{%- endif -%}
+{%- if block.settings.phone != blank -%}
+  <li class="footer__contact__item">
+    {%- render 'icon-phone' -%}
+    <span>{{ block.settings.phone }}</span>
+  </li>
+{%- endif -%}
+{%- if block.settings.email != blank -%}
+  <li class="footer__contact__item">
+    {%- render 'icon-email' -%}
+    <span>{{ block.settings.email }}</span>
+  </li>
+{%- endif -%}
+{%- if block.settings.opening_hour != blank -%}
+  <li class="footer__contact__item">
+    {%- render 'icon-clock' -%}
+    <span>{{ block.settings.opening_hour }}</span>
+  </li>
+{%- endif -%}
+</ul>

@@ -1,0 +1,55 @@
+{%- if section.blocks.size > 0 or product.metafields.btt.customtabs != blank -%}
+<div class="pg__tabs-wrap big-gutter-top">
+  <div class="pg__tabs">
+    {%- assign product_tab_id = 'product-template-tabs-' | append: section.id -%}
+    <ul id="{{ product_tab_id }}" class="nav nav-tabs nav-tabs--single flex use-touch-mobile hidden-xs hidden-sm tab-accordion-list no-gutter" style="margin-bottom:20px!important;">
+      {% for block in section.blocks %}
+      <li class="nav-tab-item nav-tab-item--single{% if forloop.first %} active{% endif %} db por">
+        <a class="nav__link-single data switch db por" data-toggle="tab" href="#{{ product_tab_id }}_{{ forloop.index }}" title="{{ block.settings.title | escape }}">
+          <span>{{ block.settings.title }}</span>
+        </a>
+      </li>
+      {% endfor %}
+      {%- if product.metafields.btt.customtabs -%}
+        {%- assign customTabArray = product.metafields.btt.customtabs | replace: ' ','' | split: ',' -%}
+        {%- for tab in customTabArray -%}
+          {%- assign tabTitleKey = tab | split: '-' | first -%}
+          <li class="nav-tab-item nav-tab-item--single db por{% if section.blocks.size == 0 and forloop.first %} active{% endif %}">
+            <a class="nav__link-single data switch db por" data-toggle="tab" href="#{{ product_tab_id }}_ct_{{ forloop.index }}" title="{{ block.settings.title | escape }}">
+              <span>{{ product.metafields.btt[tabTitleKey] }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}   
+    </ul>
+    <div class="nav-tab-content tab-content tab-accordion">
+      {% for block in section.blocks %}
+      <a href="#{{ product_tab_id }}_{{ forloop.index }}" class="hidden-md hidden-lg w100 dib tab-accordion__trigger{% if forloop.first %} open{% endif %}">{{ block.settings.title }}</a>
+      <div class="tab-pane tab-pane--accordion tab-pane--accor-state{% if forloop.first %} active{% endif %}" id="{{ product_tab_id }}_{{ forloop.index }}" {{ block.shopify_attributes }}>
+        {%- case block.type -%}
+          {%- when 'tab_item_desc' -%}
+            <div class="product-single__description rte">
+              {{ product.description }}
+            </div>
+          {%- when 'tab_item_review' -%}
+            {%- include 'product-review-form' -%}
+          {%- when 'tab_item_custom' -%}
+            <div class="rte">{{ block.settings.custom_html | raw }}</div>
+        {%- endcase -%}
+      </div>
+      {%- endfor -%}
+      {%- if customTabArray -%}
+      {%- for tab in customTabArray -%}
+        {%- assign tabArrayKey = tab | split: '-' -%}
+        {%- assign tabTitleKey = tabArrayKey | first -%}
+        {%- assign tabContentKey = tabArrayKey | last -%}
+        <a href="#{{ product_tab_id }}_ct_{{ forloop.index }}" class="hidden-md hidden-lg w100 dib tab-accordion__trigger{% if section.blocks.size == 0 and forloop.first %} open{% endif %}">{{ product.metafields.btt[tabTitleKey] }}</a>
+        <div class="tab-pane tab-pane--accordion tab-pane--accor-state{% if section.blocks.size == 0 and forloop.first %} active{% endif %}" id="{{ product_tab_id }}_ct_{{ forloop.index }}">
+          <div class="rte">{{ product.metafields.btt[tabContentKey] }}</div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+    </div>
+  </div> 
+</div>
+{%- endif -%}

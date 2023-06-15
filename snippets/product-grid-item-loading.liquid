@@ -1,0 +1,13 @@
+{%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+  {%- assign featured_image = product.featured_image -%}
+{%- else -%}
+  {%- assign featured_image = product.first_available_variant.featured_image -%}
+{%- endif -%}
+<div class="item{% unless no_grid_item_class %} grid__item{% endunless %}{% if additional_classes %} {{ additional_classes }}{% endif %}">
+  <div class="item__image img-container loading" style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;">
+  </div>
+  <div class="pg__bottom">
+    <span class="item__name gutter-ele-bottom loading w100"></span>
+    <span class="loading w100 distance-top-ele gutter-ele-top"></span>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+{%- if enable_sidebar -%}
+{%- if layout_name != 'no_sidebar' -%}
+  <div class="col-md-3 col-lg-2 col-xs-12{% if layout_name == 'no_sidebar' %} hide{% endif %} collection__sidebar{% if enable_rtl %}{% if layout_name == 'left_sidebar' %} f-right{% elsif layout_name == 'right_sidebar' %} f-left{% endif %}{% endif %}">
+    {%- endif -%}
+    <div class="bt-sidebar bt-sidebar--full-mobile bt-sidebar--collection hide">
+      <div id="sidebar-filter" class="bt-sidebar__inner bt-sidebar__inner--{% unless enable_rtl %}left{% else %}right{% endunless %}{% if layout_name != 'no_sidebar' %} bt-sidebar__inner--collection-sidebar{% endif %}">
+        <div class="bt-sidebar__header bt-sidebar__header--collection-filter flex{% if enable_rtl %} bt-sidebar__header--right{% endif %}{% if layout_name != 'no_sidebar' %} hidden-md hidden-lg{% endif %}">
+          {%- render 'sidebar-close-btn' -%}
+          <h4 class="bt-sidebar__title">{{ 'collections.general.filter' | t }}</h4>
+        </div>
+        <div class="bt-sidebar__content bt-sidebar__content--collection-sidebar">
+          {%- if sidebar_content -%}
+            {{ sidebar_content | raw }}
+          {%- else -%}  
+            {%- include 'collection-filter' with layout_name: layout_name -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+    {%- if layout_name != 'no_sidebar' -%}
+  </div>
+  {%- endif -%}
+{%- endif -%}

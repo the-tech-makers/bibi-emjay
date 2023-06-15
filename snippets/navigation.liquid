@@ -1,0 +1,150 @@
+{%- if section.blocks.size > 0 or section.settings.use_link_list -%}
+{%- assign general_color_index = 'color_header' | append: settings.header_style | remove: 'style' -%}
+{%- assign general_color = settings[general_color_index] -%}
+{%- assign close_parent_item = true -%}
+{%- assign useDropdownAjax = true -%}
+{%- unless section.settings.use_link_list and section.settings.menu_link_list != blank -%}
+	{%- assign first_block = section.blocks[0] -%}
+	{%- if first_block != blank and first_block.shopify_attributes != blank -%}
+		{%- assign useDropdownAjax = false -%}
+	{%- endif -%}
+{%- endunless -%}
+{%- assign show_dropdown = false -%}
+{%- if template.name == 'search' and template.suffix == 'navigation' -%}
+	{%- assign show_dropdown = true -%}
+{%- endif -%}
+<nav class="main-nav db h100{% unless useDropdownAjax %} loaded-dropdown{% endunless %}"{% if section.settings.bkg_color != blank %} style="background-color: {{ section.settings.bkg_color }};"{% endif %} id="nav_{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="navigation">
+	{%- unless section.settings.use_link_list and section.settings.menu_link_list != blank -%}
+		<ul class="no-gutter flex flex-wrap main-nav__list h100 flex-align-ver">
+			{%- for item in section.blocks -%}
+				{%- if item.type contains 'parent' -%}{% comment %}this is parent item{% endcomment %}
+					{%- unless close_parent_item == true -%}
+						{%- render 'nav-item-close' -%}
+						{%- assign close_parent_item = true -%}
+					{%- endunless -%}
+					{%- assign close_parent_item = false -%}
+					{%- assign color_text = item.settings.color -%}
+					{%- if item.settings.color_extend or color_text == blank -%}
+						{%- assign index_color = settings.header_style | replace: 'style','' -%}
+						{%- assign index_color = 'color_header' | append: index_color -%}
+						{%- assign color_text = settings[index_color] -%}
+					{%- endif -%}
+					{%- assign color_label = item.settings.color_label -%}
+					{%- assign bkg_label = item.settings.bkg_label -%}
+					{%- assign dropdown_bkg_color = false -%}
+					{%- if item.settings.bkg_color_dropdown_extend == false and item.settings.bkg_color_dropdown != blank -%}
+						{%- assign dropdown_bkg_color = item.settings.bkg_color_dropdown -%}
+					{%- endif -%}
+					{%- assign dropdown_style = '' -%}
+					{%- if dropdown_bkg_color -%}
+						{%- assign dropdown_style = dropdown_style | append: 'background:' | append: dropdown_bkg_color | append: ';' -%}
+					{%- endif -%}
+					<li class="nav__item flex{% if item.settings.parent_custom_class %} {{ item.settings.parent_custom_class | escape }}{% endif %} h100" {{ item.shopify_attributes }}>
+						<a title="{{ item.settings.name | escape }}" href="{% render 'route-link', link: item.settings.link %}"{% unless item.settings.color_extend %} style="color: {{ color_text }};"{% endunless %} class="nav__item__link fw-bold text-uppercase">
+							{%- if item.settings.icon != blank -%}
+							<i class="{{ item.settings.icon | escape }} nav__icon dib"></i>
+							{%- endif -%}
+							{{ item.settings.name | escape }}
+							{%- if item.settings.label != blank -%}
+								<span class="nav__item__label" style="color: {{ color_label }};background: {{ bkg_label }};">{{ item.settings.label }}</span>
+							{%- endif -%}
+						</a>
+						<div class="nav__item__dropdown{% if item.settings.drop_width > 0 %} col-xs-{{ item.settings.drop_width | divided_by: 100 }}{% endif %} hide"{% if dropdown_style != '' %} style="{{ dropdown_style }}"{% endif %} id="dropdown-{{ item.id }}">
+							<div class="row">
+				{%- else -%}{% comment %}this is sub item{% endcomment %}
+					{%- if close_parent_item == false -%}{% comment %}only show sub item when it is wrapped by a parent item{% endcomment %}
+						{%- if show_dropdown or item.shopify_attributes != blank -%}
+							{%- if item.type == 'menu_subitem_clearfix' -%}
+								<div class="clearfix" {{ item.shopify_attributes }}></div>
+								{%- if item.settings.height > 0 -%}
+								<div class="col-xs-12{% if item.settings.no_gutter_left %} no-gutter--left{% endif %}{% if item.settings.no_gutter_right %} no-gutter--right{% endif %}{% if item.settings.no_gutter_all %} no-gutter{% endif %}">
+									<div class="nav__item__spr" style="height: {{ item.settings.height }}px;{% if item.settings.enable_bkg and item.settings.bkg_color != blank %}background-color: {{ item.settings.bkg_color }};{% endif %}"></div>
+								</div>
+								{%- endif -%}
+							{%- else -%}
+								{%- assign droptype = item.type | replace : 'menu_subitem_','' | replace: '_','-' -%}
+								{%- capture bkg_outside -%}{% render 'nav-dropdown-background' with bkg_layout: 'outside', item: item %}{%- endcapture -%}
+								{%- capture bkg_inside -%}{% render 'nav-dropdown-background' with bkg_layout: 'inside', item: item %}{%- endcapture -%}
+								{%- assign has_style = false -%}
+								{%- if item.settings.horizontal_inside_gutter > 0 or item.settings.vertical_inside_gutter > 0 or bkg_inside != '' -%}
+								{%- assign has_style = true -%}
+								{%- endif -%}
+								{%- assign color_dropdown_title = item.settings.color_dropdown_title -%}
+								{%- if item.settings.color_dropdown_title_extend -%}
+									{%- assign color_dropdown_title = color_text -%}
+								{%- endif -%}
+								<div class="nav__item__column nav__item__{{ droptype }} col-xs-{{ item.settings.col_width }} {{ item.settings.custom_class }}{% if item.settings.no_gutter_left %} no-gutter--left{% endif %}{% if item.settings.no_gutter_right %} no-gutter--right{% endif %}{% if item.settings.no_gutter_all %} no-gutter{% endif %}{% if item.settings.bkg_enable and item.settings.bkg_layout == 'outside' and item.settings.bkg_image != blank %} lazyload{% endif %}"{% if bkg_outside != '' %} style="{{ bkg_outside }}"{% endif %}{% if item.settings.bkg_enable and item.settings.bkg_layout == 'outside' and item.settings.bkg_image != blank %} data-bgset="{% render 'bgset' with image: item.settings.bkg_image %}"{% endif %} {{ item.shopify_attributes }}>
+									<div class="nav__item__dropdown-column{% if item.settings.bkg_enable and item.settings.bkg_layout == 'inside' and item.settings.bkg_image != blank %} lazyload{% endif %}"{% if has_style %} style="{% if item.settings.horizontal_inside_gutter > 0 %}padding-left: {{ item.settings.horizontal_inside_gutter }}px;padding-right: {{ item.settings.horizontal_inside_gutter }}px;{% endif %}{% if item.settings.vertical_inside_gutter > 0 %}padding-top: {{ item.settings.vertical_inside_gutter }}px;padding-bottom: {{ item.settings.vertical_inside_gutter }}px;{% endif %}{% if bkg_inside != '' %}{{ bkg_inside }}{% endif %}"{%- endif -%}{% if item.settings.bkg_enable and item.settings.bkg_layout == 'inside' and item.settings.bkg_image != blank %} data-bgset="{% render 'bgset' with image: item.settings.bkg_image %}"{% endif %}>
+										{%- render 'nav-dropdown-title' with color: color_dropdown_title, pos_title: 'top', item: item -%}
+										<div class="nav__item__dropdown-column-content{% if droptype == 'product' %} grid grid--full{% endif %}">
+											{%- case droptype -%}
+											  {%- when 'link-list' -%}
+											    {%- render 'nav-dropdown-link-list' with item as item, color_label as color_label, bkg_label: bkg_label, color_text: color_text, dropdown_bkg_color: dropdown_bkg_color, general_color: general_color -%}
+											  {%- when 'product' -%}
+											    {%- render 'nav-dropdown-product' with item: item -%}
+											  {%- when 'image' -%}
+											    {%- render 'nav-dropdown-image' with item: item -%}
+											  {%- when 'html' -%}
+											    {%- render 'nav-dropdown-html' with item: item, color_text: color_text -%}
+											  {%- else -%}
+											{%- endcase -%}
+										</div>
+										{%- render 'nav-dropdown-title' with color: color_dropdown_title, pos_title: 'bottom', item: item -%}
+									</div>
+								</div>
+							{%- endif -%}
+						{%- endif -%}	
+					{%- endif -%}
+				{%- endif -%}
+			{%- endfor -%}
+			{%- unless close_parent_item == true -%}
+				{%- assign close_parent_item = true -%}
+				{%- render 'nav-item-close' -%}
+			{%- endunless -%}
+		</ul>
+	{%- else -%}
+		{%- assign menu_link_list = section.settings.menu_link_list -%}
+		{%- if menu_link_list and linklists[menu_link_list].links.size > 0 -%}
+		<ul class="no-gutter flex flex-wrap main-nav__list h100 flex-align-ver">
+			{%- for l in linklists[menu_link_list].links -%}
+			<li class="nav__item flex h100">
+				<a title="{%- render 'nav-shortcode-ign', str: l.title -%}" href="{% render 'route-link', link: l.url %}"{% if section.settings.top_item_link_list_color != blank %} style="color: {{ section.settings.top_item_link_list_color }};"{% endif %} class="nav__item__link fw-bold text-uppercase">
+					{%- render 'nav-shortcode', color: section.settings.top_item_link_list_color, str: l.title -%}
+				</a>
+				<div class="nav__item__dropdown nav__item__dropdown-column-content hide">
+					{%- if l.links != blank -%}
+						<div class="row" style="margin:0;">
+							<div class="nav__item__column nav__item__link-list">
+								<ul class="link-list link-list--nav text-left">
+									{%- for childlink in l.links -%}
+										<li class="link-list__item level0 {% if childlink.links != blank %} link-list__item--parent{% endif %}">
+											{%- if childlink.links != blank -%}
+												<div class="dib por">
+											{%- endif -%}
+											<a class="link-list__item__link{% if childlink.active %} active{% endif %}" href="{{ childlink.url }}" title="{%- render 'nav-shortcode-ign' with str: childlink.title -%}">{%- render 'nav-shortcode', str: childlink.title -%}</a>
+											{%- if childlink.links != blank -%}
+												<ul class="link-list__item__dropdown link-list__item__dropdown--nav">
+													{%- for grandchildlink in childlink.links -%}
+														<li class="link-list__item level2">
+															<a class="link-list__item__link{% if grandchildlink.active %} active{% endif %}" href="{{ grandchildlink.url }}" title="{%- render 'nav-shortcode-ign', str: grandchildlink.title -%}">{{ grandchildlink.title | escape }}</a>
+														</li>	
+													{%- endfor -%}
+												</ul>
+											{%- endif -%}
+											{%- if childlink.links != blank -%}
+												</div>
+											{%- endif -%}
+										</li>
+									{%- endfor -%}
+								</ul>
+							</div>
+						</div>
+					{%- endif -%}
+				</div>
+			</li>
+			{%- endfor -%}
+		</ul>
+		{%- endif -%}
+	{%- endunless -%}	
+</nav>
+{%- endif -%}

@@ -1,0 +1,9 @@
+{%- capture item_content -%}
+	<span class="w100 cf__link__box{% if section.settings.checkboxes_format == 'circle' %} cf__link__box-circle{% endif %}"></span>
+	<span class="cf__link--title">{{ t }}</span>
+{%- endcapture -%}
+{%- if active_tag != '' -%}
+<li class="w100 cf__item__link">{{ item_content | link_to_remove_tag: active_tag | replace: 'title=', 'class="cf__link cf__link--option flex current" title=' }}</li>
+{%- else -%}
+<li class="w100 cf__item__link">{{ item_content | link_to_add_tag: t | replace: 'title=', 'class="cf__link cf__link--option flex" title=' }}</li>
+{%- endif -%}

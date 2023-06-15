@@ -1,0 +1,75 @@
+<div class="modal fade cartModal" tabindex="-1" role="dialog" id="cartModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% include 'icon-close' with add_class: 'flex flex-align-hoz' %}</button>
+      </div>
+      <div class="modal-body">
+        <div class="cart-message alert alert-success hide">
+        </div>
+        <div class="row">
+          <div class="cart-response">
+            <div class="col-xs-3 col-sm-2 col-md-3 cart-response__col-image">
+              <a class="cart-response__image" href="#" title="product image">
+                <img alt="product image" class="img-responsive" {% include 'img-one-pixel' %}/>
+              </a>
+            </div>
+            <div class="col-xs-9 col-sm-4 col-md-3 cart-response__col-info gutter-ele-bottom-mb">
+              <div class="cart-response__name">
+                <a href="#" title="product name" class="h5"></a>
+                <div class="cart-response__meta-text cart-response__meta-variant-title-wrap">
+                </div>
+                <div class="cart-response__meta-text cart-response__meta-propeties">
+                </div>
+              </div>
+              <div class="cart-response__sub-total flex flex-align-ver gutter-ele-top">
+                <div class="cart-response__qty"></div>
+                x
+                <div class="cart-response__price cart-response__price--align product-price">
+                  <span class="product-price__price"></span>
+                </div>
+              </div>
+              <div class="cart-response__line-price flex gutter-ele-top">
+                <span class="cart-response__line-price__label">{{ 'cart.general.total_item' | t }}</span>
+                <span class="product-price__price"></span>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 cart-response__col-actions gutter-ele-top-mb">
+              <div class="cart-response__actions gutter-ele-top-mb gutter-ele-small-bottom">
+                <a class="button button--style2 distance-bottom-ele w100" href="{{ routes.cart_url }}" title="{{ 'cart.general.view_and_edit_cart' | t | escape }}">
+                  {{ 'cart.general.view_and_edit_cart' | t }}
+                </a>
+                <button aria-label="button" class="button button--style1 button--checkout checkout-btn checkout-btn--redirect w100"{% unless settings.cart_terms_enable %} onclick="window.location.href='{{ routes.root_url | append: '/' | replace: '//', '/' }}checkout';"{% endunless %}><span class="ver-sub">{{ 'cart.general.checkout' | t }}</span></button>
+              </div>
+              {%- if settings.cart_terms_enable -%}
+                {%- include 'cart-terms' with for_id: 'popup-cart' -%}
+              {%- endif -%}
+              {%- if settings.cart_free_shipping_enable -%}
+              <div class="gutter-top"></div>
+              {%- render 'free-shipping-progress' with free_shipping_goal: 0, custom_progess_bar_classes: 'progress-bar--popup-cart' -%}
+              <p class="gutter-ele-top cart-response__free-shipping">
+                {%- render 'icon-truck' with addClasses: 'free-shipping-icon' -%}<span class="cart-response__free-shipping__text free-shipping-text"></span>
+              </p>
+              {%- endif -%}
+            </div>
+            {%- if settings.upsell_popup_enable -%}
+            <div class="col-xs-12 upsell-popup-wrap upsell-ele gutter-ele-top" data-limit="{{ settings.upsell_popup_limit | escape }}">
+              <hr>
+              <h4 class="upsell-title gutter-ele-top gutter-ele-bottom db">{{ 'products.product.upsell_block_title' | t }}</h4>
+              <div class="upsell-list grid grid--large"></div>
+              <div class="loading-not-full">
+                <i class="loading-ajax"></i>
+              </div>  
+            </div>
+            {%- endif -%}
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>.cart-response__meta-variant-title{font-style:italic;}
+.cart-response__sub-total{font-size: 16px;}
+.cart-response__price--align{padding: 0 5px;}
+.cart-response__line-price__label{font-size: 15px;padding-right: 5px;}
+.cart-response__qty{padding-right: 5px;}</style>

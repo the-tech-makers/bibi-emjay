@@ -1,0 +1,7 @@
+{% if paginate.pages > 1 %}
+  {%- if section.settings.enable_infinity_loading -%}
+    {%- render 'pagination-infinity' with paginate as paginate, infinity_action: section.settings.infinity_action, dataIdSave: 'search-page' -%}
+  {%- else -%}
+    {%- render 'pagination' with paginate as paginate -%}
+  {%- endif -%}
+{% endif %}

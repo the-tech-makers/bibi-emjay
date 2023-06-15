@@ -1,0 +1,141 @@
+{%- layout none -%}
+{%- liquid
+	capture terms
+    render 'read-url-param' with param_name: 'q'
+  endcapture
+  assign terms = terms | strip | url_decode | split: ','
+	assign count_product = 0
+	assign image_size = '250x'
+-%}
+
+{%- capture imgCol -%}
+	<th>{{ 'products.product.image' | t }}</th>
+{%- endcapture -%}
+{%- capture nameCol -%}
+	<th>{{ 'products.product.name' | t }}</th>
+{%- endcapture -%}
+{%- capture priceCol -%}
+	<th>{{ 'products.product.price' | t }}</th>
+{%- endcapture -%}
+{%- capture stockCol -%}
+	<th>{{ 'products.product.availability' | t }}</th>
+{%- endcapture -%}
+{%- capture optionsCol -%}
+	<th>{{ 'products.product.options' | t }}</th>
+{%- endcapture -%}
+{%- if settings.enable_review -%}
+{%- capture ratingCol -%}
+	<th>{{ 'products.product.rating' | t }}</th>
+{%- endcapture -%}
+{%- endif -%}
+{%- capture descCol -%}
+	<th>{{ 'products.product.description' | t }}</th>
+{%- endcapture -%}
+
+{%- for handle in terms -%}
+	{%- assign product = all_products[handle] -%}
+	{%- if handle != '' and product != blank -%}
+		{%- assign count_product = count_product | plus: 1 -%}
+		{%- assign current_variant = product.first_available_variant -%}
+		
+		{%- capture imgItemCol -%}
+		{%- assign img_url = product.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+		<td data-index="{{ forloop.index }}" class="text-center actions-row">
+			<a href="{{ product.url }}" title="{{ product.title | escape }}" class="dib img-container center-block" style="max-width:170px;">
+	      <img class="pg__main-image img-responsive lazyload w100 fade-in" 
+	      		data-aspectratio="{{ product.featured_image.aspect_ratio }}"
+            data-src="{{ img_url }}"
+            src="{{ product.featured_image | img_url: '70x' }}"
+            data-sizes="auto" 
+            alt="{{ product.featured_image.alt | escape }}" 
+            data-image-size="1x1"/>
+	    </a>
+	    <a class="button button-cp--remove" data-handle="{{ product.handle }}" href="#">{{ 'products.product.remove' | t }}</a>
+	  </td>
+    {%- endcapture -%}
+    {%- assign imgCol = imgCol | append: imgItemCol -%}
+
+    {%- capture nameItemCol -%}
+    <td>
+    	<a class="item__name" href="{{ product.url }}" title="{{ product.title | escape }}" style="padding-top:0;">
+        <span class="ver-sub">
+        	{%- if settings.compare_truncate > 0 -%}
+	          {{ product.title | truncatewords: settings.compare_truncate }}
+	        {%- else -%}
+	          {{ product.title }}
+	        {%- endif -%}
+	      </span>
+      </a>
+    </td>
+    {%- endcapture -%}
+    {%- assign nameCol = nameCol | append: nameItemCol -%}
+
+    {%- capture priceItemCol -%}
+    <td data-index="{{ forloop.index }}">
+    	{% render 'product-variant-price' with variant: current_variant %}
+    	<span class="hide compare-popup__badge dib" data-price="{{ current_variant.price }}">{%- include 'icon-check' -%}</span>
+    </td>
+    {%- endcapture -%}
+    {%- assign priceCol = priceCol | append: priceItemCol -%}
+
+		{%- capture stockItemCol -%}
+		<td data-index="{{ forloop.index }}" class="availability-row">
+			<span class="pg__stock-text pg__stock-text--compare{% unless current_variant.available %} soldout{% endunless %}">{%- if current_variant.available -%}{{ 'products.product.instock' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}</span>
+		</td>
+    {%- endcapture -%}
+    {%- assign stockCol = stockCol | append: stockItemCol -%}
+
+    {%- capture optionsItemCol -%}
+    <td data-index="{{ forloop.index }}">
+    	<div class="pg pg__compare-options" data-product-handle="{{ product.handle }}" data-ignore-sold-out-text="1">
+				{%- include 'product-group-variants', enable_product_options: true, is_single_view: true -%}
+				<select name="id" class="variant-id hide variant-id--compare" data-index="{{ forloop.index }}">
+		      {%- for variant in product.variants -%}
+				    <option {% if variant == current_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+				      {{ variant.title }}
+				    </option>
+				  {%- endfor -%}
+		    </select>
+		    {%- include 'product-cart-btn' with product: product, show_cart_btn : true, enable_product_options: true, show_options: true, no_effect: true -%}
+		  </div>
+		</td>
+    {%- endcapture -%}
+    {%- assign optionsCol = optionsCol | append: optionsItemCol -%}
+
+    {%- if settings.enable_review -%}
+    {%- capture ratingItemCol -%}
+    <td>
+			{%- include 'product-review-force' -%}
+		</td>
+    {%- endcapture -%}
+    {%- assign ratingCol = ratingCol | append: ratingItemCol -%}    
+    {%- endif -%}
+
+    {%- capture descItemCol -%}
+    <td>
+    	<div style="max-height: 300px;overflow-y: auto;" class="rte custom-scrollbar">
+				{{ product.description }}
+			</div>
+		</td>
+    {%- endcapture -%}
+    {%- assign descCol = descCol | append: descItemCol -%} 
+	{%- endif -%}
+{%- endfor -%}
+
+{%- if count_product > 0 -%}
+<div class="table-responsive">
+	<table class="table" style="table-layout: fixed;">
+		<tr>{{ imgCol }}</tr>
+		<tr>{{ nameCol }}</tr>
+		<tr>{{ priceCol }}</tr>
+		<tr>{{ stockCol }}</tr>
+		<tr>{{ optionsCol }}</tr>
+		{%- if settings.enable_review -%}
+		<tr>{{ ratingCol }}</tr>
+		{%- endif -%}
+		<tr>{{ descCol }}</tr>
+	</table>
+</div>
+{%- else -%}
+<div class="alert alert-danger">{{ 'products.product.comparison_empty' | t }}</div>
+{%- endif -%}

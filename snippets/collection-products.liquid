@@ -1,0 +1,102 @@
+<div class="collection__products">
+  {%- if current_tags -%}
+    <div class="cf__current-inline w100 gutter-bottom{% if layout_name != 'no_sidebar' %} hidden-md hidden-lg{% endif %}">
+      <ul class="list--inline cf__current-list">
+        {%- for cur_tag in current_tags -%}
+          <li class="cf__item-current">
+            {%- capture link_content -%}
+              <span class="cf__link--current__content">
+                {%- unless cur_tag contains '$' -%}
+                  {{ cur_tag }}
+                {%- else -%}
+                    {%- assign cur_t_str = cur_tag | strip -%}
+                    {%- if cur_t_str contains '-' -%}
+                      {%- assign cur_range = cur_t_str | split: '-' -%}
+                      {%- assign cur_price_min = cur_range[0] | strip | replace: '$','' | times: 100 -%}
+                      {%- assign cur_price_max = cur_range[1] | strip | replace: '$','' | times: 100 -%}
+                      <span class="cf__price cf__price-from dib">{%- render 'price' with cur_price_min -%}</span><span class="cf__price__sep">-</span><span class="cf__price cf__price-to dib">{%- render 'price' with cur_price_max -%}</span>
+                    {%- else -%}
+                      {%- assign cur_range = cur_t_str | split: '$' -%}
+                      {%- assign cur_price_label = cur_range[0] | strip -%}
+                      {%- assign cur_price_max = cur_range[1] | strip | times: 100 -%}
+                      <span class="cf__price cf__price-from dib">{{ cur_price_label }}</span><span class="cf__price__sep">-</span><span class="cf__price cf__price-from dib">{%- render 'price' with cur_price_max -%}</span>
+                    {%- endif -%}
+                {%- endunless -%}
+              </span>
+            {%- endcapture -%}
+            {{ link_content | link_to_remove_tag: cur_tag | replace: 'title=', 'class="cf__link--current cf__link cf__link--box cf__link--current-tag" title=' }}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+{%- assign item_size = section.settings.item_size -%}
+{%- if collection.products.size > 0 -%}
+	{%- assign limit = section.settings.limit | divided_by : 1 -%}
+	{%- assign main_thumbnail = section.settings.main_thumbnail -%}
+
+	{%- if item_size == 'small' -%}
+	  {%- assign column_count = 5 -%}
+	{%- elsif item_size == 'medium' -%}
+	  {%- assign column_count = 4 -%}
+	{%- elsif item_size == 'large' -%}
+	  {%- assign column_count = 3 -%}
+	{%- else -%}
+	  {%- assign column_count = 2 -%}  
+	{%- endif -%}
+	{%- assign lazy_index = 999 -%}
+  {%- if section.settings.use_lazyload and template.suffix == blank -%}
+    {%- assign lazy_index = column_count | times: 3 -%}
+  {%- endif -%}
+
+  {%- paginate collection.products by limit -%}
+  	<div class="grid grid--{{ item_size }} grid--products products grid--not-empty">
+  	{%- for product in collection.products -%}
+      {%- if forloop.first -%}
+        {%- if section.settings.main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+          {%- assign featured_image = product.featured_image -%}
+        {%- else -%}
+          {%- assign featured_image = product.first_available_variant.featured_image -%}
+        {%- endif -%}
+        {%- render 'lcp-mark' with image: featured_image, sizes: '50vw' -%}
+      {%- endif -%}
+    	{%- render 'product-grid-item' with 
+      product: product,
+      use_slider: false, 
+      limit_first: 0, 
+      item_size: item_size, 
+      index: forloop.index, 
+      lazy_index: lazy_index,
+      column_count: column_count, 
+      main_thumbnail: section.settings.main_thumbnail, 
+      image_size: '50x', 
+      truncate_count: section.settings.product_name_size, enable_product_options: section.settings.enable_product_options, 
+      show_review_stars: section.settings.show_review_stars,
+      enable_small_images: false,
+      show_wishlist_btn: section.settings.show_wishlist_btn,
+      small_image: '1x',
+      show_label : section.settings.show_label,
+      show_cart_btn: section.settings.show_cart_btn,
+      show_compare_btn: section.settings.show_compare_btn,
+      show_qs_btn: section.settings.show_qs_btn,
+      show_desc: true,
+      show_countdown_timer: section.settings.show_countdown_timer,
+      show_vendor: section.settings.show_vendor,
+      withinCollection: collection,
+      additional_classes: 'transition' -%}
+  	{%- endfor -%}
+  	</div>
+    {%- if section.settings.enable_infinity_loading -%}
+      {%- render 'pagination-infinity' with infinity_action: section.settings.infinity_action, paginate: paginate -%}
+    {%- else -%}
+      {%- render 'pagination' with paginate: paginate -%}
+    {%- endif -%}  
+  {%- endpaginate -%}
+{%- else -%}
+<div class="grid grid--{{ item_size }} grid--products grid--full products">
+  <div class="grid__item" style="width:100%;">
+    <div class="alert alert-danger w100">{{ 'collections.general.no_matches' | t }}</div>
+  </div>
+</div>  
+{%- endif -%}
+</div>  

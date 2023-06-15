@@ -1,0 +1,14 @@
+{%- unless close_parent_layer == true -%}
+	{%- include 'layer-banner-close' -%}
+	{%- assign close_parent_layer = true -%}
+{%- endunless -%}
+{%- assign close_parent_layer = false -%}
+{%- if block.settings.box_wrap -%}
+	{%- assign padding_delta = '0px' -%}
+{%- else -%}	
+	{%- assign padding_delta = '15px' -%}
+{%- endif -%}
+<div class="{% include 'layer-banner-layer-size' %} banner-item{% if block.settings.hide_on_mobile %} hidden-xs{% endif %}{% if block.settings.hide_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %}{% if section.settings.enable_slider %}{{ slider_class }}{% if current_index_mobile > lazyload_index_mobile %} ov-slider-mb{% endif %}{% if current_index_tb > lazyload_index %} ov-slider-tb{% endif %}{% endif %} por" {{ block.shopify_attributes }}>
+	<div class="w100 h100 flex"{% if block.settings.bkg_banner != blank and block.settings.bkg_banner_enable %} style="background-color:{{ block.settings.bkg_banner }};"{% endif %}>
+		{%- include 'layer-banner-image' -%}
+		{%- if padding_delta == '0px' -%}<div class="container no-gutter por" style="max-width:100%;">{%- endif -%}

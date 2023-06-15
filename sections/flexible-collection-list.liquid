@@ -1,0 +1,4163 @@
+{%- liquid
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign enable_rtl = false
+  else
+    assign enable_rtl = true
+  endunless
+%}
+{%- render 'section-background-start' -%}
+<div class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if section.settings.small_top_gutter %} gutter-top{% endif %}{% if section.settings.small_bottom_gutter %} gutter-bottom{% endif %} fcl lh1" data-section-id="{{ section.id }}" data-section-type="flexible-collection-list" id="flexible-collection-list-{{ section.id }}">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- render 'section-heading' -%}
+      <div class="section__content">
+        <div class="row">
+          {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'flex-collection-list-1' -%}
+                {%- render 'flex-collection-list-1' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-2' -%}
+                {%- render 'flex-collection-list-2' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-3' -%}
+                {%- render 'flex-collection-list-3' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-4' -%}
+                {%- render 'flex-collection-list-4' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-5' -%}
+                {%- render 'flex-collection-list-5' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-6' -%}
+                {%- render 'flex-collection-list-6' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}
+              {%- when 'flex-collection-list-7' -%}
+                {%- render 'flex-collection-list-7' with block as block, index: forloop.index, enable_rtl: enable_rtl -%}  
+            {%- endcase -%}
+          {%- endfor -%}
+          {%- endif -%}
+          
+          {% if section.blocks.size == 0 %}
+            <div class="col-xs-12">
+              {%- render 'no-blocks' -%}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "Collection list",
+    "class": "index-section collection-list",
+    "max_blocks": 12,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/flexible-collection-list-section)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_top_gutter",
+        "label": "Enable small top gutter",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_bottom_gutter",
+        "label": "Enable small bottom gutter",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Flexible collection list"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "flex-collection-list-1",
+        "name": "Layout 1",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 1 settings"
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "radio",
+            "id": "pos_1",
+            "label": "Position",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 4"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_4",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_4",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_4",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_4",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_4",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_4",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_4",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_4",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_4",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_4",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_4",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_4",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_4",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-2",
+        "name": "Layout 2",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 2 settings"
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-3",
+        "name": "Layout 3",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 3 settings"
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-4",
+        "name": "Layout 4",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 4 settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "revert_in_rtl",
+            "label": "Revert the left and right position in the RTL layout",
+            "default": true
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 4"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_4",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_4",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_4",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_4",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_4",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_4",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_4",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_4",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_4",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_4",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_4",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_4",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_4",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-5",
+        "name": "Layout 5",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 5 settings"
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "radio",
+            "id": "pos_1",
+            "label": "Position",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-6",
+        "name": "Layout 6",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 6 settings"
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_1",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_1",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_1",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_1",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_1",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_1",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_1",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_2",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_2",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_2",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_2",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_2",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_2",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_2",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_3",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_3",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_3",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_3",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_3",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_3",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_3",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 4"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_4",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_4",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "color",
+            "id": "bkg_title_4",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_bkg_4",
+            "label": "Use background color",
+            "default": true
+          },
+          {
+            "type": "color",
+            "id": "color_title_4",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_4",
+            "label": "Title font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_4",
+            "label": "Title font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_4",
+            "label": "Show button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn_4",
+            "label": "Button font size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn_4",
+            "label": "Button font size on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_4",
+            "label": "The distance to text",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "distance_btn_mobile_4",
+            "label": "The distance to text on mobile",
+            "min": 0,
+            "max": 80,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_4",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      },
+      {
+        "type": "flex-collection-list-7",
+        "name": "Layout 7",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Layout 7 settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "revert_in_rtl",
+            "label": "Revert the left and right position in the RTL layout",
+            "default": true
+          },  
+          {
+            "type": "header",
+            "content": "Text settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Title =========="
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "font_size_heading",
+            "label": "Font size",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "font_size_heading_tablet",
+            "label": "Font size on tablet",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 22
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_heading",
+            "label": "Font size on mobile",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "paragraph",
+            "content": "===== Short Description ====="
+          },
+          {
+            "type": "textarea",
+            "id": "short_desc",
+            "label": "Short description"
+          },
+          {
+            "type": "color",
+            "id": "short_desc_color",
+            "label": "Color",
+            "default": "#3c3c3c"
+          },
+          {
+            "type": "range",
+            "id": "font_size_desc",
+            "label": "Font size",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_desc",
+            "label": "Font size on mobile",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "paragraph",
+            "content": "========= Button ========="
+          },
+          {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button text"
+          },
+          {
+            "type": "url",
+            "id": "btn_url",
+            "label": "URL"
+          },
+          {
+            "type": "select",
+            "id": "btn_style",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1"
+          },
+          {
+            "type": "range",
+            "id": "font_size_btn",
+            "label": "Font size",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_btn",
+            "label": "Font size on mobile",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "header",
+            "content": "Collection 1"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_1",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "text",
+            "id": "title_1",
+            "label": "Title",
+            "info": "Leave empty to display the name of the picked collection."
+          },
+          {
+            "type": "text",
+            "id": "subtitle_1",
+            "label": "Subtitle"
+          },
+          {
+            "type": "text",
+            "id": "label_1",
+            "label": "Label"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Color =========="
+          },
+          {
+            "type": "color",
+            "id": "color_title_1",
+            "label": "Title",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_subtitle_1",
+            "label": "Subtitle",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_label_text_1",
+            "label": "Label",
+            "default": "#f0f0f0"
+          },
+          {
+            "type": "color",
+            "id": "color_label_bkg_1",
+            "label": "Label background",
+            "default": "#222"
+          },
+          {
+            "type": "paragraph",
+            "content": "======== Font size ========"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_1",
+            "label": "Title",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_1",
+            "label": "Title on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "font_size_subtitle_1",
+            "label": "Subtitle",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_subtitle_1",
+            "label": "Subtitle on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_1",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 2"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_2",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "text",
+            "id": "title_2",
+            "label": "Title",
+            "info": "Leave empty to display the name of the picked collection."
+          },
+          {
+            "type": "text",
+            "id": "subtitle_2",
+            "label": "Subtitle"
+          },
+          {
+            "type": "text",
+            "id": "label_2",
+            "label": "Label"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Color =========="
+          },
+          {
+            "type": "color",
+            "id": "color_title_2",
+            "label": "Title",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_subtitle_2",
+            "label": "Subtitle",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_label_text_2",
+            "label": "Label",
+            "default": "#f0f0f0"
+          },
+          {
+            "type": "color",
+            "id": "color_label_bkg_2",
+            "label": "Label background",
+            "default": "#222"
+          },
+          {
+            "type": "paragraph",
+            "content": "======== Font size ========"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_2",
+            "label": "Title",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_2",
+            "label": "Title on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "font_size_subtitle_2",
+            "label": "Subtitle",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_subtitle_2",
+            "label": "Subtitle on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_2",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 3"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_3",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "text",
+            "id": "title_3",
+            "label": "Title",
+            "info": "Leave empty to display the name of the picked collection."
+          },
+          {
+            "type": "text",
+            "id": "subtitle_3",
+            "label": "Subtitle"
+          },
+          {
+            "type": "text",
+            "id": "label_3",
+            "label": "Label"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Color =========="
+          },
+          {
+            "type": "color",
+            "id": "color_title_3",
+            "label": "Title",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_subtitle_3",
+            "label": "Subtitle",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_label_text_3",
+            "label": "Label",
+            "default": "#f0f0f0"
+          },
+          {
+            "type": "color",
+            "id": "color_label_bkg_3",
+            "label": "Label background",
+            "default": "#222"
+          },
+          {
+            "type": "paragraph",
+            "content": "======== Font size ========"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_3",
+            "label": "Title",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_3",
+            "label": "Title on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "font_size_subtitle_3",
+            "label": "Subtitle",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_subtitle_3",
+            "label": "Subtitle on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_3",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 4"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_4",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_4",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "text",
+            "id": "title_4",
+            "label": "Title",
+            "info": "Leave empty to display the name of the picked collection."
+          },
+          {
+            "type": "text",
+            "id": "subtitle_4",
+            "label": "Subtitle"
+          },
+          {
+            "type": "text",
+            "id": "label_4",
+            "label": "Label"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Color =========="
+          },
+          {
+            "type": "color",
+            "id": "color_title_4",
+            "label": "Title",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_subtitle_4",
+            "label": "Subtitle",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_label_text_4",
+            "label": "Label",
+            "default": "#f0f0f0"
+          },
+          {
+            "type": "color",
+            "id": "color_label_bkg_4",
+            "label": "Label",
+            "default": "#212121"
+          },
+          {
+            "type": "paragraph",
+            "content": "======== Font size ========"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_4",
+            "label": "Title",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_4",
+            "label": "Title on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "font_size_subtitle_4",
+            "label": "Subtitle",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_subtitle_4",
+            "label": "Subtitle on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_4",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "header",
+            "content": "Collection 5"
+          },
+          {
+            "label": "Collection",
+            "id": "collection_5",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_5",
+            "label": "Pick an image",
+            "info": "if you leave empty, the featured image of the collection will be displayed if the collection has an image."
+          },
+          {
+            "type": "text",
+            "id": "title_5",
+            "label": "Title",
+            "info": "Leave empty to display the name of the picked collection."
+          },
+          {
+            "type": "text",
+            "id": "subtitle_5",
+            "label": "Subtitle"
+          },
+          {
+            "type": "text",
+            "id": "label_5",
+            "label": "Label"
+          },
+          {
+            "type": "paragraph",
+            "content": "========== Color =========="
+          },
+          {
+            "type": "color",
+            "id": "color_title_5",
+            "label": "Title",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_subtitle_5",
+            "label": "Subtitle",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_label_text_5",
+            "label": "Label",
+            "default": "#f0f0f0"
+          },
+          {
+            "type": "color",
+            "id": "color_label_bkg_5",
+            "label": "Label background",
+            "default": "#222"
+          },
+          {
+            "type": "paragraph",
+            "content": "======== Font size ========"
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_5",
+            "label": "Title",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_title_5",
+            "label": "Title on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "font_size_subtitle_5",
+            "label": "Subtitle",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "mobile_font_size_subtitle_5",
+            "label": "Subtitle on mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos_5",
+            "label": "Text and button position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Flexible Collection list",
+        "category": "Collection",
+        "blocks": [
+        ]
+      }
+    ]
+  }
+{% endschema %}

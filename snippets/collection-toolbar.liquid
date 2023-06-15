@@ -1,0 +1,56 @@
+{%- if section.settings.toolbar_enable -%}
+<div class="collection__toolbar ct row big-gutter-bottom gutter-ele-top-tbs gutter-ele-bottom-mb">
+	<div class="flex flex-wrap w100 flex-align-ver">
+		<div class="ct__total{% unless template.name == 'search' %} col-xs-12 col-sm-3{% else %} col-xs-7 col-sm-4{% endunless %} gutter-ele-bottom-tbs text-uppercase fw-bold">{{ 'collections.general.items_with_count' | t: count: products_count }}</div>
+		{%- assign item_size = section.settings.item_size -%}
+		<div class="{% unless template.name == 'search' %}col-xs-12 col-sm-9{% else %}col-xs-5 col-sm-8{% endunless %} flex flex-wrap flex-align-ver cf__filter__toolbar flex-align-space-between gutter-ele-top-mb gutter-ele-bottom-mb">
+			{%- if has_filter -%}
+			<div class="ct__filter--trigger{% if layout_name != 'no_sidebar' %} visible-sm{% else %} hidden-xs{% endif %}">
+				<a class="bt-sidebar-btn ct__filter--btn flex flex-align-ver flex-align-hoz" href="#" data-target="#sidebar-filter" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}" data-placement-mobile="up" title="{{ 'collections.general.filter' | t | escape }}">{%- render 'icon-filter' with add_class: 'lh1 ver-sub' -%}<span class="lh1 ver-sub">{{ 'collections.general.filter' | t }}</span></a>
+			</div>
+			{%- endif -%}
+			{%- if template.name == 'search' -%}
+			<div class="cf__filter-btn-wrap-search">
+				<a class="bt-sidebar-btn ct__filter--btn--search w100 flex flex-align-ver flex-align-hoz w100 button button--style1 hidden-md hidden-lg" href="#" data-target="#sidebar-filter" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}" data-placement-mobile="up" title="{{ 'collections.general.filter' | t | escape }}">{%- render 'icon-filter' with add_class: 'lh1 ver-sub ct__filter--btn--search__icon' -%}<span class="lh1 ver-sub">{{ 'collections.general.filter' | t }}</span></a>
+			</div>
+			{%- endif -%}
+			<div class="ct__mode">
+				<ul class="list--inline flex">
+					<li class="visible-xs ct__mode__grid-mobile{% if item_size == 'medium' or item_size == 'large' %} active{% endif %}"><a href="#" data-mode="grid--{% if item_size == 'list' %}medium{% else %}{{ item_size }}{% endif %}" class="ct__mode__link" title="{{ 'collections.view_mode.grid' | t | escape }}">{%- render 'collection-mode-very-large-icon' -%}</a></li>
+					<li class="hidden-xs ct__mode__grid-desktop{% if item_size == 'medium' %} active{% endif %}"><a href="#" data-mode="grid--medium" class="ct__mode__link" title="{{ 'collections.view_mode.grid_medium' | t | escape }}">{%- render 'collection-mode-medium-icon' -%}</a></li>
+					<li class="hidden-xs ct__mode__grid-desktop{% if item_size == 'large' %} active{% endif %}"><a href="#" data-mode="grid--large" class="ct__mode__link" title="{{ 'collections.view_mode.grid_large' | t | escape }}">{%- render 'collection-mode-large-icon' -%}</a></li>
+					<li class="hidden-xs ct__mode__grid-desktop{% if item_size == 'very-large' %} active{% endif %}"><a href="#" data-mode="grid--very-large" class="ct__mode__link" title="{{ 'collections.view_mode.grid_very_large' | t | escape }}">{%- render 'collection-mode-very-large-icon' -%}</a></li>
+					<li class="ct__mode__grid-list{% if item_size == 'list' %} active{% endif %}"><a href="#" data-mode="grid--list" class="ct__mode__link" title="{{ 'collections.view_mode.grid_list' | t | escape }}">{%- render 'collection-mode-list-icon' -%}</a></li>
+				</ul>
+			</div>
+			{%- if section.settings.sort_enable -%}
+			<div class="ct__sort bt-dropdown{% unless has_filter %} ct__sort--no-sidebar{% endunless %}">
+				{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+				{%- assign filter_url = canonical_url | remove_first: shop.url -%}
+				{%- if section.settings.enable_auto_filter -%}
+					{%- assign filter_url = filter_url | split: '?' | first -%}
+				{%- endif -%}
+				{%- capture sort_by_list -%}
+					<ul>
+						{%- for option in collection.sort_options -%}
+						<li class="gutter-ele-bottom{% if sort_by == option.value %} active alternative{% endif %}">
+							{%- if sort_by == option.value -%}
+								{{ option.name }}
+								{%- assign current_sort_title = option.name -%}
+							{%- else -%}
+								<a href="{{ filter_url }}{% unless filter_url contains '?' %}?{% else %}&{% endunless %}sort_by={{ option.value }}" class="cf__link{% if isAuto %} cf__link--auto{% endif %}">{{ option.name }}</a>
+							{%- endif -%}
+						</li>
+						{%- endfor -%}
+					</ul>
+				{%- endcapture -%}
+				<a href="javascript:void(0);" class="bt-dropdown__trigger bt-dropdown__trigger--sort bt-dropdown__trigger--arrow db" title="{{ 'collections.sorting.title' | t | escape }}">{{ current_sort_title }}</a>
+				<div class="bt-dropdown__content bt-dropdown__content--sort">
+					{{ sort_by_list }}
+				</div>
+			</div>
+			{%- endif -%}
+		</div>
+	</div>
+</div>
+{%- endif -%}

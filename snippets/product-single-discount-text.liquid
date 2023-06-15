@@ -1,0 +1,10 @@
+{%- if section.settings.show_discount_text and section.settings.discount_text != blank -%}
+<div class="pg__discount-text dib text-right lb-item--sale{% if variant.compare_at_price and variant.compare_at_price > product.price %}{% else %} hide{% endif %}" style="color:{{ settings.color_discount_text_single }};margin-{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}:10px;">
+		{% if section.settings.discount_text contains '[percent]' %}
+			{%- capture percent -%}<strong class="lb__percent lb__percent--abs">{%- if variant.compare_at_price and variant.compare_at_price > product.price -%}{{ variant.compare_at_price | minus:variant.price | times:100 | divided_by:variant.compare_at_price | floor }}%{%- else -%}0{%- endif -%}</strong>{%- endcapture -%}
+			{{ section.settings.discount_text | replace: '[percent]', percent }}
+		{% else %}
+			{{ section.settings.discount_text }}
+		{% endif %}
+</div>
+{%- endif -%}

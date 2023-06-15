@@ -1,0 +1,41 @@
+<div class="colltion__products">
+{% paginate search.results by section.settings.limit %}
+<div class="products grid--products">
+{% for item in search.results %}
+	<div class="gutter-top grid__item">
+		{%- if item.object_type == 'product' -%}
+			<div class="row">
+				<div class="col-xs-12 col-sm-3">
+					{%- assign product = item -%}
+					{%- assign featured_image = product.featured_image -%}
+	        {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+	        <a href="{{ item.url }}" class="item__image pg__sync-url img-container loading" title="{{ product.title | escape }}" style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;">
+	          <img data-aspectratio="{{ featured_image.aspect_ratio }}"
+	              data-src="{{ img_url }}"
+	              data-sizes="auto" class="w100 pg__main-image img-responsive center-block img-abs center-abs lazyload zoom-fade"{% render 'img-one-pixel' %} alt="{{ featured_image.alt | escape }}" data-image-size="1x1"/>   
+	        </a>
+				</div>
+				<div class="col-xs-12 col-sm-9 gutter-ele-top-mb">
+					<a class="item__name seach-full__product-name pg__sync-url pg__name gutter-ele-bottom gutter-top" href="{{ item.url }}" title="{{ product.title | escape }}">
+	          {{ product.title | highlight: search.terms }}
+	        </a>
+	        {%- render 'product-price-varies' with product as product -%}  
+	        {%- render 'product-review' with product as product -%}
+				</div>
+			</div>
+		{%- else -%}
+			<h4>
+				<a href="{{ item.url }}" title="{{ item.title | escape }}">
+            {{ item.title | highlight: search.terms }}
+          </a>
+      </h4>
+      <p>
+        {{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}
+      </p>
+		{%- endif -%}
+	</div>
+{% endfor %}
+</div>
+{%- render 'search-result-pagination' with paginate: paginate -%}
+{% endpaginate %}
+</div>

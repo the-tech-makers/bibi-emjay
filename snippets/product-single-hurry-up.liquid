@@ -1,0 +1,27 @@
+{%- if section.settings.ls_enable -%}
+<div class="{% unless current_variant.available %}hide {% endunless %}product-single__progress gutter-ele-top gutter-ele-bottom">
+	<p style="color: {{ section.settings.ls_color_text }};font-size: {{ section.settings.ls_fs_text }}px;" class="dib">
+		<span class="pg__stock-text2{% if current_variant.inventory_quantity > 0 %} hide{% endif %}">{{ section.settings.ls_text2 }}</span>
+		{%- assign final_quantity = '<strong class="alternative pg__stock-number--update">' | append: current_variant.inventory_quantity | append: '</strong>' -%}
+		{%- if section.settings.ls_quantity == 'random' -%}
+			{%- assign quantity_min = section.settings.ls_quantity_min -%}
+			{%- assign quantity_max = section.settings.ls_quantity_max -%}
+			{%- if quantity_max <= quantity_min -%}
+				{%- assign quantity_max = 100 -%}
+			{%- endif -%}
+			{%- assign quantity_diff = quantity_max | minus: quantity_min -%}
+			{%- assign final_quantity = "now" | date: "%N" | modulo: quantity_diff | plus: quantity_min -%}
+			{%- assign final_quantity = '<strong class="alternative">' | append: final_quantity | append: '</strong>' -%}
+		{%- endif -%}
+		<span class="pg__stock-text1{% if current_variant.inventory_quantity <= 0 %} hide{% endif %}">{{ section.settings.ls_text1 | replace: '[quantity]', final_quantity | raw }}</span>
+	</p>
+	{%- if section.settings.ls_percent > 0 -%}
+	<div class="progress" style="background-color: {{ section.settings.ls_progress_bar_bkg_remain }};height: {{ section.settings.ls_progress_bar_height }}px;">
+	  <div class="progress-bar progress-bar-striped active pull-left text-center lh1 h100" role="progressbar" aria-valuenow="{{ section.settings.ls_percent }}"
+	  aria-valuemin="0" aria-valuemax="100" style="width:{{ section.settings.ls_percent }}%;color: {{ section.settings.ls_progress_bar_color_text }};background-color: {{ section.settings.ls_progress_bar_bkg_complete }};font-size: {{ section.settings.ls_progress_bar_fs_text }}px;">
+	    <span class="db" style="line-height: {{ section.settings.ls_progress_bar_height }}px;">{{ section.settings.ls_progress_bar_text | replace: '[number]', section.settings.ls_percent }}</span>
+	  </div>
+	</div>
+	{%- endif -%}
+</div>
+{%- endif -%}

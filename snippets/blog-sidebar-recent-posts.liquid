@@ -1,0 +1,33 @@
+{%- unless blog.articles_count == 0 -%}
+<div class="sidebar__item grid__item">
+	<div class="sidebar__title gutter-bottom">{{ "blogs.sidebar.recent_posts" | t }}</div>
+	<div class="sidebar__content dib w100">
+		<ul class="no-gutter">
+			{% for article in blog.articles limit: limit %}
+				<li class="flex{% unless forloop.first %} gutter-ele-top{% endunless %}">
+					{%- if article.image -%}
+					<div class="col-xs-3 no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">
+						{%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <a href="{{ article.url }}" style="padding-top:{{ 1 | divided_by: article.image.aspect_ratio | times: 100}}%;" class="img-container loading" title="{{ article.title | escape }}">
+              <img class="article__image lazyload zoom-fade-slider img-abs w100"
+                   alt="{{ article.image.alt | escape }}"
+                   data-sizes="auto"
+                   data-src="{{ img_url }}"{% render 'img-one-pixel' %}>
+            </a>
+					</div>
+					{%- endif -%}
+					<div class="col-xs-{% if article.image %}9{% else %}12{% endif %} no-gutter">
+		        <a href="{{ article.url }}" title="{{ article.title | escape }}" class="w100">{{ article.title }}</a>
+		        <span class="article__subinfo--sidebar w100 db gutter-ele-small-top">
+              {{ article.published_at | time_tag: format: 'month_day_year' }}
+            </span>
+            <span class="article__subinfo--sidebar w100 db gutter-ele-small-top">
+            	{{ 'blogs.article.by_author' | t: author: article.author }}
+            </span>
+		      </div>
+	      </li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{%- endunless -%}

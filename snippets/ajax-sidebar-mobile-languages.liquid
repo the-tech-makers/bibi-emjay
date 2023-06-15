@@ -1,0 +1,13 @@
+<ul class="mobile-nav link-list" style="padding-{% unless enable_rtl %}left{% else %}right{% endunless %}:15px;">
+	{%- assign remove_iso_code = request.locale.iso_code | downcase -%}
+	{%- assign remove_lang_code = '/' | append: remove_iso_code -%}
+	{%- for locale in shop.published_locales -%}
+		<li class="link-list__item flex flex-align-ver mobile-nav__item">
+			{%- if locale.iso_code != request.locale.iso_code -%}
+				<a data-code="{{ locale.iso_code | escape }}" href="{% unless locale.primary %}{{ locale.root_url }}{% if request.path != '/' %}{{ request.path | remove_first: remove_lang_code }}{% endif %}{% else %}{% if request.path != remove_lang_code %}{{ request.path | remove_first: remove_lang_code }}{% else %}{{ request.path | remove_first: remove_iso_code }}{% endif %}{% endunless %}" class="lp__code action-link-mobile">{{ locale.endonym_name }}</a>
+			{%- else -%}
+				<span class="alternative action-link-mobile">{{ locale.endonym_name }}</span>	
+			{%- endif -%}
+		</li>
+	{%- endfor -%}
+</ul>

@@ -1,0 +1,40 @@
+{%- if custom_image != blank -%}
+  {%- assign collection_image = custom_image -%}
+{%- elsif collection.image -%}
+  {%- assign collection_image = collection.image -%}
+{%- elsif collection.products.first and collection.products.first.images != empty -%}
+  {%- assign collection_image = collection.products.first.featured_image -%}
+{%- else -%}
+  {%- assign collection_image = blank -%}
+{%- endif -%}
+
+<div class="collection-grid-item por w100">
+  <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link border-inner{% unless collection_image == blank %} loading{% endunless %}">
+    {% unless collection_image == blank %}
+      <div class="collection-grid-item__overlay box ratio-container lazyload js lazy-bkg lazy-bkg--cover por db w100 h100 transition ignore-effect op1"
+         data-bgset="{% render 'bgset' with collection_image as image %}"
+         data-sizes="auto"
+         data-parent-fit="cover" data-expand="-100">
+      </div>
+   {% else %}
+     {% if collection == empty %}
+        <div class="collection-grid-item__overlay por db w100 h100 transition">
+          {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+          {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% else %}
+         <div class="collection-grid-item__overlay por db w100 h100 transition" style="background-image: url('{{ collection_image | img_url: '1024x1024' }}')"></div>
+      {% endif %}
+   {% endunless %}
+    <div class="collection-grid-item__title-wrapper w100{% if custom_wrapper_class %} {{ custom_wrapper_class }}{% endif %}"{% if collection_bkg_title != blank and enable_bkg %} style="background:{{ collection_bkg_title | color_modify: 'alpha', 0.7 }};"{% endif %}>
+      <h3 class="collection-grid-item__title fw-bold text-uppercase margin0 fs-mb{% if custom_title_class %} {{ custom_title_class }}{% endif %}"{% if collection_color_title != blank or collection_fs_title != blank %} style="{% if collection_color_title != blank %}color:{{ collection_color_title }};{% endif %}{% if collection_fs_title != blank %}font-size: {{ collection_fs_title }}px;{% endif %}"{% endif %}>
+        {% if collection.title == blank %}
+          {{ 'homepage.onboarding.collection_title' | t }}
+        {% else %}
+          {{ collection.title }}
+        {% endif %}
+      </h3>
+      <span class="collection-grid-item__products_count text-uppercase lh1 gutter-top gutter-ele-top-tbs db{% if custom_count_class %} {{ custom_count_class }}{% endif %}"{% if collection_color_count != blank or collection_fs_title != blank %} style="{% if collection_color_count != blank %}color:{{ collection_color_count }};{% endif %}{% if collection_fs_title != blank %}font-size: {{ collection_fs_title | minus: 5 | at_least: 12 }}px;{% endif %}"{% endif %}>{{ 'collections.general.items_with_count' | t: count: collection.all_products_count }}</span>
+    </div>
+  </a>
+</div>

@@ -1,0 +1,8 @@
+{%- if section.settings.title != blank -%}
+<div class="section__heading{% if section_heading_custom_class %} {{ section_heading_custom_class }}{% endif %}">
+  <h2 class="section__title__text margin0 text-center section__title__text--{{ section.id }}">{{ section.settings.title | replace: '<hl>','<span class="section__title__highline">' | replace: '</hl>','</span>' | raw }}</h2>
+  {%- if section.settings.sub_title != blank -%}
+    <h3 class="section__sub-title w100 text-center gutter-top section__sub-title--{{ section.id }}">{{ section.settings.sub_title | raw }}</h3>
+  {%- endif -%}
+</div>
+{%- endif -%}

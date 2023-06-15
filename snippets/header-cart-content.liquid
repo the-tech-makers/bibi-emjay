@@ -1,0 +1,125 @@
+<div class="header__cart hc">
+	{%- if cart.item_count > 0 -%}
+    {%- if settings.cart_free_shipping_enable -%}
+    <div class="hc__free-shipping gutter-bottom">
+      {%- assign free_shipping_goal = settings.cart_free_shipping_goal | times: 100 -%}
+      {%- render 'free-shipping-progress' with free_shipping_goal: free_shipping_goal -%}
+      <p class="hc__free-shipping__text margin0 gutter-ele-top">
+        {%- render 'icon-truck', addClasses: 'free-shipping-icon' -%}
+        <span class="free-shipping-text">
+          {%- if cart.total_price >= free_shipping_goal -%}
+            {{ settings.cart_free_shipping_goal_text }}
+          {%- else -%}
+            {%- assign free_remain_amount = free_shipping_goal | minus: cart.total_price -%}
+            {%- capture free_remain_amount_html -%}<strong>{%- render 'price' with free_remain_amount -%}</strong>{%- endcapture -%}
+            {{ settings.cart_free_shipping_progress_text | replace: '[remain_amount]',free_remain_amount_html }}  
+          {%- endif -%}
+        </span>
+      </p>
+    </div>  
+    {%- endif -%}
+    {%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}
+      {%- assign tooltip_remove_pos = 'left' -%}
+    {%- else -%}
+      {%- assign tooltip_remove_pos = 'right' -%}
+    {%- endunless -%}  
+    <form action="{{ routes.cart_url }}" method="post" novalidate class="cart">
+  		<div class="hc__items custom-scrollbar">
+  			<table class="w100">
+  				<tbody>
+  					{%- for item in cart.items -%}
+  					<tr class="hc__item">
+  						<td class="hc__item__image text-left">
+                {%- assign img_url = item.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+  							<a href="{{ item.url }}" title="{{ item.title | escape }}" class="img-container" style="padding-top:{{ 1 | divided_by: item.image.aspect_ratio | times: 100}}%;">
+  								<img class="cart__image img-abs lazyload w100" alt="{{ item.image.alt | escape }}"{% render 'img-one-pixel' %} data-aspectratio="{{ item.image.aspect_ratio }}"
+                  data-src="{{ img_url }}"
+                  data-sizes="auto">
+  							</a>
+  						</td>
+  						<td class="hc__item__name flex text-left">
+  							<a href="{{ item.url }}" title="{{ item.product.title | escape }}" class="no-gutter-top w100">
+                  {%- if settings.header_cart_truncate > 0 -%}
+                    {{ item.product.title | truncatewords: settings.header_cart_truncate }}
+                  {%- else -%}
+                    {{ item.product.title }}
+                  {%- endif -%}
+                </a>
+                
+                {% unless item.variant.title contains 'Default' %}
+                  {% for option in item.product.options %}
+                    <div class="cart__meta-text w100">
+                      {{ option }}: {{ item.variant.options[forloop.index0] }}
+                    </div>
+                  {% endfor %}
+                {% endunless %}
+                {%- assign property_size = item.properties | size -%}
+                {% if property_size > 0 %}
+                  {% for p in item.properties %}
+                    <div class="cart__meta-text w100">
+                    {% unless p.last == blank %}
+                      {{ p.first }}:
+
+                      {% comment %}
+                        Check if there was an uploaded file associated
+                      {% endcomment %}
+                      {% if p.last contains '/uploads/' %}
+                        <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                      {% else %}
+                        {{ p.last }}
+                      {% endif %}
+                    {% endunless %}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+                <span class="hc__item__price w100 flex flex-align-ver gutter-ele-small-top fw-bold">
+                  <div class="qty-box qty-box--very-small flex flex-align-ver flex-align-space-between">
+                    <button class="qty-box__ctrl qty-box__ctrl--very-small qty-box__ctrl--descrease cart__qty-control flex flex-align-ver flex-align-hoz">
+                      {%- render 'icon-minus' -%}
+                    </button>
+                    <input class="qty-box__input qty-box__input--very-small cart__qty-input cart__qty-input-{{ forloop.index }} w100 text-center h100 qty-box__input--sync" type="number" name="updates[]" value="{{ item.quantity }}" min="1" pattern="[0-9]*" data-line="{{ forloop.index }}">
+                    <button class="qty-box__ctrl qty-box__ctrl--very-small qty-box__ctrl--increase cart__qty-control flex flex-align-ver flex-align-hoz">
+                      {%- render 'icon-plus' -%}
+                    </button>  
+                  </div>
+                  <div class="w100 gutter-ele-small-top">
+                    <span class="hc__item__x">x</span>
+                    {%- if item.original_price != item.final_price -%}
+                      {%- render 'price' with item.final_price -%}
+                    {%- else -%}
+                      {%- render 'price' with item.original_price -%}
+                    {%- endif -%}
+                  </div>
+                </span>
+  						</td>
+              <td class="hc__item__remove-wrap text-right">
+                <a class="button update-cart-btn button--icon hc__item__remove lh1 distance-top-ele" href="#" title="{{ 'cart.general.remove'|t|escape }}" data-index="{{ forloop.index }}" data-value="0" data-toggle="tooltip" data-placement="{{ tooltip_remove_pos }}">{%- render 'icon-remove' -%}</a>
+              </td>
+  					</tr>
+  					{%- endfor -%}
+  				</tbody>
+  			</table>
+  		</div>
+      <div class="hc__total flex">
+        <label>{{ 'cart.general.subtotal' | t }}</label>
+        <div class="hc__total__price">
+          {%- render 'price' with cart.total_price -%}
+        </div>
+      </div>
+      <div class="hc__actions flex w100">
+        <button onclick="window.location.href = '{{ routes.cart_url }}';" class="button button--style2 button--rad w100 distance-bottom-ele" title="{{ 'cart.general.view_and_edit_cart' | t | escape }}" aria-label="button"><span class="ver-sub">{{ 'cart.general.view_and_edit_cart' | t }}</span></button>
+        <button type="submit" name="checkout" title="{{ 'cart.general.checkout' | t | escape }}" class="button button--style1 button--rad checkout-btn trigger-checkout w100" aria-label="button"><span class="ver-sub">{{ 'cart.general.checkout' | t }}</span></button>
+        {% if additional_checkout_buttons %}
+          <div class="additional-checkout-buttons distance-top-ele">{{ content_for_additional_checkout_buttons }}</div>
+        {% endif %}
+      </div>
+      {%- if settings.cart_terms_enable -%}
+        {%- assign for_id = 'cart-temrs-header-cart-' -%}
+        {%- render 'cart-terms' with for_id: for_id -%}
+      {%- endif -%}
+    </form>
+	{%- else -%}
+    <p class="hc__empty-icon gutter-bottom text-center">{%- render 'icon-cart-empty' -%}</p>
+		<p class="hc__empty-text text-center">{{ 'cart.general.empty' | t }}</p>
+	{%- endif -%}
+</div>

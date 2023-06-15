@@ -1,0 +1,15 @@
+{%- capture short_desc -%}
+	{%- if product.metafields.btt.desc -%}
+		{{ product.metafields.btt.desc | raw }}
+  {%- elsif section.settings.general_info contains '[description]' -%}
+    {{ section.settings.general_info | replace: '[description]', description | raw }}
+    {%- assign is_shown_desc = true -%}
+  {%- else -%}
+    {{ section.settings.general_info | raw }}
+  {%- endif -%}
+{%- endcapture -%}
+{%- if short_desc != blank -%}
+<div class="pg__short-desc gutter-ele-top gutter-ele-bottom clearfix rte">
+	{{ short_desc }}
+</div>
+{%- endif -%}

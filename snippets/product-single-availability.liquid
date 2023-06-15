@@ -1,0 +1,4 @@
+<div class="gutter-ele-bottom">
+  <strong>{{ 'products.product.availability' | t }}:</strong>&nbsp;<span class="pg__availability-text {% if current_variant.available %}pg__availability-instock{% else %}pg__availability-outstock{% endif %}">{%- if current_variant.available -%}{{ 'products.product.instock' | t }}{%- else -%}{{ 'products.product.outstock' | t }}{%- endif -%}</span>
+  <hr style="margin: 15px 0;">
+</div>

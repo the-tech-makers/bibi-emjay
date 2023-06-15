@@ -1,0 +1,18 @@
+{%- if settings.cookie_consent_enable and settings.cookie_consent_content != blank -%}
+<div class="cookie_consent" style="font-size: 13px;display:none;padding:10px;z-index:9999;position: fixed;bottom:0;left:0;right:0;{% if settings.cookie_consent_bkg != blank %}background-color:{{ settings.cookie_consent_bkg | color_modify: 'alpha', 0.99 }};{% endif %}{% if settings.cookie_consent_color != blank %}color:{{ settings.cookie_consent_color }};{% endif %}">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12 col-md-10{% if enable_rtl %} f-right{% endif %}">
+				<p class="cookie_consent__content text-left">
+					{{ settings.cookie_consent_content | raw }}	
+				</p>
+			</div>
+			<div class="col-xs-12 col-md-2 text-right{% if enable_rtl %} f-left{% endif %}">
+				<a class="cookie_consent__close button button--style2 pull-{{ right_holder }} button--rad" href="#" title="{{ 'general.cookie_consent.accept' | t | escape }}" style="font-size: 13px;height: 40px;line-height: 40px;">
+					{{ 'general.cookie_consent.accept' | t }}
+				</a>			
+			</div>
+		</div>
+	</div>
+</div>
+{%- endif -%}

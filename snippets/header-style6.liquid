@@ -1,0 +1,66 @@
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}">
+	<div class="header__wrap flex flex-align-space-between flex-align-ver{% if settings.use_sticky %} use-sticky--desktop{% endif %}">
+		{% section 'navigation' %}
+		{% render 'header__logo' %}
+		<div class="flex flex-wrap header__right-col" style="justify-content: flex-end;">
+			<div class="header__icons header__links--flex flex por">
+				{%- if settings.enable_compare -%}
+					<a href="javascript:void(0);" class="header__link header__link--compare flex flex-align-ver por" title="{{ 'general.accessibility.your_compare' | t | escape }}">
+						{%- render 'icon-compare' -%}
+						<span class="compare-number abs-number"></span>
+					</a>
+				{%- endif -%}
+
+				{%- if settings.enable_wishlist -%}
+					<a href="javascript:void(0);" class="header__link header__link--wishlist por flex flex-align-ver" title="{{ 'general.accessibility.your_wishlist' | t | escape }}">
+						{%- render 'icon-wishlist' -%}
+						<span class="wishlist-number abs-number"></span>
+					</a>
+				{%- endif -%}
+
+				{%- render 'language-picker', data_group: 'header__links', show_language_icon: true, hide_language_code: true, wrap_class: 'flex flex-align-ver', addition_classes: 'header__link flex flex-align-ver' -%}
+				
+				{%- render 'currency-switcher', data_group: 'header__links', show_currency_icon: true, hide_currency_code: true, currency_work_with_gutter: true, addition_classes: 'header__link', flex_trigger: true, add_wrap_classes: 'flex flex-align-ver' -%}
+				
+				<a href="/search" class="bt-dropdown__trigger header__link flex flex-align-ver search-full-trigger" title="{{ 'general.search.placeholder' | t | escape }}">
+					{% render 'icon-search' %}
+				</a>
+
+				{%- if shop.customer_accounts_enabled -%}
+					<div class="bt-dropdown h100 flex flex-align-ver{% if customer %} por{% endif %}" data-group="header__links">
+						{%- if customer -%}
+							<a class="bt-dropdown__trigger header__link" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_url }}">
+								{%- render 'icon-account' -%}
+							</a>
+							<div class="bt-dropdown__content bt-dropdown__content--auto-center" style="white-space:nowrap;min-width:auto;">
+								<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+									{%- unless enable_rtl -%}
+										{% render 'icon-account' %}&nbsp;<span>{{ 'customer.account.title' | t }}</span>
+									{%- else -%}
+										<span>{{ 'customer.account.title' | t }}</span>&nbsp;{% render 'icon-account' %}
+									{%- endunless -%}
+								</a>
+								<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+									{%- unless enable_rtl -%}
+										{%- render 'icon-sign-out' -%}&nbsp;<span>{{ 'layout.customer.log_out' | t }}</span>
+									{%- else -%}
+										<span>{{ 'layout.customer.log_out' | t }}</span>&nbsp;{%- render 'icon-sign-out' -%}
+									{%- endunless -%}
+								</a>
+							</div>
+						{%- else -%}
+							<a class="bt-dropdown__trigger header__link flex flex-align-ver" title="{{ 'customer.login.title' | t | escape }}" href="{{ routes.account_login_url }}">
+								{%- render 'icon-account' -%}
+							</a>
+							<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+								{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+							</div>
+						{%- endif -%}
+					</div>
+				{%- endif -%}
+				
+				{%- render 'header-cart', data_group: 'header__links', cart_dropdown_direction: 'bt-dropdown__content--right bt-dropdown__content--right-fluid', addition_classes: 'header__link--bottom flex flex-align-ver fw-bold header__link', show_cart_text: true -%}
+			</div>
+		</div>
+	</div>
+</div>

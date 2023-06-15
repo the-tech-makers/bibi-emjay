@@ -1,0 +1,77 @@
+<div class="grid__item item{% if add_classes %} {{ add_classes }}{% endif %}">
+  {% if article.image %}
+    {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    <div class="item__top">
+      <div class="article__image-wrapper js">
+        <a href="{{ article.url }}" style="padding-top:{{ 1 | divided_by: article.image.aspect_ratio | times: 100}}%;" class="article__image-container img-container">
+          <img class="article__image lazyload img-abs w100"
+               alt="{{ article.image.alt | escape }}"
+               data-sizes="auto"
+               data-src="{{ img_url }}"{% render 'img-one-pixel' %}>
+        </a>
+      </div>
+
+      <noscript>
+        <a href="{{ article.url }}" class="article__grid-image-wrapper">
+          {{ article | img_url: '345x', scale: 2 | img_tag: article.title, 'article__grid-image img-responsive' }}
+        </a>
+      </noscript>
+    </div>
+  {% endif %}
+  <div class="item__bottom">
+    <div class="item__info w100 dib">
+      <div class="item__name article__title gutter-ele-bottom gutter-top">
+        <a href="{{ article.url }}" class="h4">
+          {%- unless highlight_text -%}
+            {{ article.title }}
+          {%- else -%}
+            {{ article.title | highlight: highlight_text }}
+          {%- endunless -%}
+        </a>
+      </div>
+
+      <div class="rte article__excerpt gutter-ele-top gutter-ele-bottom">
+        {%- unless highlight_text -%}
+          {% if article.excerpt.size > 0 %}
+            {{ article.excerpt }}
+          {% else %}
+            {{ article.content | strip_html | truncate: 150 }}
+          {% endif %}
+        {%- else -%}
+          {% if article.excerpt.size > 0 %}
+            {{ article.excerpt | highlight: highlight_text }}
+          {% else %}
+            {{ article.content | strip_html | truncate: 150 | highlight: highlight_text }}
+          {% endif %}  
+        {%- endunless -%}
+      </div>
+      <hr class="article__line margin0">
+      <div class="article__addinfo flex flex-align-space-between flex-align-ver gutter-ele-small-top">
+        <div class="article__date-author">
+          {%- if blog_show_date -%}
+            <span class="article__date db">
+              {{ article.published_at | time_tag: format: 'month_day_year' }}
+            </span>
+          {%- endif -%}
+
+          {%- if sblog_show_author -%}
+            <span class="article__author db gutter-ele-top">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+          {%- endif -%}
+        </div>
+        <div class="article__comment-count">
+          {% if article.comments_enabled? and article.comments_count == 0 %}
+            <a href="{{ article.url }}#comment_form" title="{{ 'blogs.comments.title' | t | escape }}" class="button no-gutter flex flex-align-ver">
+              {%- render 'icon-comment' -%}&nbsp;<span>0</span>
+            </a>
+          {% endif %}
+
+          {% if article.comments_enabled? and article.comments_count > 0 %}
+            <a href="{{ article.url }}#comments" title="{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count | escape }}" class="button no-gutter flex flex-align-ver">
+              {%- render 'icon-comment' -%}&nbsp;<span>{{ article.comments_count }}</span>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

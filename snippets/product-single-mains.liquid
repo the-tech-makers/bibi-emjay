@@ -1,0 +1,11 @@
+{%- assign image_size = '500x' -%}
+<div class="pg__mains w100 {% if use_slider %} pg__mains--slider re-calc-index{% if featured_media.media_type != 'image' %} no-light-box-icon{% endif %}{% endif %}">{%- comment -%}add class pg__thumbs--slider to display thumbs as slider{%- endcomment -%}
+	{%- include 'product-single-main' with media: featured_media, lazyload: false -%}
+	{%- for media in product.media -%}
+		{%- if media != featured_media -%}
+			{%- include 'product-single-main' with lazyload: true -%}
+		{%- endif -%}
+	{%- endfor -%}
+</div>
+{{ youtubeCapture }}
+{{ vimeoCapture }}

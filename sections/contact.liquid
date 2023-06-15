@@ -1,0 +1,404 @@
+<div class="contact">
+  {%- if template.name == 'index' or page.content != blank -%}
+  <div class="container{% if section.settings.full_width %}-fluid{% endif %}">
+    <div class="row">
+      <div class="section__inner col-xs-12">
+        {%- if template.name == 'index' -%}
+          {%- render 'section-heading' -%}
+        {%- endif -%}
+        {%- if template.name != 'index' -%}
+          <h1 class="page-title gutter-ele-bottom-tbs gutter-ele-top-tbs">{{ section.settings.title | default: page.title }}</h1>
+        {%- endif -%}
+        <div class="section__content flex w100">
+          <div class="col-xs-12">
+            {%- if page.content != blank -%}
+              <div class="rte">
+                {{ page.content }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- capture google_maps -%}
+    {%- if section.settings.show_map -%}
+    {%- assign display_map = false -%}
+    {%- assign onboarding = false -%}
+    {%- assign bg_image = section.settings.background_image -%}
+
+    {%- if section.settings.api_key == blank and bg_image == blank -%}
+      {%- assign onboarding = true -%}
+    {%- endif -%}
+    {%- if section.settings.api_key != blank and section.settings.map_address -%}
+      {%- assign display_map = true -%}
+    {%- endif -%}
+
+    <div id="MapSection--{{ section.id }}"
+      data-section-id="{{ section.id }}"
+      data-section-type="map" class="dib w100">
+      <div class="map-section no-gutter{% if display_map %} map-section--display-map{% endif %}{% if onboarding == true %} map-section--onboarding{% endif %}">
+        <div class="map-section__wrapper">
+          <div class="map-section__background-wrapper">
+            {% if bg_image != blank %}
+              <div class="map-section__image lazyload js"
+                   data-bgset="{% render 'bgset', image: bg_image %}"
+                   data-sizes="auto"
+                   data-parent-fit="cover"
+                   style="background-image: url({{ bg_image | img_url: '300x300' }});background-position: {{ section.settings.background_image_position }};padding-top: {{ 1 | divided_by: bg_image.aspect_ratio | times: 100 }}%;">
+              </div>
+              <noscript>
+                <div class="map-section__image" style="background-image: url({{ bg_image | img_url: 'x800', crop: 'top' }});background-position: {{ section.settings.background_image_position }};padding-top: {{ 1 | divided_by: bg_image.aspect_ratio | times: 100 }}%"></div>
+              </noscript>
+            {% endif %}
+            {% if display_map %}
+              <div class="map-section__container"
+                   id="Map-{{ section.id }}"
+                   data-map
+                   data-address-setting="{{ section.settings.map_address | escape }}"
+                   data-api-key="{{ section.settings.api_key }}">
+              </div>
+              <div class="map-section__overlay" data-map-overlay></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+     </div>
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- if section.settings.show_map_before_form -%}
+    {{ google_maps }}
+  {%- endif -%}
+  <div{% if section.settings.section_bkg %} style="background: {{ section.settings.section_bkg }};"{% endif %}>  
+    <div class="container{% if section.settings.full_width %}-fluid{% endif %}">
+      <div class="row">
+        <div class="center-block col-xs-12 col-md-8 big-gutter-top big-gutter-bottom{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endif %}">
+          {%- if section.settings.form_title != blank -%}
+            <div class="w100 h3" style="margin:0;">{{ section.settings.form_title }}</div>
+          {%- endif -%}
+          {% form 'contact' %}
+            <div class="contact__form-page">
+              {% if form.posted_successfully? %}
+              <div class="note form-success text-center alert alert-success col-xs-12 col-sm-5 center-block" id="ResetSuccess" style="float:none;">
+                {{ 'contact.form.post_success' | t }}
+              </div>
+              {% endif %}
+
+              {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' | replace: 'href="','class="alert-link" href="' }}
+
+              <div class="field field--float-label">
+                <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+                <input type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}" class="w100">
+                <span class="field__focus"></span>
+              </div>
+              <div class="field field--float-label">
+                <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+                <input type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="w100{% if form.errors contains 'email' %} input--error{% endif %}">
+                <span class="field__focus"></span>
+              </div>
+
+              <div class="field field--float-label">
+                <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+                <input type="tel" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}" class="w100">
+                <span class="field__focus"></span>
+              </div>
+
+              <div class="field gutter-ele-top">
+                <label for="ContactFormMessage" class="gutter-ele-small-bottom dib">{{ 'contact.form.message' | t }}</label>
+                <textarea rows="10" id="ContactFormMessage" name="contact[body]" class="w100">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+              </div>
+
+              <div class="gutter-ele-top">
+                <input type="submit" class="button button--style1 button--rad" value="{{ 'contact.form.submit' | t }}">
+              </div>
+            </div>
+          {% endform %}
+        </div>
+        {%- if section.settings.opening_enable or section.settings.show_info -%}
+        <div class="col-xs-12 col-md-4">
+          <div style="background-color:{{ settings.color_general | color_modify: 'alpha', 0.03 }};padding-left:15%;padding-right:15%;" class="big-gutter-top big-gutter-bottom">
+            {%- if section.settings.show_info and section.blocks.size > 0 -%}
+              <div class="gutter-bottom gutter-top gutter-ele-bottom-tbs">
+                <div class="section__title flex flex-align-ver">
+                  <h4 class="dib text-uppercase">{{ 'contact.form.our_address' | t }}</h4>
+                </div>
+              </div>
+              {%- for block in section.blocks -%}
+                <div class="contact__info-block text-left gutter-top gutter-ele-top-tbs gutter-bottom">
+                  {%- if block.settings.title != blank -%}<strong class="support__area__name db gutter-bottom gutter-ele-bottom-tbs">{{ block.settings.title }}</strong>{%- endif -%}
+                  {%- if block.settings.phone != blank -%}<strong class="db gutter-ele-small-bottom">{{ block.settings.phone }}</strong>{%- endif -%}
+                  {%- if block.settings.address != blank -%}<span class="db">{{ block.settings.address }}</span>{%- endif -%}
+                  {%- if block.settings.email != blank -%}<span class="support__area__email db gutter-ele-small-top">{{ block.settings.email }}</span>{%- endif -%}
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+            {%- if section.settings.opening_enable -%}
+              <div class="gutter-bottom gutter-ele-bottom-tbs {% if section.settings.show_info and section.blocks.size > 0 %}big-gutter-top{% else %}gutter-top{% endif %}">
+                <div class="section__title flex flex-align-ver">
+                  <h4 class="dib text-uppercase">{{ 'contact.form.opening_hour' | t }}</h4>
+                </div>
+              </div>
+              {%- for i in (1..3) -%}
+                {%- assign index_opening_name = 'opening_name' | append: i -%}
+                {%- assign index_opening_time = 'opening_time' | append: i -%}
+                <div class="contact__info-block{% unless forloop.last %} gutter-ele-bottom{% endunless %}{% if forloop.first %} gutter-top gutter-ele-top-tbs{% endif %}">
+                  <strong>{{ section.settings[index_opening_name] }}:&nbsp;</strong><span>{{ section.settings[index_opening_time] }}</span>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- unless section.settings.show_map_before_form -%}
+    {{ google_maps }}
+  {%- endunless -%} 
+</div>
+{% schema %}
+  {
+    "name": "Contact Us",
+    "class": "section",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/contact-us)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color",
+        "default": "#242424"
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Contact us",
+        "info": "Leave empty to show the page title which is configured in Online Store > Pages."
+      },
+      {
+        "type": "text",
+        "id": "form_title",
+        "label": "The form title",
+        "default": "Get in touch"
+      },
+      {
+        "type": "header",
+        "content": "Contact information"
+      },
+      {
+        "type": "paragraph",
+        "content": "Add your contact information at the bottom of this section."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_info",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Google maps"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_map",
+        "label": "Show the map",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_map_before_form",
+        "label": "Show the map above the form",
+        "default": true
+      },
+      {
+        "id": "map_address",
+        "type": "text",
+        "label": "Map address",
+        "info": "Google Maps will find the exact location",
+        "default": "80 Spadina Ave, Toronto"
+      },
+      {
+        "type": "paragraph",
+        "content": "-------- Background -------"
+      },
+      {
+        "id": "api_key",
+        "type": "text",
+        "label": "Google Maps API key",
+        "info": "You’ll need to [register a Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Image",
+        "info": "Displayed if the map isn’t loaded"
+      },
+      {
+        "type": "select",
+        "id": "background_image_position",
+        "label": "Image position",
+        "default": "center center",
+        "options": [
+          {
+            "label": "Top left",
+            "value": "top left"
+          },
+          {
+            "label": "Top center",
+            "value": "top center"
+          },
+          {
+            "label": "Top right",
+            "value": "top right"
+          },
+          {
+            "label": "Middle left",
+            "value": "center left"
+          },
+          {
+            "label": "Middle center",
+            "value": "center center"
+          },
+          {
+            "label": "Middle right",
+            "value": "center right"
+          },
+          {
+            "label": "Bottom left",
+            "value": "bottom left"
+          },
+          {
+            "label": "Bottom center",
+            "value": "bottom center"
+          },
+          {
+            "label": "Bottom right",
+            "value": "bottom right"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Opening hours"
+      },
+      {
+        "type": "checkbox",
+        "id": "opening_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "===== Period time 1 ====="
+      },
+      {
+        "type": "text",
+        "id": "opening_name1",
+        "label": "Name",
+        "default": "Monday to Friday"
+      },
+      {
+        "type": "text",
+        "id": "opening_time1",
+        "label": "Time",
+        "default": "10am to 6pm"
+      },
+      {
+        "type": "paragraph",
+        "content": "===== Period time 2 ====="
+      },
+      {
+        "type": "text",
+        "id": "opening_name2",
+        "label": "Name",
+        "default": "Saturday"
+      },
+      {
+        "type": "text",
+        "id": "opening_time2",
+        "label": "Time",
+        "default": "10am to 4pm"
+      },
+      {
+        "type": "paragraph",
+        "content": "===== Period time 3 ====="
+      },
+      {
+        "type": "text",
+        "id": "opening_name3",
+        "label": "Name",
+        "default": "Sunday"
+      },
+      {
+        "type": "text",
+        "id": "opening_time3",
+        "label": "Time",
+        "default": "12am t0 4pm"
+      },
+      {
+        "type": "header",
+        "content": "Layout settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "contact_info",
+        "name": "Contact information",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Name"
+          },
+          {
+            "type": "text",
+            "id": "phone",
+            "label": "Phone"
+          },
+          {
+            "type": "text",
+            "id": "address",
+            "label": "Address"
+          },
+          {
+            "type": "text",
+            "id": "email",
+            "label": "Email"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Contact Us",
+        "category": "Contact Us"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,9 @@
+{%- if section.settings.show_review_form_outside_tab and settings.enable_review -%}
+<div class="container{% include 'wide-css-class' %}">
+  <div class="row">
+    <div class="col-xs-12">
+      {%- include 'product-review-form' -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}

@@ -1,0 +1,156 @@
+{%- render 'section-background-start' -%}
+<div class="cfs container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="collection-filter" id="collection-filter-{{ section.id }}" data-url="{{ routes.all_products_collection_url }}">
+  {%- render 'section-heading' -%}
+  <div class="row">
+    <div class="section__content flex flex-align-hoz flex-align-ver">
+      <div class="col-xs-12 col-sm-6 col-md-3 gutter-ele-bottom-mb">
+        <div class="loading gutter-top w100"></div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-3 gutter-ele-top-mb gutter-ele-bottom-mb">
+        <div class="loading gutter-top w100"></div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-3 gutter-ele-top-mb gutter-ele-bottom-mb">
+        <div class="loading gutter-top w100"></div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-3 gutter-ele-top-mb">
+        <div class="loading gutter-top w100"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{%- if section.settings.enable_custom_heading_colors -%}
+{%- style -%}.section__title__text--{{ section.id }}{color:{{ section.settings.heading_color }};}.section__sub-title--{{ section.id }}{color:{{ section.settings.subheading_color }};}{%- endstyle -%}
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Collection Filter",
+    "class": "section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Display the filter that is shown on the collection page. [View the guide for configuring the filter](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/collection-filter-section)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection Filter"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Custom heading colors"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_heading_colors",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "subheading_color",
+        "label": "Subheading",
+        "default": "#fff"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection filter",
+        "category": "Collection"
+      }
+    ]
+  }
+{% endschema %}

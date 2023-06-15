@@ -1,0 +1,114 @@
+{%- assign style_layer = '' -%}
+{%- include 'layer-banner-position' -%}
+{%- assign style_layer = style_layer | append: style_layer_position -%}
+{%- assign col_text_class = 'col-xs-' | append: block.settings.text_box_width_mobile | append: ' col-sm-' | append: block.settings.text_box_width -%}
+{%- if block.settings.hide_on_mobile -%}
+	{%- assign col_text_class = col_text_class | append: ' hidden-xs' -%}
+{%- endif -%}
+{%- if block.settings.hide_on_desktop -%}
+	{%- assign col_text_class = col_text_class | append: ' hidden-sm hidden-md hidden-lg' -%}
+{%- endif -%}
+{%- assign bkg_style = '' -%}
+{%- if block.settings.text_bkg_enable -%}
+	{%- if block.settings.text_bkg_color != blank -%}
+	{%- assign rgba_alpha = block.settings.text_bkg_opacity | divided_by: 100.00 -%}
+	{%- assign rgba_bkg_color = block.settings.text_bkg_color | color_modify: 'alpha', rgba_alpha -%}
+	{%- assign bkg_style = bkg_style | append: 'background-color:' | append: rgba_bkg_color | append: ';' -%}
+	{%- endif -%}
+	{%- if block.settings.text_bkg_image != blank -%}
+	{%- assign bkg_img_url = block.settings.text_bkg_image | img_url: 'master' -%}
+	{%- assign bkg_style = bkg_style | append: 'background-image:url(' | append: bkg_img_url | append: ');' -%}
+	{%- endif -%}
+	{%- if bkg_style != '' -%}
+		{%- assign bkg_style = bkg_style | append: 'padding: 15px;' -%}
+	{%- endif -%}
+{%- endif -%}
+<div class="banner-item__text {{ col_text_class }}{% if block.settings.appear_effect != 'none' and section.settings.enable_slider %} text-effect {{ block.settings.appear_effect }}{% endif %}"{% if style_layer != '' %} style="{{ style_layer }}"{% endif %} {{ block.shopify_attributes }}>
+	<div class="banner-item__bkg"{% if bkg_style != '' %} style="{{ bkg_style }}"{% endif %}>
+		{%- if block.settings.content != blank -%}
+			{%- assign style_text = 'font-style:' | append: block.settings.font_style | append: ';font-weight:' | append: block.settings.font_weight | append: ';' -%}
+			{%- if block.settings.font_size > 0 -%}
+				{%- assign style_text = style_text | append: 'font-size:' | append: block.settings.font_size | append: 'px;' -%}
+			{%- endif -%}
+			{%- assign text_color = '' -%}
+			{%- if block.settings.color != blank -%}
+				{%- assign color_rgba_alpha = block.settings.color_opacity | divided_by: 100.00 -%}
+				{%- assign text_color = block.settings.color | color_modify: 'alpha', color_rgba_alpha -%}
+				{%- assign style_text = style_text | append: 'color:' | append: text_color | append: ';' -%}
+			{%- endif -%}
+			{%- if block.settings.line_height > 0 -%}
+				{%- assign style_text = style_text | append: 'line-height:' | append: block.settings.line_height | append: 'px;' -%}
+			{%- endif -%}
+			{%- if block.settings.gutter_top > 0 -%}
+				{%- assign style_text = style_text | append: 'padding-top:' | append: block.settings.gutter_top | append: 'px;' -%}
+			{%- endif -%}
+			{%- if block.settings.gutter_bottom > 0 -%}
+				{%- assign style_text = style_text | append: 'padding-bottom:' | append: block.settings.gutter_bottom | append: 'px;' -%}
+			{%- endif -%}
+			{%- if block.settings.letter_spacing >= 0 -%}
+				{%- assign style_text = style_text | append: 'letter-spacing:' | append: block.settings.letter_spacing | append: 'px;' -%}
+			{%- endif -%}
+			{%- assign style_text = style_text | append: 'padding-left:' | append: block.settings.gutter_left | append: 'px;' -%}
+			{%- assign style_text = style_text | append: 'padding-right:' | append: block.settings.gutter_right | append: 'px;' -%}
+			
+			<div class="banner-item__text__sub{% if block.settings.template == 'inside' %} banner-item__text__sub--inside{% endif %}{% if block.settings.hidden_on_mobile %} hidden-xs{% endif %}{% if block.settings.hidden_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %} text-{{ block.settings.alignment }}{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}">
+				{%- if block.settings.format == 'button' -%}
+				{%- assign style_text = style_text | append: 'margin-bottom:10px;' -%}
+				<button class="button button--{{ block.settings.button_style }}{% unless block.settings.extend_style %} hidden-xs{% endunless %}{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}"{% if block.settings.url != '#' and block.settings.url != blank %} onclick="{% if block.settings.new_tab %}window.open('{{ block.settings.url }}', '_blank');{% else %}window.location.href='{{ block.settings.url }}';{% endif %}"{% endif %} aria-label="button" style="{{ style_text }}{% if block.settings.button_radius > 0 %}border-radius:{{ block.settings.button_radius }}px;{% endif %}">
+					{{ block.settings.content | strip_newlines | raw }}
+					{%- if block.settings.button_icon != blank -%}<i class="{{ block.settings.button_icon | escape }} dib" style="margin-left:5px;"></i>{%- endif -%}
+				</button>
+				{%- elsif block.settings.format == 'link' -%}
+				{%- assign style_text = style_text | append: 'display: block;' -%}
+				<a href="{{ block.settings.url | default: '#' }}" style="{{ style_text }}" title="{{ block.settings.content | strip_newlines | escape }}"{% if block.settings.new_tab %} target="_blank"{% endif %} class="{% if block.settings.custom_class != blank %}{{ block.settings.custom_class | escape }}{% endif %}{% unless block.settings.extend_style %} hidden-xs{% endunless %}">{{ block.settings.content | strip_newlines | raw }}</a>
+				{%- elsif block.settings.format == 'text-line' -%}
+				<p style="{{ style_text }}" class="margin0{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}{% unless block.settings.extend_style %} hidden-xs{% endunless %}">{{ block.settings.content | strip_newlines | raw }}</p>
+				{%- elsif block.settings.format == 'paragraph' -%}
+				<div style="{{ style_text }}" class="{% if block.settings.custom_class != blank %}{{ block.settings.custom_class | escape }}{% endif %}{% unless block.settings.extend_style %} hidden-xs{% endunless %}">{{ block.settings.content | raw }}</div>
+				{%- else -%}
+				<{{ block.settings.format }} style="{{ style_text }}" class="margin0{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}{% unless block.settings.extend_style %} hidden-xs{% endunless %}">{{ block.settings.content | raw }}</{{ block.settings.format }}>
+				{%- endif -%}
+
+				{%- unless block.settings.extend_style -%}
+					{%- assign style_text = 'font-style:' | append: block.settings.font_style_mobile | append: ';font-weight:' | append: block.settings.font_weight_mobile | append: ';' -%}
+					{%- if block.settings.font_size_mobile > 0 -%}
+						{%- assign style_text = style_text | append: 'font-size:' | append: block.settings.font_size_mobile | append: 'px;' -%}
+					{%- endif -%}
+					{%- if text_color != '' -%}
+						{%- assign style_text = style_text | append: 'color:' | append: text_color | append: ';' -%}
+					{%- endif -%}
+					{%- if block.settings.line_height_mobile > 0 -%}
+						{%- assign style_text = style_text | append: 'line-height:' | append: block.settings.line_height_mobile | append: 'px;' -%}
+					{%- endif -%}
+					{%- if block.settings.gutter_top_mobile > 0 -%}
+						{%- assign style_text = style_text | append: 'padding-top:' | append: block.settings.gutter_top_mobile | append: 'px;' -%}
+					{%- endif -%}
+					{%- if block.settings.gutter_bottom_mobile > 0 -%}
+						{%- assign style_text = style_text | append: 'padding-bottom:' | append: block.settings.gutter_bottom_mobile | append: 'px;' -%}
+					{%- endif -%}
+					{%- if block.settings.letter_spacing_mobile >= 0 -%}
+						{%- assign style_text = style_text | append: 'letter-spacing:' | append: block.settings.letter_spacing_mobile | append: 'px;' -%}
+					{%- endif -%}
+					{%- assign style_text = style_text | append: 'padding-left:' | append: block.settings.gutter_left_mobile | append: 'px;' -%}
+					{%- assign style_text = style_text | append: 'padding-right:' | append: block.settings.gutter_right_mobile | append: 'px;' -%}
+					{%- if block.settings.format == 'button' -%}
+					{%- assign style_text = style_text | append: 'margin-bottom:10px;' -%}
+					<button class="button button--{{ block.settings.button_style }} hidden-sm hidden-md hidden-lg{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}"{% if block.settings.url != '#' and block.settings.url != blank %} onclick="{% if block.settings.new_tab %}window.open('{{ block.settings.url }}', '_blank');{% else %}window.location.href='{{ block.settings.url }}';{% endif %}"{% endif %} aria-label="button" style="{{ style_text }}{% if block.settings.button_radius > 0 %}border-radius:{{ block.settings.button_radius }}px;{% endif %}">
+						{{ block.settings.content | strip_newlines | raw }}
+						{%- if block.settings.button_icon != blank -%}<i class="{{ block.settings.button_icon | escape }} dib" style="margin-left:5px;"></i>{%- endif -%}
+					</button>
+					{%- elsif block.settings.format == 'link' -%}
+					{%- assign style_text = style_text | append: 'display: block;' -%}
+					<a href="{{ block.settings.url | default: '#' }}" style="{{ style_text }}" title="{{ block.settings.content | strip_newlines | escape }}"{% if block.settings.new_tab %} target="_blank"{% endif %} class="hidden-sm hidden-md hidden-lg{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}">{{ block.settings.content | strip_newlines | raw }}</a>
+					{%- elsif block.settings.format == 'text-line' -%}
+					<div style="{{ style_text }}" class="hidden-sm hidden-md hidden-lg{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}">{{ block.settings.content | strip_newlines | raw }}</div>
+					{%- elsif block.settings.format == 'paragraph' -%}
+					<div style="{{ style_text }}" class="hidden-sm hidden-md hidden-lg{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}">{{ block.settings.content | raw }}</div>
+					{%- else -%}
+					<span style="{{ style_text }}" class="db {{ block.settings.format }} margin0 hidden-sm hidden-md hidden-lg{% if block.settings.custom_class != blank %} {{ block.settings.custom_class | escape }}{% endif %}">{{ block.settings.content | raw }}</span>
+					{%- endif -%}
+				{%- endunless -%}
+			</div>
+		{%- endif -%}
+	</div>
+</div>

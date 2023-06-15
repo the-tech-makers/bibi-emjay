@@ -1,0 +1,28 @@
+<div class="flex por flex-align-hoz{% if block.settings.banner_text_alignment == 'center' %} flex-align-ver{% endif %}" style="position:relative;max-width:{{ block.settings.banner_img.width }}px;max-height:{{ block.settings.banner_img.height }}px;">
+  {%- if block.settings.banner_img -%}
+    <div class="img-container loading" style="padding-top:{{ 1 | divided_by: block.settings.banner_img.aspect_ratio | times: 100 }}%;">
+      {%- assign img_url = block.settings.banner_img | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      <img  data-aspectratio="{{ block.settings.banner_img.aspect_ratio }}"
+      data-src="{{ img_url }}"
+      data-sizes="auto" class="img-abs img-responsive lazyload" alt="{{ block.settings.banner_img.alt | escape }}" width="{{ block.settings.banner_img.width }}" height="{{ block.settings.banner_img.height }}"{% render 'img-one-pixel' %}/>
+    </div>
+  {%- else -%}
+    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}  
+  {%- endif -%}
+  {%- if block.settings.banner_text != blank or block.settings.banner_shop_text != blank -%}
+    {%- assign tab_bkg_style = '' -%}
+    {%- if block.settings.banner_text_bkg_enable and block.settings.banner_text_bkg_color != blank -%}
+      {%- assign tab_rgba_alpha = block.settings.banner_text_bkg_opacity | divided_by: 100.00 -%}
+      {%- assign tab_rgba_bkg_color = block.settings.banner_text_bkg_color | color_modify: 'alpha', tab_rgba_alpha -%}
+      {%- assign tab_bkg_style = 'background-color:' | append: tab_rgba_bkg_color | append: ';' -%}
+    {%- endif -%}
+    <div class="product-tabs__banner-text text-center" style="position: absolute;padding:20px;{{ tab_bkg_style }}{% if block.settings.banner_text_alignment != 'center' %}{{ block.settings.banner_text_alignment }}:0;{% endif %}">
+      {%- if block.settings.banner_text != blank -%}
+      <h3 style="{% if block.settings.banner_text_color != blank %}color:{{ block.settings.banner_text_color }};{% endif %}margin-bottom:{% if block.settings.banner_shop_text != blank %}30px{% else %}0{% endif %};margin-top:0;">{{ block.settings.banner_text }}</h3>
+      {%- endif -%}
+      {%- if block.settings.banner_shop_text != blank -%}
+        <a href="{% if block.settings.banner_shop_url != blank %}{{ block.settings.banner_shop_url }}{% else %}#{% endif %}" title="{{ block.settings.banner_shop_text | escape }}" class="button button--{{ block.settings.banner_shop_text_style }}">{{ block.settings.banner_shop_text }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>

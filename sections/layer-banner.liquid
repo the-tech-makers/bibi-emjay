@@ -1,0 +1,1748 @@
+{%- render 'section-background-start' -%}
+{%- liquid
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+    assign enable_rtl = false
+  else
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+    assign enable_rtl = true
+  endunless
+  assign is_customize_page = false
+  if section.blocks.size > 0
+    assign first_block = section.blocks | first
+    if first_block.shopify_attributes != blank
+      assign is_customize_page = true
+    endif
+  endif
+-%}
+<div id="layer_banner_{{ section.id }}" class="w100 {% unless section.settings.full_wide %}container{% if section.settings.full_width %}-fluid{% endif %}{% endunless %}{% render 'section-gutters-nobkg' %}{% if section.settings.hidden_mobile %} hidden-xs{% endif %}{% if is_customize_page %} customize-page{% endif %}" data-section-id="{{ section.id }}" data-section-type="layer-banner">
+  <div class="{% unless section.settings.full_wide %}row{% else %}db w100{% endunless%}">
+    {%- capture ver_banner -%}
+    {%- if section.settings.ver_banner_enable -%}
+    <div class="col-xs-12 col-sm-{{ section.settings.ver_banner_width }} {% if section.settings.ver_banner_no_distance %}no-gutter{% else %}no-gutter-left-mb no-gutter-right-mb {% if section.settings.ver_banner_pos == 'left' %} no-gutter-left-tb gutter-ele-bottom-mb{% else %}no-gutter-right-tb gutter-ele-top-mb{% endif %}{% endif %}">
+      {%- for i in (1..3) -%}
+        {%- assign ver_image_index = 'ver_banner_' | append: i -%}
+        {%- assign ver_url_index = 'ver_banner_url_' | append: i -%}
+        {%- if section.settings[ver_image_index] != blank -%}
+          <div class="{% unless forloop.first %} gutter-ele-top gutter-ele-top-mb{% endunless %}{% unless forloop.last %} gutter-ele-bottom gutter-ele-bottom-mb{% endunless %}">
+            {%- if section.settings[ver_url_index] != blank -%}
+              <a class="img-container w100 loading{% if section.settings.ver_effect_enable %} rb__effect{% if section.settings.ver_effect_trans_zoom %} rb__effect--zoom{% endif %}{% if section.settings.ver_effect_trans_slide %} rb__effect--slide{% endif %}{% if section.settings.ver_effect_trans_border %} rb__effect--border{% endif %}{% if section.settings.ver_effect_color != 'none' %} rb__effect--{{ section.settings.ver_effect_color }}{% endif %}{% endif %}" style="padding-top:{{ 1 | divided_by: section.settings[ver_image_index].aspect_ratio | times: 100}}%;" href="{{ section.settings[ver_url_index] }}" title="{{ section.settings[ver_image_index].alt | escape }}">
+            {%- else -%}
+              <div class="img-container w100 loading{% unless forloop.first %} gutter-ele-bottom gutter-ele-bottom-mb{% endunless %}{% unless forloop.last %} gutter-ele-top gutter-ele-top-mb{% endunless %}{% if section.settings.ver_effect_enable %} rb__effect{% if section.settings.ver_effect_trans_zoom %} rb__effect--zoom{% endif %}{% if section.settings.ver_effect_trans_slide %} rb__effect--slide{% endif %}{% if section.settings.ver_effect_trans_border %} rb__effect--border{% endif %}{% if section.settings.ver_effect_color != 'none' %} rb__effect--{{ section.settings.ver_effect_color }}{% endif %}{% endif %}" style="padding-top:{{ 1 | divided_by: section.settings[ver_image_index].aspect_ratio | times: 100}}%;">    
+            {%- endif -%}
+              {%- assign img_url = section.settings[ver_image_index] | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <img class="img-responsive w100 lazyload img-abs" data-aspectratio="{{ section.settings[ver_image_index].aspect_ratio }}"
+                data-src="{{ img_url }}"
+                data-sizes="auto"
+                alt="{{ section.settings[ver_image_index].alt | escape }}"{% render 'img-one-pixel' %}/>
+            {%- if section.settings[ver_url_index] != blank -%}
+              </a>
+            {%- else -%}
+              </div>    
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+    {%- endcapture -%}
+
+    <div class="section__inner col-xs-12" style="float:none;">
+      {%- if section.settings.heading != blank -%}
+      <div class="section__heading{% if section.settings.sub_title != blank %} section__heading--with-sub{% endif %}">
+        <div class="section__title flex flex-align-ver">
+          <h2 class="section__title__text margin0 tbs-text-center">{{ section.settings.heading | replace: '<hl>','<span class="section__title__highline">' | replace: '</hl>','</span>' | raw }}</h2>
+          {% if section.settings.sub_title != blank %}
+            <h3 class="section__sub-title w100 gutter-top">{{ section.settings.sub_title | raw }}</h3>
+          {% endif %}
+        </div>
+      </div>
+      {%- endif -%}
+
+      <div class="section__content row">
+        {%- capture layer-banner-main -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- if section.settings.enable_slider -%}
+            {%- assign item_size = section.settings.item_size -%}
+            {%- assign item_size_number = 1 -%}
+            {%- if item_size == 'small' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-20' -%}
+              {%- assign item_size_number = 5 -%}
+            {%- elsif item_size == 'medium' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-3' -%}
+              {%- assign item_size_number = 4 -%}
+            {%- elsif item_size == 'large' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-4' -%}
+              {%- assign item_size_number = 3 -%}
+            {%- elsif item_size == 'very-large' -%}
+              {%- assign item_size_class = 'col-xs-12 col-sm-6' -%}
+              {%- assign item_size_number = 2 -%}
+            {%- else -%}
+              {%- assign item_size_class = 'col-xs-12' -%}
+              {%- assign item_size_number = 1 -%}  
+            {%- endif -%}
+            {%- assign item_size_number_mobile = 1 -%} 
+            {%- assign lazyload_index = item_size_number -%}
+            {%- assign lazyload_index_mobile = 1 -%}
+            {%- if section.settings.autoplay_slider -%}
+              {%- assign arrow_mobile = '"arrows":false,' -%}
+            {%- else -%}
+              {%- assign arrow_mobile = '' -%}  
+            {%- endif -%}
+            {%- assign data_slider = '{"adaptiveHeight":true,"slide":".slide","infinite":false,"swipe":true,"swipeToSlide":true,"slidesToShow":' | append: item_size_number | append: ',"slidesToScroll":' | append: item_size_number | append: ',"responsive":[{"breakpoint": 768,"settings":{' | append: arrow_mobile | append: '"slidesToShow": ' | append: item_size_number_mobile | append: ',"slidesToScroll":' | append: item_size_number_mobile | append: ',"slide":".slide-mobile"}}]' -%}
+            {%- if section.settings.autoplay_slider -%}
+              {%- assign speed_slider = section.settings.autoplay_speed_slider | times: 1000 -%}
+              {%- assign data_slider = data_slider | append: ',"autoplay":true' -%}
+              {%- assign data_slider = data_slider | append: ',"autoplaySpeed":' | append: speed_slider -%}
+            {%- endif -%}
+            {%- unless section.settings.arrow_slider -%}
+              {%- assign data_slider = data_slider | append: ',"arrows":false' -%}
+            {%- endunless -%}
+            {%- if section.settings.arrow_dots -%}
+              {%- assign data_slider = data_slider | append: ',"dots":true' -%}
+            {%- endif -%}
+            {%- assign data_slider = data_slider | append: '}' -%}
+          {%- else -%}
+            {%- assign lazyload_index = 1 -%}
+            {%- assign lazyload_index_mobile = 2 -%}
+          {%- endif -%}
+          {%- assign close_parent_layer = true -%}
+          <div class="flex flex-wrap{% if section.settings.full_wide %} grid--wide{% endif %}{% if section.settings.enable_slider %} use-slider slick--arrow-bottom{% endif %}"{% if section.settings.enable_slider %} data-slider='{{ data_slider }}' style="margin-left:0;margin-right:0;"{% endif %}>
+          {%- assign current_index_tb = 0 -%}  
+          {%- assign current_index_mobile = 0 -%}  
+          {%- for block in section.blocks -%}
+            {%- assign item_size = block.settings.item_size -%}
+            {%- assign slider_class = '' -%}
+            {%- unless block.settings.hide_on_desktop -%}
+              {%- assign slider_class = slider_class | append: ' ' | append: 'slide' -%}
+              {%- assign current_index_tb = current_index_tb | plus: 1 -%}
+            {%- endunless -%}
+            {%- unless block.settings.hide_on_mobile -%}
+              {%- assign slider_class = slider_class | append: ' ' | append: 'slide-mobile' -%}
+              {%- assign current_index_mobile = current_index_mobile | plus: 1 -%}
+            {%- endunless -%}
+            {%- include block.type -%}
+          {%- endfor -%}
+          {%- unless close_parent_layer == true -%}
+            {%- assign close_parent_layer = true -%}
+            {%- include 'layer-banner-close' -%}
+          {%- endunless -%}
+          </div>
+        {%- endif -%}
+        {%- endcapture -%}
+
+        <div class="col-xs-12{% if section.settings.full_wide %} no-gutter{% endif %}">
+          {%- if section.settings.ver_banner_enable and ver_banner != blank -%}
+            {%- liquid
+              unless enable_rtl and section.settings.revert_in_rtl
+                assign ver_banner_pos = section.settings.ver_banner_pos
+              else
+                assign ver_banner_pos = section.settings.ver_banner_pos | replace: 'left', 'holder' | replace: 'right', 'left' | replace: 'holder', 'right'  
+              endunless
+              if ver_banner_pos == 'left'
+                echo ver_banner
+              endif
+              assign gutter_class_main = ' no-gutter'
+              unless section.settings.ver_banner_no_distance
+                if section.settings.ver_banner_pos == 'left'
+                  assign gutter_class_main = ' no-gutter-right-tb no-gutter-left-mb no-gutter-right-mb gutter-ele-top-mb'
+                else
+                  assign gutter_class_main = ' no-gutter-left-tb no-gutter-left-mb no-gutter-right-mb gutter-ele-bottom-mb'  
+                endif
+              endunless  
+            -%}  
+            <div class="col-xs-12 col-sm-{{ 12 | minus: section.settings.ver_banner_width }}{{ gutter_class_main }}">
+              {{ layer-banner-main }}
+            </div>
+            {%- if ver_banner_pos == 'right' -%}
+              {{ ver_banner }}
+            {%- endif -%}
+          {%- else -%}
+            {{ layer-banner-main }}  
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "Layer Banner",
+    "class": "layer-banner-section section",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/banner-and-image/layer-banner)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Name",
+        "info": "This field is only used to help you find the section in Theme Settings easily. It will not be shown at the storefront."
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Create your own banner now!"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_wide",
+        "label": "Full width",
+        "info": "If you enable this option, the \"Wide display\" option will be ignored."
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden_mobile",
+        "label": "Hide this section in mobile screen",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "revert_in_rtl",
+        "label": "Revert the left and right position in the RTL layout",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Slider settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_slider",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "item_size",
+        "label": "Banner Layer Size",
+        "info": "In the slider format, the size of each item will be ignored. All items will have the same size, and you can change it in this option.",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "very-large",
+            "label": "Very Large"
+          },
+          {
+            "value": "full",
+            "label": "Full Width"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "type": "checkbox",
+        "id": "autoplay_slider",
+        "label": "Enable autoplay",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "autoplay_speed_slider",
+        "label": "Autoplay speed",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "unit": "s",
+        "default": 7,
+        "info": "Unit: seconds"
+      },
+      {
+        "type": "checkbox",
+        "id": "arrow_slider",
+        "label": "Show arrow",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "arrow_dots",
+        "label": "Show dot indicators",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Small vertical banners"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_banner_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "ver_banner_width",
+        "label": "Width",
+        "min": 3,
+        "max": 5,
+        "step": 1,
+        "unit": "col",
+        "default": 3
+      },
+      {
+        "type": "radio",
+        "id": "ver_banner_pos",
+        "label": "Position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_banner_no_distance",
+        "label": "Remove the distance with the main banners",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "--------- Effects --------"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "A. Transition effects"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_zoom",
+        "label": "Zoom in",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_slide",
+        "label": "Flash slide",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_border",
+        "label": "Border",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "B. Color effects"
+      },
+      {
+        "type": "select",
+        "id": "ver_effect_color",
+        "label": "Choose effect",
+        "options": [
+          {
+            "value": "blur",
+            "label": "Blur"
+          },
+          {
+            "value": "brightness",
+            "label": "Brightness"
+          },
+          {
+            "value": "contrast",
+            "label": "Contrast"
+          },
+          {
+            "value": "drop-shadow",
+            "label": "Drop shadow"
+          },
+          {
+            "value": "grayscale",
+            "label": "Grayscale"
+          },
+          {
+            "value": "hue-rotate",
+            "label": "Hue rotate"
+          },
+          {
+            "value": "invert",
+            "label": "Invert"
+          },
+          {
+            "value": "opacity",
+            "label": "Opacity"
+          },
+          {
+            "value": "saturate",
+            "label": "Saturate"
+          },
+          {
+            "value": "sepia",
+            "label": "Sepia"
+          },
+          {
+            "value": "contrast-brightness",
+            "label": "Contrast brightness"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 1 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_1",
+        "label": "Banner 1"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_1",
+        "label": "Url"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 2 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_2",
+        "label": "Banner 2"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_2",
+        "label": "Url"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 3 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_3",
+        "label": "Banner 3"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_3",
+        "label": "Url"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "layer-banner-parent",
+        "name": "Parent Layer",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Layer Name",
+            "info": "This field is only used to help you find the layer in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \" Parent -\" for the parent items and \"---\" for the sub-layers will help you organize the items better."
+          },
+          {
+            "type": "header",
+            "content": "Layer size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Layer size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Layer size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "checkbox",
+            "id": "box_wrap",
+            "label": "Wrap children items in a container",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Gutters on tablet and desktop"
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Gutters on mobile"
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Upload image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile image",
+            "info": "If you leave empty on this field, the image in above field will be displayed on mobile and desktop."
+          },
+          {
+            "type": "url",
+            "id": "image_link",
+            "label": "The link for image"
+          },
+          {
+            "type": "checkbox",
+            "id": "image_link_new_tab",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the link for image is not empty"
+          },
+          {
+            "type": "select",
+            "id": "image_alignment",
+            "label": "Image alignment",
+            "info": "only affect when the image does not fit the banner box.",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide this banner on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide this banner on desktop",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Background color"
+          },
+          {
+            "type": "checkbox",
+            "id": "bkg_banner_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_banner",
+            "label": "Pick a color"
+          },
+          {
+            "type": "header",
+            "content": "Effects"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "paragraph",
+            "content": "----- A. Transition effects -----"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_zoom",
+            "label": "Zoom in",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_slide",
+            "label": "Flash slide",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_border",
+            "label": "Border",
+            "default": true
+          },
+          {
+            "type": "paragraph",
+            "content": "----- B. Color effects -----"
+          },
+          {
+            "type": "select",
+            "id": "effect_color",
+            "label": "Choose effect",
+            "options": [
+              {
+                "value": "blur",
+                "label": "Blur"
+              },
+              {
+                "value": "brightness",
+                "label": "Brightness"
+              },
+              {
+                "value": "contrast",
+                "label": "Contrast"
+              },
+              {
+                "value": "drop-shadow",
+                "label": "Drop shadow"
+              },
+              {
+                "value": "grayscale",
+                "label": "Grayscale"
+              },
+              {
+                "value": "hue-rotate",
+                "label": "Hue rotate"
+              },
+              {
+                "value": "invert",
+                "label": "Invert"
+              },
+              {
+                "value": "opacity",
+                "label": "Opacity"
+              },
+              {
+                "value": "saturate",
+                "label": "Saturate"
+              },
+              {
+                "value": "sepia",
+                "label": "Sepia"
+              },
+              {
+                "value": "contrast-brightness",
+                "label": "Contrast brightness"
+              },
+              {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "default": "none"
+          }
+        ]
+      },
+      {
+        "type": "layer-banner-text",
+        "name": "Text Layer",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Layer Name",
+            "info": "This field is only used to help you find the layer in Theme Settings easily. It will not be shown at the storefront."
+          },
+          {
+            "type": "html",
+            "id": "content",
+            "label": "Text content",
+            "info": "Note : the breaklines are only applied when the text is displayed as \"paragraph\""
+          },
+          {
+            "type": "header",
+            "content": "Layout settings"
+          },
+          {
+            "type": "range",
+            "id": "text_box_width",
+            "label": "Text box width",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 4
+          },
+          {
+            "type": "range",
+            "id": "text_box_width_mobile",
+            "label": "Text box width in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "standard_pos",
+            "label": "Standard position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "paragraph",
+            "content": "==== Custom positions ===="
+          },
+          {
+            "type": "checkbox",
+            "id": "custom_pos",
+            "label": "Use custom position",
+            "info": "If you would not like to use the standard positions, you can you can create the custom position by yourself."
+          },
+          {
+            "type": "range",
+            "id": "pos_left",
+            "label": "Left position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_right",
+            "label": "Right position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0,
+            "info": "Only work if \"Left position\" is less than zero."
+          },
+          {
+            "type": "range",
+            "id": "pos_top",
+            "label": "Top position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_bottom",
+            "label": "Bottom position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0,
+            "info": "Only work if \"Top position\" is less than zero."
+          },
+          {
+            "type": "header",
+            "content": "Text color"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Pick a color"
+          },
+          {
+            "type": "range",
+            "id": "color_opacity",
+            "label": "Opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "select",
+            "id": "appear_effect",
+            "label": "Appear effect",
+            "options": [
+              {
+                "value": "text-effect-1",
+                "label": "Effect 1"
+              },
+              {
+                "value": "text-effect-2",
+                "label": "Effect 2"
+              },
+              {
+                "value": "text-effect-3",
+                "label": "Effect 3"
+              },
+              {
+                "value": "text-effect-4",
+                "label": "Effect 4"
+              },
+              {
+                "value": "none",
+                "label": "No effect"
+              }
+            ],
+            "info": "Only work with slider",
+            "default": "text-effect-1"
+          },
+          {
+            "type": "header",
+            "content": "Own Background for Texts"
+          },
+          {
+            "type": "checkbox",
+            "id": "text_bkg_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "text_bkg_color",
+            "label": "Background Color"
+          },
+          {
+            "type": "range",
+            "id": "text_bkg_opacity",
+            "label": "Opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 100
+          },
+          {
+            "type": "image_picker",
+            "id": "text_bkg_image",
+            "label": "Background Image"
+          },
+          {
+            "type": "header",
+            "content": "Text Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide this text on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide this text on desktop",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "format",
+            "label": "Display as",
+            "options": [
+              {
+                "value": "button",
+                "label": "Button"
+              },
+              {
+                "value": "link",
+                "label": "Link"
+              },
+              {
+                "value": "text-line",
+                "label": "Text in one line"
+              },
+              {
+                "value": "paragraph",
+                "label": "Custom text"
+              },
+              {
+                "value": "h1",
+                "label": "H1 tag"
+              },
+              {
+                "value": "h2",
+                "label": "H2 tag"
+              },
+              {
+                "value": "h3",
+                "label": "H3 tag"
+              },
+              {
+                "value": "h4",
+                "label": "H4 tag"
+              },
+              {
+                "value": "h5",
+                "label": "H5 tag"
+              },
+              {
+                "value": "h6",
+                "label": "H6 tag"
+              }
+            ],
+            "default": "text-line"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Link for text",
+            "info": "Only affect when \"Display as\" is \"Button\" or \"Link\""
+          },
+          {
+            "type": "checkbox",
+            "id": "new_tab",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the \"Link for text\" is applied"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Button settings --------"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1",
+            "info": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "range",
+            "id": "button_radius",
+            "label": "Radius button",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "button_icon",
+            "label": "Include Icon",
+            "info": "Go to [this page](https://boostheme.com/vodoma/icons) to copy an icon class and paste into this field."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Desktop styles --------"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Mobile styles --------"
+          },
+          {
+            "type": "checkbox",
+            "id": "extend_style",
+            "label": "Extend from desktop styles settings",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mobile",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mobile",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_mobile",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_mobile",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_mobile",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_mobile",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_mobile",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "header",
+            "content": "For developer"
+          },
+          {
+            "type": "text",
+            "id": "custom_class",
+            "label": "Custom css class"
+          }
+        ]
+      },
+      {
+        "type": "layer-banner-price",
+        "name": "Product starting price",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Layer Name",
+            "info": "This field is only used to help you find the layer in Theme Settings easily. It will not be shown at the storefront."
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide this banner on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide this banner on desktop",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Layout settings"
+          },
+          {
+            "type": "range",
+            "id": "text_box_width",
+            "label": "Wrap box width",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 4
+          },
+          {
+            "type": "range",
+            "id": "text_box_width_mobile",
+            "label": "Wrap box width in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 12
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Text Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "alignment_mobile",
+            "label": "Text Alignment mobile",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "standard_pos",
+            "label": "Standard position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "paragraph",
+            "content": "==== Custom positions ===="
+          },
+          {
+            "type": "checkbox",
+            "id": "custom_pos",
+            "label": "Use custom position",
+            "info": "If you would not like to use the standard positions, you can you can create the custom position by yourself."
+          },
+          {
+            "type": "range",
+            "id": "pos_left",
+            "label": "Left position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_right",
+            "label": "Right position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0,
+            "info": "Only work if \"Left position\" is less than zero."
+          },
+          {
+            "type": "range",
+            "id": "pos_top",
+            "label": "Top position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_bottom",
+            "label": "Bottom position",
+            "min": -1,
+            "max": 80,
+            "step": 1,
+            "unit": "%",
+            "default": 0,
+            "info": "Only work if \"Top position\" is less than zero."
+          },
+          {
+            "type": "header",
+            "content": "Price settings"
+          },
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Pick a product"
+          },
+          {
+            "type": "text",
+            "id": "starting_text",
+            "label": "Starting text",
+            "default": "Starting from"
+          },
+          {
+            "type": "color",
+            "id": "starting_text_color",
+            "label": "Text color",
+            "default": "#cb9400"
+          },
+          {
+            "type": "text",
+            "id": "starting_price",
+            "label": "Starting price",
+            "info": "If empty, the product's min price will be displayed."
+          },
+          {
+            "type": "color",
+            "id": "starting_price_color",
+            "label": "Price color",
+            "default": "#fff"
+          },
+          {
+            "type": "header",
+            "content": "Button"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Button link",
+            "info": "If empty, the product's url will be displayed."
+          },
+          {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button text",
+            "default": "Product info"
+          },
+          {
+            "type": "select",
+            "id": "button_style",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style3"
+          },
+          {
+            "type": "select",
+            "id": "appear_effect",
+            "label": "Appear effect",
+            "options": [
+              {
+                "value": "text-effect-1",
+                "label": "Effect 1"
+              },
+              {
+                "value": "text-effect-2",
+                "label": "Effect 2"
+              },
+              {
+                "value": "text-effect-3",
+                "label": "Effect 3"
+              },
+              {
+                "value": "text-effect-4",
+                "label": "Effect 4"
+              },
+              {
+                "value": "none",
+                "label": "No effect"
+              }
+            ],
+            "info": "Only work with slider",
+            "default": "text-effect-1"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Layer Banner",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

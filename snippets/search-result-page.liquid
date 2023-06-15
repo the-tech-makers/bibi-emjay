@@ -1,0 +1,17 @@
+<div class="collection__products">
+{% paginate search.results by section.settings.limit %}
+<ul class="w100 margin0 no-gutter products grid--products">
+    {% for item in search.results %}
+        <li class="gutter-ele-top grid__item">
+          <h4><a href="{{ item.url }}" title="{{ item.title | escape }}">
+            {{ item.title | highlight: search.terms }}
+          </a></h4>
+          <p>
+            {{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}
+          </p>
+        </li>
+    {% endfor %}
+</ul>
+{%- render 'search-result-pagination' with paginate: paginate -%}
+{% endpaginate %}
+</div>

@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="page-title text-center gutter-ele-bottom-tbs">{{ 'customer.activate_account.title' | t }}</h1>
+      <p class="text-center">{{ 'customer.activate_account.subtext' | t }}</p>
+      <div class="page-content w100">
+        <div class="center-block col-xs-12 col-sm-5 no-gutter" style="float:none;">
+          {% form 'activate_customer_password' %}
+            {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' | replace: 'href="','class="alert-link" href="' }}
+            <div class="field field--float-label active">
+              <label for="CustomerPassword">{{ 'customer.activate_account.password' | t }}</label>
+              <input type="password" value="" name="customer[password]" id="CustomerPassword" class="w100 first-focus" autofocus>
+            </div>
+            <div class="field field--float-label">
+              <label for="CustomerPasswordConfirmation">{{ 'customer.activate_account.password_confirm' | t }}</label>
+              <input type="password" value="" name="customer[password_confirmation]" id="CustomerPasswordConfirmation" class="w100">
+            </div>
+            <div class="text-center distance-top-ele gutter-ele-top">
+              <div class="pull-left">
+                <input type="submit" class="button button--style2" value="{{ 'customer.activate_account.submit' | t }}">
+              </div>
+              <div class="pull-right">
+                <input type="submit" name="decline" value="{{ 'customer.activate_account.cancel' | t }}" class="button button--style3">
+              </div>
+            </div>
+          {% endform %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

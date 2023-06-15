@@ -1,0 +1,41 @@
+{%- assign collection = collections[block.settings.collection] -%}
+{%- assign limit = block.settings.limit -%}
+{%- assign slide_per_row = limit -%}
+{%- assign main_thumbnail = block.settings.main_thumbnail -%}
+{%- assign truncate_count = block.settings.product_name_size -%}
+{%- assign show_review_stars = block.settings.show_review_stars -%}
+<div class="pcol__items" id="pcol__items--{{ section.id }}-{{ block.id }}" data-limit="{{ limit }}">
+  {%- unless collection == blank or collection.products.size == 0 -%}
+    {%- if request.design_mode or template.suffix == 'ajax' -%}
+      {%- for product in collection.products limit:limit -%}
+        {%- render 'product-columns-item' with
+          product: product,
+          main_thumbnail: main_thumbnail,
+          truncate_count: truncate_count,
+          show_review_stars: show_review_stars,
+          slide_per_row: slide_per_row,
+          index: forloop.index
+        -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- for i in (1..slide_per_row) -%}
+      <div class="pcol__item item dib w100">
+        <div class="flex flex-wrap flex-align-space-between">
+          <div class="pcol__item__left col-xs-4 no-gutter">
+            <a class="item__image" href="#">
+              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+            </a>
+          </div>
+          <div class="pcol__item__right col-xs-7 no-gutter">
+            <a class="item__name pcol__item__name no-gutter-top" href="#">
+              {{ 'homepage.onboarding.product_title' | t }}
+            </a>
+            {%- render 'product-price' -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endunless -%}
+</div>

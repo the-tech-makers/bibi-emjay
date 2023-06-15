@@ -1,0 +1,8 @@
+{%- unless product.has_only_default_variant or enable_product_options == false -%}
+<div class="pg__option-size db visible-lg" style="padding-top:10px">
+	{%- for product_option in product.options_with_values -%}
+	<label class="secondary-font">{{ 'products.product.option_size' | t: option_size: product_option.values.size, option_name: product_option.name }}</label>{%- unless forloop.last -%}&nbsp;{% endunless %}
+	{%- endfor -%}
+	<hr style="margin-top:5px;margin-bottom: 5px;">
+</div>
+{%- endunless -%}

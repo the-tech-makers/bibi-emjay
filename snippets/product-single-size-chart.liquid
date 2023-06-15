@@ -1,0 +1,5 @@
+{%- if sizechart -%}
+<div class="product_single__size-chart">
+	<a class="sizechart-trigger{% if sizechart == 'inline' %} sizechart-trigger--inline{% endif %}" href="javascript:void(0);" data-modal-id="sizeChartModal{{ section.id }}">{%- render 'icon-ruler' with add_style: 'padding:0 5px;' -%}{{ 'products.product.size_chart' | t }}</a>
+</div>
+{%- endif -%}

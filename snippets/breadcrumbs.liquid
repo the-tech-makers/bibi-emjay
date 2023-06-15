@@ -1,0 +1,247 @@
+{%- assign bIndex = 0 -%}
+{%- assign breadcrumbs_bkg_image = false -%}
+{%- assign use_breadcrumbs_bkg = false -%}
+{%- if template contains 'collection' or template.name == 'blog' -%}
+  {%- if settings.breadcrumbs_enble_bkg and settings.breadcrumbs_bkg_image != blank -%}
+    {%- assign breadcrumbs_bkg_image = settings.breadcrumbs_bkg_image -%}
+    {%- assign use_breadcrumbs_bkg = true -%}
+  {%- endif -%}
+  <div class="flex flex-align-ver flex-align-hoz w100{% if use_breadcrumbs_bkg %} lazyload{% endif %} gutter-top gutter-bottom"{% if use_breadcrumbs_bkg %} data-bgset="{% render 'bgset' with breadcrumbs_bkg_image as image %}" data-sizes="auto" data-parent-fit="cover"{% endif %} style="flex-direction: column;{% if use_breadcrumbs_bkg %}background-position:center;{% endif %}color:{{ settings.breadcrumbs_text_color }};">
+    <h1 class="margin0 lh1 w100 text-center breadcrumbs-page-title">
+      {%- if template contains 'collection' -%}
+        {%- unless template.name == 'list-collections' -%}
+          {{ collection.title }}
+        {%- else -%}
+          {{ settings.list_collection_page_title | default: page_title }}  
+        {%- endunless -%}
+      {%- else -%}
+        {{ blog.title }}
+      {%- endif -%}
+    </h1>
+    {%- if settings.breadcrumbs_slogan != blank and template.name == 'collection' -%}<p class="margin0 gutter-ele-top w100 text-center">{{ settings.breadcrumbs_slogan }}</p>{%- endif -%}
+    {%- if settings.breadcrumbs_slogan_blog != blank and template.name == 'blog' -%}<p class="margin0 gutter-ele-top w100 text-center">{{ settings.breadcrumbs_slogan_blog }}</p>{%- endif -%}
+  </div>
+{%- endif -%}
+
+<div class="breadcrumbs gutter-ele-small-top gutter-ele-small-bottom fs-mb{% if template contains 'collection' %} hidden-xs hidden-sm{% endif %}">
+  <div class="container{% include 'wide-css-class' %} gutter-ele-top gutter-bottom gutter-ele-bottom-tbs">
+    <div class="row">
+      <div class="col-xs-12">
+        {%- capture breadcrumb_content -%}
+        <ul class="list--inline breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.root_url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ 'general.breadcrumbs.home' | t }}</span>
+            </a>
+            <span class="breadcrumbs__slash dib">/</span>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% if template contains 'page' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ page.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ page.title }}</span>
+            </a>
+            {%- assign breadcrumb_name = page.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% elsif template contains 'product' %}
+          {% if collection.url %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ collection.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ collection.title }}</span>
+            </a>
+            <span class="breadcrumbs__slash dib">/</span>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          {% endif %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ product.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ product.title }}</span>
+            </a>
+            {%- assign breadcrumb_name = product.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% elsif template contains 'collection' and collection.handle %}
+          {% if current_tags %}
+            <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+                <span itemprop="name">{{ collection.title }}</span>
+              </a>
+              <span class="breadcrumbs__slash dib">/</span>
+              {%- assign breadcrumb_name = collection.title -%}
+              {%- assign bIndex = bIndex | plus: 1 -%}
+              {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+            </li>
+            <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url }}/{{ current_tags | join: "+" | url_encode }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+                <span itemprop="name">{{ current_tags | join: " + " }}</span>
+              </a>
+              {%- assign bIndex = bIndex | plus: 1 -%}
+              {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+            </li>
+          {% else %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ collection.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ collection.title }}</span>
+            </a>
+            {%- assign breadcrumb_name = collection.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          {% endif %}
+        {% elsif template == 'blog' %}
+          {% if current_tags %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <span class="breadcrumbs__slash dib">/</span>
+            {%- assign breadcrumb_name = blog.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}/{{ current_tags | join: "+" | url_encode }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ current_tags | join: " + " }}</span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          {% else %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            {%- assign breadcrumb_name = blog.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          {% endif %}
+        {% elsif template == 'article' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <span class="breadcrumbs__slash dib">/</span>
+            {%- assign breadcrumb_name = blog.title -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ article.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">{{ article.title }}</span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% elsif template == 'cart' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.cart_url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">
+              <span itemprop="name">
+                {{ 'cart.general.title' | t }}
+              </span>
+            </a>
+            {%- assign breadcrumb_name = 'cart.general.title' | t -%}
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% elsif template == 'customers/order' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.root_url | append: '/' | replace: '//', '/' }}customers/order" itemtype="https://schema.org/Thing"
+       itemprop="item">  
+              <span itemprop="name">
+                {{ 'customer.order.title' | t: name: order.name }}
+              </span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>  
+        {% elsif template == 'customers/active_account' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.root_url | append: '/' | replace: '//', '/' }}customers/active_account" itemtype="https://schema.org/Thing"
+       itemprop="item">  
+              <span itemprop="name">
+                {{ 'customer.activate_account.title' | t }}
+              </span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>  
+        {% elsif template == 'reset_password' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.root_url | append: '/' | replace: '//', '/' }}customers/reset" itemtype="https://schema.org/Thing"
+       itemprop="item">  
+              <span itemprop="name">
+                {{ 'customer.reset_password.title' | t }}
+              </span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}  
+          </li>
+        {% elsif template == 'search' %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.search_url }}?type={{ search.types | join: ',' | url_encode }}&q={{ search.terms | url_encode }}" itemtype="https://schema.org/Thing"
+       itemprop="item">  
+              <span itemprop="name">
+                {{ 'general.search.title' | t }}
+              </span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}  
+          </li>      
+        {% else %}
+          <li itemprop="itemListElement" itemscope
+      itemtype="https://schema.org/ListItem">
+            <a href="{{ page.url }}" itemtype="https://schema.org/Thing"
+       itemprop="item">  
+              <span itemprop="name">
+                {{ page_title }}
+              </span>
+            </a>
+            {%- assign bIndex = bIndex | plus: 1 -%}
+            {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+          </li>
+        {% endif %}
+        </ul>
+        {%- endcapture -%}
+        <div class="flex flex-align-space-between flex-align-ver">
+          {{ breadcrumb_content }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

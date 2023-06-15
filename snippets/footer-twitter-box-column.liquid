@@ -1,0 +1,5 @@
+{%- if block.settings.twitter_url != blank -%}
+  <div class="social-app loading" style="min-height: 50px;" data-block-id="{{ block.id }}">
+    <a class="twitter-timeline" data-height="262" href="{{ block.settings.twitter_url }}" title="{{ 'general.social.alt_text.share_on_twitter' | t | escape }}"></a>
+  </div>
+{%- endif -%}  

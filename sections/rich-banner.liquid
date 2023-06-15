@@ -1,0 +1,4810 @@
+{%- include 'section-background-start' -%}
+{%- liquid
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+    assign enable_rtl = false
+  else
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+    assign enable_rtl = true
+  endunless
+  assign is_customize_page = false
+  if section.blocks.size > 0
+    assign first_block = section.blocks | first
+    if first_block.shopify_attributes != blank
+      assign is_customize_page = true
+    endif
+  endif
+-%}
+<div id="rich_banner_text_{{ section.id }}" class="{% unless section.settings.full_wide %}container{% if section.settings.full_width %}-fluid{% endif %}{% endunless %}{% include 'section-gutters-nobkg' %}{% if section.settings.hidden_mobile %} hidden-xs{% endif %}{% if is_customize_page %} customize-page{% endif %}" data-section-id="{{ section.id }}" data-section-type="rich-banner-text"{% if section.settings.full_wide %} style="padding-left: 15px;padding-right: 15px;"{% endif %}>
+  <div class="row">
+  	{%- capture ver_banner -%}
+    {%- if section.settings.ver_banner_enable -%}
+    <div class="col-xs-12 col-sm-{{ section.settings.ver_banner_width }} {% if section.settings.ver_banner_no_distance %}no-gutter{% else %}no-gutter-left-mb no-gutter-right-mb {% if section.settings.ver_banner_pos == 'left' %} no-gutter-left-tb gutter-ele-bottom-mb{% else %}no-gutter-right-tb gutter-ele-top-mb{% endif %}{% endif %}{% if enable_rtl and section.settings.revert_in_rtl %} {% if section.settings.ver_banner_pos == 'left' %}f-right{% else %}f-left{% endif %}{% endif %}">
+      {%- for i in (1..3) -%}
+        {%- assign ver_image_index = 'ver_banner_' | append: i -%}
+        {%- assign ver_url_index = 'ver_banner_url_' | append: i -%}
+        {%- if section.settings[ver_image_index] != blank -%}
+          <div class="{% unless forloop.first %} gutter-ele-top gutter-ele-top-mb{% endunless %}{% unless forloop.last %} gutter-ele-bottom gutter-ele-bottom-mb{% endunless %}">
+            {%- if section.settings[ver_url_index] != blank -%}
+              <a class="img-container w100 loading{% if section.settings.ver_effect_enable %} rb__effect{% if section.settings.ver_effect_trans_zoom %} rb__effect--zoom{% endif %}{% if section.settings.ver_effect_trans_slide %} rb__effect--slide{% endif %}{% if section.settings.ver_effect_trans_border %} rb__effect--border{% endif %}{% if section.settings.ver_effect_color != 'none' %} rb__effect--{{ section.settings.ver_effect_color }}{% endif %}{% endif %}" style="padding-top:{{ 1 | divided_by: section.settings[ver_image_index].aspect_ratio | times: 100}}%;" href="{{ section.settings[ver_url_index] }}" title="{{ section.settings[ver_image_index].alt | escape }}">
+            {%- else -%}
+              <div class="img-container w100 loading{% unless forloop.first %} gutter-ele-bottom gutter-ele-bottom-mb{% endunless %}{% unless forloop.last %} gutter-ele-top gutter-ele-top-mb{% endunless %}{% if section.settings.ver_effect_enable %} rb__effect{% if section.settings.ver_effect_trans_zoom %} rb__effect--zoom{% endif %}{% if section.settings.ver_effect_trans_slide %} rb__effect--slide{% endif %}{% if section.settings.ver_effect_trans_border %} rb__effect--border{% endif %}{% if section.settings.ver_effect_color != 'none' %} rb__effect--{{ section.settings.ver_effect_color }}{% endif %}{% endif %}" style="padding-top:{{ 1 | divided_by: section.settings[ver_image_index].aspect_ratio | times: 100}}%;">    
+            {%- endif -%}
+              {%- assign img_url = section.settings[ver_image_index] | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <img class="img-responsive w100 lazyload img-abs" data-aspectratio="{{ section.settings[ver_image_index].aspect_ratio }}"
+                data-src="{{ img_url }}"
+                data-sizes="auto"
+                alt="{{ section.settings[ver_image_index].alt | escape }}"{% include 'img-one-pixel' %}/>
+            {%- if section.settings[ver_url_index] != blank -%}
+              </a>
+            {%- else -%}
+              </div>    
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+    {%- endcapture -%}
+
+    <div class="section__inner col-xs-12">
+      {%- if section.settings.heading != blank -%}
+      <div class="section__heading{% if section.settings.sub_title != blank %} section__heading--with-sub{% endif %}">
+        <h2 class="section__title__text dib">{{ section.settings.heading | replace: '<hl>','<span class="section__title__highline">' | replace: '</hl>','</span>' | raw }}</h2>
+        {% if section.settings.sub_title != blank %}
+          <h3 class="section__sub-title w100">{{ section.settings.sub_title | raw }}</h3>
+        {% endif %}
+      </div>
+      {%- endif -%}
+
+      <div class="section__content row">
+        {%- assign banner_style_inline = '' -%}
+        {%- assign banner_style_inline_desktop = '' -%}
+        {%- capture rich-banner-main -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- if section.settings.enable_slider -%}
+            {%- assign item_size = section.settings.item_size -%}
+            {%- assign item_size_number = 1 -%}
+            {%- if item_size == 'small' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-20' -%}
+              {%- assign item_size_number = 5 -%}
+            {%- elsif item_size == 'medium' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-3' -%}
+              {%- assign item_size_number = 4 -%}
+            {%- elsif item_size == 'large' -%}
+              {%- assign item_size_class = 'col-xs-6 col-sm-4' -%}
+              {%- assign item_size_number = 3 -%}
+            {%- elsif item_size == 'very-large' -%}
+              {%- assign item_size_class = 'col-xs-12 col-sm-6' -%}
+              {%- assign item_size_number = 2 -%}
+            {%- else -%}
+              {%- assign item_size_class = 'col-xs-12' -%}
+              {%- assign item_size_number = 1 -%}  
+            {%- endif -%}
+            {%- assign item_size_number_mobile = 1 -%} 
+            {%- assign lazyload_index = item_size_number -%}
+            {%- assign lazyload_index_mobile = 1 -%}
+            {%- if section.settings.autoplay_slider -%}
+              {%- assign arrow_mobile = '"arrows":false,' -%}
+            {%- else -%}
+              {%- assign arrow_mobile = '' -%}  
+            {%- endif -%}
+            {%- if item_size == 'full' -%}
+              {%- assign slide_effect = '"fade":true,'-%}
+            {%- else -%}
+              {%- assign slide_effect = '"fade":false,'-%}  
+            {%- endif -%}
+            {%- assign data_slider = '{"adaptiveHeight":true,' | append: slide_effect | append: '"speed":500,"slide":".slide","infinite":true,"swipe":true,"swipeToSlide":true,"slidesToShow":' | append: item_size_number | append: ',"slidesToScroll":' | append: item_size_number | append: ',"responsive":[{"breakpoint": 768,"settings":{' | append: arrow_mobile | append: '"slidesToShow": ' | append: item_size_number_mobile | append: ',"slidesToScroll":' | append: item_size_number_mobile | append: ',"slide":".slide-mobile"}},{"breakpoint":1200,"settings":{"fade":false}}]' -%}
+            {%- if section.settings.autoplay_slider -%}
+              {%- assign speed_slider = section.settings.autoplay_speed_slider | times: 1000 -%}
+              {%- assign data_slider = data_slider | append: ',"autoplay":true' -%}
+              {%- assign data_slider = data_slider | append: ',"autoplaySpeed":' | append: speed_slider -%}
+            {%- endif -%}
+            {%- unless section.settings.arrow_slider -%}
+              {%- assign data_slider = data_slider | append: ',"arrows":false' -%}
+            {%- endunless -%}
+            {%- if section.settings.arrow_dots -%}
+              {%- assign data_slider = data_slider | append: ',"dots":true' -%}
+            {%- endif -%}
+            {%- assign data_slider = data_slider | append: '}' -%}
+          {%- else -%}
+            {%- assign lazyload_index = 2 -%}
+            {%- assign lazyload_index_mobile = 2 -%}
+          {%- endif -%}
+          <div class="flex flex-wrap{% if section.settings.full_wide %} grid--wide{% endif %}{% if section.settings.enable_slider %} use-slider wait-mobile{% if section.settings.full_wide %} slick--arrow-bottom{% endif %}{% endif %}"{% if section.settings.enable_slider %} data-slider='{{ data_slider }}' style="margin-left:0;margin-right:0;"{% endif %}>
+          {%- assign current_index_tb = 0 -%}  
+          {%- assign current_index_mobile = 0 -%}  
+          {%- for block in section.blocks -%}
+            {%- include 'rich-banner-gutter-style' -%}
+            {%- assign item_size = block.settings.item_size -%}
+            {%- assign slider_class = '' -%}
+            {%- unless block.settings.hide_on_desktop -%}
+              {%- assign slider_class = slider_class | append: ' ' | append: 'slide' -%}
+              {%- assign current_index_tb = current_index_tb | plus: 1 -%}
+            {%- endunless -%}
+            {%- unless block.settings.hide_on_mobile -%}
+              {%- assign slider_class = slider_class | append: ' ' | append: 'slide-mobile' -%}
+              {%- assign current_index_mobile = current_index_mobile | plus: 1 -%}
+            {%- endunless -%}
+            {%- include block.type -%}
+          {%- endfor -%}
+          </div>
+        {%- endif -%}
+        {%- endcapture -%}
+
+        <div class="col-xs-12{% if section.settings.full_wide %} no-gutter{% endif %}">
+          {%- if section.settings.ver_banner_enable and ver_banner != blank -%}
+            {%- if section.settings.ver_banner_pos == 'left' -%}
+              {{ ver_banner }}
+            {%- endif -%}
+            {%- assign gutter_class_main = ' no-gutter' -%}
+            {%- if section.settings.ver_banner_enable and ver_banner != blank -%}
+              {%- unless section.settings.ver_banner_no_distance -%}
+                {%- if section.settings.ver_banner_pos == 'left' -%}
+                  {%- assign gutter_class_main = ' no-gutter-right-tb no-gutter-left-mb no-gutter-right-mb gutter-ele-top-mb' -%}
+                {%- else -%}
+                  {%- assign gutter_class_main = ' no-gutter-left-tb no-gutter-left-mb no-gutter-right-mb gutter-ele-bottom-mb' -%}  
+                {%- endif -%}
+              {%- endunless -%}  
+            {%- endif -%}
+            <div class="col-xs-12{% unless section.settings.ver_banner_enable and ver_banner != blank %} col-sm-12{% else %} col-sm-{{ 12 | minus: section.settings.ver_banner_width }}{% if enable_rtl and section.settings.revert_in_rtl and section.settings.ver_banner_pos == 'right' %} f-right{% endif %}{% endunless %}{{ gutter_class_main }}">
+              {{ rich-banner-main }}
+            </div>
+            {%- if section.settings.ver_banner_pos == 'right' -%}
+              {{ ver_banner }}
+            {%- endif -%}
+          {%- else -%}
+            {{ rich-banner-main }}  
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% style %}{{ banner_style_inline }}@media(min-width:992px){ {{ banner_style_inline_desktop }} }{% endstyle %}
+{%- include 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "Banner Creator Pro",
+    "class": "rich-banner-section section",
+    "max_blocks": 10,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/banner-and-image/banner-creator-pro)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Name",
+        "info": "This field is only used to help you find the section in Theme Settings easily. It will not be shown at the storefront."
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Create your own banner now!"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_wide",
+        "label": "Full width",
+        "info": "If you enable this option, the \"Wide display\" option will be ignored."
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden_mobile",
+        "label": "Hide this section in mobile screen",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "revert_in_rtl",
+        "label": "Revert the left and right position in the RTL layout",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "lcp_is_image",
+        "label": "Is the LCP element an image?",
+        "default": false,
+        "info": "View [this page](https://web.dev/largest-contentful-paint/#largest-contentful-paint-defined) for more details about the LCP element."
+      },
+      {
+        "type": "header",
+        "content": "Slider settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_slider",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "item_size",
+        "label": "Banner Item Size",
+        "info": "In the slider format, the size of each item will be ignored. All items will have the same size, and you can change it in this option.",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "very-large",
+            "label": "Very Large"
+          },
+          {
+            "value": "full",
+            "label": "Full Width"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "type": "checkbox",
+        "id": "autoplay_slider",
+        "label": "Enable autoplay",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "autoplay_speed_slider",
+        "label": "Autoplay speed",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "unit": "s",
+        "default": 7,
+        "info": "Unit: seconds"
+      },
+      {
+        "type": "checkbox",
+        "id": "arrow_slider",
+        "label": "Show arrow",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "arrow_dots",
+        "label": "Show dot indicators",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Small vertical banners"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_banner_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "ver_banner_width",
+        "label": "Width",
+        "min": 3,
+        "max": 5,
+        "step": 1,
+        "unit": "col",
+        "default": 3
+      },
+      {
+        "type": "radio",
+        "id": "ver_banner_pos",
+        "label": "Position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_banner_no_distance",
+        "label": "Remove the distance with the main banners",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "--------- Effects --------"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "A. Transition effects"
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_zoom",
+        "label": "Zoom in",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_slide",
+        "label": "Flash slide",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "ver_effect_trans_border",
+        "label": "Border",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "B. Color effects"
+      },
+      {
+        "type": "select",
+        "id": "ver_effect_color",
+        "label": "Choose effect",
+        "options": [
+          {
+            "value": "blur",
+            "label": "Blur"
+          },
+          {
+            "value": "brightness",
+            "label": "Brightness"
+          },
+          {
+            "value": "contrast",
+            "label": "Contrast"
+          },
+          {
+            "value": "drop-shadow",
+            "label": "Drop shadow"
+          },
+          {
+            "value": "grayscale",
+            "label": "Grayscale"
+          },
+          {
+            "value": "hue-rotate",
+            "label": "Hue rotate"
+          },
+          {
+            "value": "invert",
+            "label": "Invert"
+          },
+          {
+            "value": "opacity",
+            "label": "Opacity"
+          },
+          {
+            "value": "saturate",
+            "label": "Saturate"
+          },
+          {
+            "value": "sepia",
+            "label": "Sepia"
+          },
+          {
+            "value": "contrast-brightness",
+            "label": "Contrast brightness"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 1 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_1",
+        "label": "Banner 1"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_1",
+        "label": "Url"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 2 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_2",
+        "label": "Banner 2"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_2",
+        "label": "Url"
+      },
+      {
+        "type": "paragraph",
+        "content": "------ Banner 3 -----"
+      },
+      {
+        "type": "image_picker",
+        "id": "ver_banner_3",
+        "label": "Banner 3"
+      },
+      {
+        "type": "url",
+        "id": "ver_banner_url_3",
+        "label": "Url"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "rich-banner-text",
+        "name": "Banner with text",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "select",
+            "id": "template",
+            "label": "Template",
+            "default": "inside",
+            "options": [
+              {
+                "value": "bottom",
+                "label": "Image top - Text bottom"
+              },
+              {
+                "value": "top",
+                "label": "Image bottom - Text top"
+              },
+              {
+                "value": "right",
+                "label": "Image left - Text right"
+              },
+              {
+                "value": "left",
+                "label": "Image right - Text left"
+              },
+              {
+                "value": "inside",
+                "label": "Text inside image"
+              },
+              {
+                "value": "only_text",
+                "label": "Only text"
+              }
+            ],
+            "info": "The position of the text relative to the image."
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile image",
+            "info": "If you leave empty on this field, the image in above field will be displayed on mobile and desktop."
+          },
+          {
+            "type": "url",
+            "id": "image_link",
+            "label": "The link for image"
+          },
+          {
+            "type": "checkbox",
+            "id": "image_link_new_tab",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the link for image is not empty"
+          },
+          {
+            "type": "select",
+            "id": "image_alignment",
+            "label": "Image alignment",
+            "info": "only affect when the image does not fit the banner box.",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide this banner on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide this banner on desktop",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "bkg_banner_enable",
+            "label": "Enable background color",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_banner",
+            "label": "Background color for banner"
+          },
+          {
+            "type": "checkbox",
+            "id": "text_effect_enable",
+            "label": "Enable text effect in the slider",
+            "default": true
+          },
+          {
+            "type": "header",
+            "content": "Effects"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "paragraph",
+            "content": "----- A. Transition effects -----"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_zoom",
+            "label": "Zoom in",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_slide",
+            "label": "Flash slide",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_border",
+            "label": "Border",
+            "default": true
+          },
+          {
+            "type": "paragraph",
+            "content": "----- B. Color effects -----"
+          },
+          {
+            "type": "select",
+            "id": "effect_color",
+            "label": "Choose effect",
+            "options": [
+              {
+                "value": "blur",
+                "label": "Blur"
+              },
+              {
+                "value": "brightness",
+                "label": "Brightness"
+              },
+              {
+                "value": "contrast",
+                "label": "Contrast"
+              },
+              {
+                "value": "drop-shadow",
+                "label": "Drop shadow"
+              },
+              {
+                "value": "grayscale",
+                "label": "Grayscale"
+              },
+              {
+                "value": "hue-rotate",
+                "label": "Hue rotate"
+              },
+              {
+                "value": "invert",
+                "label": "Invert"
+              },
+              {
+                "value": "opacity",
+                "label": "Opacity"
+              },
+              {
+                "value": "saturate",
+                "label": "Saturate"
+              },
+              {
+                "value": "sepia",
+                "label": "Sepia"
+              },
+              {
+                "value": "contrast-brightness",
+                "label": "Contrast brightness"
+              },
+              {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "default": "none"
+          },
+          {
+            "type": "header",
+            "content": "Layout Settings"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width_mobile",
+            "label": "Image box width in mobile",
+            "default": 12,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width_tb",
+            "label": "Image box width tablet",
+            "default": 12,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width",
+            "label": "Image box width in desktop",
+            "default": 12,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "text_box_width_mobile",
+            "label": "Text box width in mobile",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "text_box_width_tb",
+            "label": "Text box width in tablet",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 10
+          },
+          {
+            "type": "range",
+            "id": "text_box_width",
+            "label": "Text box width in desktop",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 8
+          },
+          {
+            "type": "checkbox",
+            "id": "ver_align_text_box",
+            "label": "Align text box in the vertical center",
+            "default": false,
+            "info": "Only affect when \"Template\" is \"Image left - Text right\" or \"Image right - Text left\"."
+          },
+          {
+            "type": "header",
+            "content": "Inside template settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Template\" is \"Inside\""
+          },
+          {
+            "type": "checkbox",
+            "id": "box_wrap",
+            "label": "Wrap the text box in a container",
+            "default": false
+          },
+          
+          {
+            "type": "select",
+            "id": "standard_pos",
+            "label": "Standard position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "paragraph",
+            "content": "==== Custom positions ===="
+          },
+          {
+            "type": "checkbox",
+            "id": "custom_pos",
+            "label": "Use custom position",
+            "info": "If you would not like to use the standard positions, you can you can create the custom position by yourself."
+          },
+          {
+            "type": "range",
+            "id": "pos_left",
+            "label": "Text box left position",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_top",
+            "label": "Text box top position",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Own Background for Texts"
+          },
+          {
+            "type": "checkbox",
+            "id": "text_bkg_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "text_bkg_color",
+            "label": "Background Color"
+          },
+          {
+            "type": "range",
+            "id": "text_bkg_opacity",
+            "label": "Opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 100
+          },
+          {
+            "type": "radio",
+            "id": "text_bkg_layout",
+            "label": "Layout",
+            "options": [
+              {
+                "value": "inside",
+                "label": "Inside"
+              },
+              {
+                "value": "outside",
+                "label": "Outside"
+              }
+            ],
+            "default": "inside"
+          },
+          {
+            "type": "image_picker",
+            "id": "text_bkg_image",
+            "label": "Background Image"
+          },
+          {
+            "type": "header",
+            "content": "Text 1 Settings"
+          },
+          {
+            "type": "html",
+            "id": "text_1",
+            "label": "Text 1",
+            "info": "Note : the breaklines are only applied when the text is displayed as \"paragraph\""
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile_text_1",
+            "label": "Hide this text on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop_text_1",
+            "label": "Hide this text on desktop",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "format_text_1",
+            "label": "Display as",
+            "options": [
+              {
+                "value": "button",
+                "label": "Button"
+              },
+              {
+                "value": "link",
+                "label": "Link"
+              },
+              {
+                "value": "text-line",
+                "label": "Paragraph"
+              },
+              {
+                "value": "paragraph",
+                "label": "HTML block"
+              },
+              {
+                "value": "countdown",
+                "label": "Countdown timer"
+              },
+              {
+                "value": "h1",
+                "label": "H1 tag"
+              },
+              {
+                "value": "h2",
+                "label": "H2 tag"
+              },
+              {
+                "value": "h3",
+                "label": "H3 tag"
+              },
+              {
+                "value": "h4",
+                "label": "H4 tag"
+              },
+              {
+                "value": "h5",
+                "label": "H5 tag"
+              },
+              {
+                "value": "h6",
+                "label": "H6 tag"
+              }
+            ],
+            "default": "text-line"
+          },
+          {
+            "type": "url",
+            "id": "url_text_1",
+            "label": "Link for text",
+            "info": "Only affect when \"Display as\" is \"Button\" or \"Link\""
+          },
+          {
+            "type": "checkbox",
+            "id": "new_tab_text_1",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the \"Link for text\" is applied"
+          },
+          {
+            "type": "select",
+            "id": "alignment_text_1",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "color_text_1",
+            "label": "Color",
+            "info": "If you choose to display the text as \"Countdown timer\", this setting will be applied for for the numbers."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Button settings --------"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "select",
+            "id": "button_style_text_1",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1",
+            "info": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "range",
+            "id": "button_radius_text_1",
+            "label": "Radius button",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "button_icon_text_1",
+            "label": "Include Icon",
+            "info": "Go to [this page](https://boostheme.com/vodoma/icons) to copy an icon class and paste into this field."
+          },
+          {
+            "type": "paragraph",
+            "content": "---- Countdown timer settings ----"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Countdown timer\""
+          },
+          {
+            "type": "color",
+            "id": "countdown_color_text_1",
+            "label": "Text color",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "countdown_bkg_text_1",
+            "label": "Background color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "countdown_extend_text_1",
+            "label": "Extend days",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "day",
+            "default": 0,
+            "info": "The number of days to reset countdown timer after expired."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Desktop styles --------"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_text_1",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_text_1",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_text_1",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_text_1",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_text_1",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_text_1",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_text_1",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_text_1",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_text_1",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Mobile styles --------"
+          },
+          {
+            "type": "checkbox",
+            "id": "extend_style_text_1",
+            "label": "Extend from desktop styles settings",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mobile_text_1",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mobile_text_1",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_mobile_text_1",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_mobile_text_1",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile_text_1",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile_text_1",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_mobile_text_1",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_mobile_text_1",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_mobile_text_1",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "header",
+            "content": "For developer"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_text_1",
+            "label": "Custom css class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          },
+          {
+            "type": "header",
+            "content": "Text 2 Settings"
+          },
+          {
+            "type": "html",
+            "id": "text_2",
+            "label": "Text 2",
+            "info": "Note : the breaklines are only applied when the text is displayed as \"paragraph\""
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile_text_2",
+            "label": "Hide this text on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop_text_2",
+            "label": "Hide this text on desktop",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "format_text_2",
+            "label": "Display as",
+            "options": [
+              {
+                "value": "button",
+                "label": "Button"
+              },
+              {
+                "value": "link",
+                "label": "Link"
+              },
+              {
+                "value": "text-line",
+                "label": "Paragraph"
+              },
+              {
+                "value": "paragraph",
+                "label": "HTML block"
+              },
+              {
+                "value": "countdown",
+                "label": "Countdown timer"
+              },
+              {
+                "value": "h1",
+                "label": "H1 tag"
+              },
+              {
+                "value": "h2",
+                "label": "H2 tag"
+              },
+              {
+                "value": "h3",
+                "label": "H3 tag"
+              },
+              {
+                "value": "h4",
+                "label": "H4 tag"
+              },
+              {
+                "value": "h5",
+                "label": "H5 tag"
+              },
+              {
+                "value": "h6",
+                "label": "H6 tag"
+              }
+            ],
+            "default": "text-line"
+          },
+          {
+            "type": "url",
+            "id": "url_text_2",
+            "label": "Link for text",
+            "info": "Only affect when \"Display as\" is \"Button\" or \"Link\""
+          },
+          {
+            "type": "checkbox",
+            "id": "new_tab_text_2",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the \"Link for text\" is applied"
+          },
+          {
+            "type": "select",
+            "id": "alignment_text_2",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "color_text_2",
+            "label": "Color",
+            "info": "If you choose to display the text as \"Countdown timer\", this setting will be applied for for the numbers."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Button settings --------"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "select",
+            "id": "button_style_text_2",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1",
+            "info": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "range",
+            "id": "button_radius_text_2",
+            "label": "Radius button",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "button_icon_text_2",
+            "label": "Include Icon",
+            "info": "Go to [this page](https://boostheme.com\/vodoma\/icons) to copy an icon class and paste into this field."
+          },
+          {
+            "type": "paragraph",
+            "content": "---- Countdown timer settings ----"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Countdown timer\""
+          },
+          {
+            "type": "color",
+            "id": "countdown_color_text_2",
+            "label": "Text color",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "countdown_bkg_text_2",
+            "label": "Background color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "countdown_extend_text_2",
+            "label": "Extend days",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "day",
+            "default": 0,
+            "info": "The number of days to reset countdown timer after expired."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Desktop styles --------"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_text_2",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_text_2",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_text_2",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_text_2",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_text_2",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_text_2",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_text_2",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_text_2",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_text_2",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Mobile styles --------"
+          },
+          {
+            "type": "checkbox",
+            "id": "extend_style_text_2",
+            "label": "Extend from desktop styles settings",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mobile_text_2",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mobile_text_2",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_mobile_text_2",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_mobile_text_2",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile_text_2",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile_text_2",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_mobile_text_2",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_mobile_text_2",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_mobile_text_2",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "header",
+            "content": "For developer"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_text_2",
+            "label": "Custom css class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          },
+          {
+            "type": "header",
+            "content": "Text 3 Settings"
+          },
+          {
+            "type": "html",
+            "id": "text_3",
+            "label": "Text 3",
+            "info": "Note : the breaklines are only applied when the text is displayed as \"paragraph\""
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile_text_3",
+            "label": "Hide this text on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop_text_3",
+            "label": "Hide this text on desktop",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "format_text_3",
+            "label": "Display as",
+            "options": [
+              {
+                "value": "button",
+                "label": "Button"
+              },
+              {
+                "value": "link",
+                "label": "Link"
+              },
+              {
+                "value": "text-line",
+                "label": "Paragraph"
+              },
+              {
+                "value": "paragraph",
+                "label": "HTML block"
+              },
+              {
+                "value": "countdown",
+                "label": "Countdown timer"
+              },
+              {
+                "value": "h1",
+                "label": "H1 tag"
+              },
+              {
+                "value": "h2",
+                "label": "H2 tag"
+              },
+              {
+                "value": "h3",
+                "label": "H3 tag"
+              },
+              {
+                "value": "h4",
+                "label": "H4 tag"
+              },
+              {
+                "value": "h5",
+                "label": "H5 tag"
+              },
+              {
+                "value": "h6",
+                "label": "H6 tag"
+              }
+            ],
+            "default": "text-line"
+          },
+          {
+            "type": "url",
+            "id": "url_text_3",
+            "label": "Link for text",
+            "info": "Only affect when \"Display as\" is \"Button\" or \"Link\""
+          },
+          {
+            "type": "checkbox",
+            "id": "new_tab_text_3",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the \"Link for text\" is applied"
+          },
+          {
+            "type": "select",
+            "id": "alignment_text_3",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "color_text_3",
+            "label": "Color",
+            "info": "If you choose to display the text as \"Countdown timer\", this setting will be applied for for the numbers."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Button settings --------"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "select",
+            "id": "button_style_text_3",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1",
+            "info": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "range",
+            "id": "button_radius_text_3",
+            "label": "Radius button",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "button_icon_text_3",
+            "label": "Include Icon",
+            "info": "Go to [this page](https://boostheme.com\/vodoma\/icons) to copy an icon class and paste into this field."
+          },
+          {
+            "type": "paragraph",
+            "content": "---- Countdown timer settings ----"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Countdown timer\""
+          },
+          {
+            "type": "color",
+            "id": "countdown_color_text_3",
+            "label": "Text color",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "countdown_bkg_text_3",
+            "label": "Background color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "countdown_extend_text_3",
+            "label": "Extend days",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "day",
+            "default": 0,
+            "info": "The number of days to reset countdown timer after expired."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Desktop styles --------"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_text_3",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_text_3",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_text_3",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_text_3",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_text_3",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_text_3",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_text_3",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_text_3",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_text_3",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Mobile styles --------"
+          },
+          {
+            "type": "checkbox",
+            "id": "extend_style_text_3",
+            "label": "Extend from desktop styles settings",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mobile_text_3",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mobile_text_3",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_mobile_text_3",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_mobile_text_3",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile_text_3",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile_text_3",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_mobile_text_3",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_mobile_text_3",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_mobile_text_3",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "header",
+            "content": "For developer"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_text_3",
+            "label": "Custom css class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          },
+          {
+            "type": "header",
+            "content": "Text 4 Settings"
+          },
+          {
+            "type": "html",
+            "id": "text_4",
+            "label": "Text 4",
+            "info": "Note : the breaklines are only applied when the text is displayed as \"paragraph\""
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile_text_4",
+            "label": "Hide this text on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop_text_4",
+            "label": "Hide this text on desktop",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "format_text_4",
+            "label": "Display as",
+            "options": [
+              {
+                "value": "button",
+                "label": "Button"
+              },
+              {
+                "value": "link",
+                "label": "Link"
+              },
+              {
+                "value": "text-line",
+                "label": "Paragraph"
+              },
+              {
+                "value": "paragraph",
+                "label": "HTML block"
+              },
+              {
+                "value": "countdown",
+                "label": "Countdown timer"
+              },
+              {
+                "value": "h1",
+                "label": "H1 tag"
+              },
+              {
+                "value": "h2",
+                "label": "H2 tag"
+              },
+              {
+                "value": "h3",
+                "label": "H3 tag"
+              },
+              {
+                "value": "h4",
+                "label": "H4 tag"
+              },
+              {
+                "value": "h5",
+                "label": "H5 tag"
+              },
+              {
+                "value": "h6",
+                "label": "H6 tag"
+              }
+            ],
+            "default": "text-line"
+          },
+          {
+            "type": "url",
+            "id": "url_text_4",
+            "label": "Link for text",
+            "info": "Only affect when \"Display as\" is \"Button\" or \"Link\""
+          },
+          {
+            "type": "checkbox",
+            "id": "new_tab_text_4",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the \"Link for text\" is applied"
+          },
+          {
+            "type": "select",
+            "id": "alignment_text_4",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "color_text_4",
+            "label": "Color",
+            "info": "If you choose to display the text as \"Countdown timer\", this setting will be applied for for the numbers."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Button settings --------"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "select",
+            "id": "button_style_text_4",
+            "label": "Button style",
+            "options": [
+              {
+                "value": "style1",
+                "label": "Style 1"
+              },
+              {
+                "value": "style2",
+                "label": "Style 2"
+              },
+              {
+                "value": "style3",
+                "label": "Style 3"
+              }
+            ],
+            "default": "style1",
+            "info": "Only affect when \"Display as\" is \"Button\""
+          },
+          {
+            "type": "range",
+            "id": "button_radius_text_4",
+            "label": "Radius button",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "button_icon_text_4",
+            "label": "Include Icon",
+            "info": "Go to [this page](https://boostheme.com\/vodoma\/icons) to copy an icon class and paste into this field."
+          },
+          {
+            "type": "paragraph",
+            "content": "---- Countdown timer settings ----"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Display as\" is \"Countdown timer\""
+          },
+          {
+            "type": "color",
+            "id": "countdown_color_text_4",
+            "label": "Text color",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "countdown_bkg_text_4",
+            "label": "Background color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "countdown_extend_text_4",
+            "label": "Extend days",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "day",
+            "default": 0,
+            "info": "The number of days to reset countdown timer after expired."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Desktop styles --------"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_text_4",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_text_4",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_text_4",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_text_4",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_text_4",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_text_4",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_text_4",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_text_4",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_text_4",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "paragraph",
+            "content": "-------- Mobile styles --------"
+          },
+          {
+            "type": "checkbox",
+            "id": "extend_style_text_4",
+            "label": "Extend from desktop styles settings",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mobile_text_4",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mobile_text_4",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_left_mobile_text_4",
+            "label": "Gutter left",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "gutter_right_mobile_text_4",
+            "label": "Gutter right",
+            "min": 0,
+            "max": 60,
+            "unit": "px",
+            "default": 37
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile_text_4",
+            "label": "Font size",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 15,
+            "info": "leave zero to use default font size in Theme settings > color & font size"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile_text_4",
+            "label": "Line height",
+            "min": 0,
+            "max": 100,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_mobile_text_4",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_mobile_text_4",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "range",
+            "id": "letter_spacing_mobile_text_4",
+            "label": "Letter spacing",
+            "min": -1,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 0,
+            "info": "Leave -1 to use \"normal\" value."
+          },
+          {
+            "type": "header",
+            "content": "For developer"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_text_4",
+            "label": "Custom css class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          }
+        ]
+      },
+      {
+        "type": "rich-banner-link-list",
+        "name": "Banner with link list",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "select",
+            "id": "template",
+            "label": "Template",
+            "default": "bottom",
+            "options": [
+              {
+                "value": "bottom",
+                "label": "Image top - Link list bottom"
+              },
+              {
+                "value": "top",
+                "label": "Image bottom - Link list top"
+              },
+              {
+                "value": "right",
+                "label": "Image left - Link list right"
+              },
+              {
+                "value": "left",
+                "label": "Image right - Link list left"
+              },
+              {
+                "value": "inside",
+                "label": "Link list inside image"
+              }
+            ],
+            "info": "The position of the text relative to the image."
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile image",
+            "info": "If you leave empty on this field, the image in above field will be displayed on mobile and desktop."
+          },
+          {
+            "type": "url",
+            "id": "image_link",
+            "label": "The link for image"
+          },
+          {
+            "type": "checkbox",
+            "id": "image_link_new_tab",
+            "label": "Open link in new tab",
+            "default": false,
+            "info": "Only affect when the link for image is not empty"
+          },
+          {
+            "type": "select",
+            "id": "image_alignment",
+            "label": "Image alignment",
+            "info": "only affect when the image does not fit the banner box.",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "checkbox",
+            "id": "bkg_banner_enable",
+            "label": "Enable background color",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_banner",
+            "label": "Background color for banner"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide this banner on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide this banner on desktop",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "The content"
+          },
+          {
+            "type": "text",
+            "id": "link_list_title",
+            "label": "Link list title"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_title_on_mobile",
+            "label": "Hide title on mobile",
+            "default": false
+          },
+          {
+            "type": "link_list",
+            "id": "link_list",
+            "label": "Link list"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_link_list_on_mobile",
+            "label": "Hide link list on mobile",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Effects"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "paragraph",
+            "content": "----- A. Transition effects -----"
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_zoom",
+            "label": "Zoom in",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_slide",
+            "label": "Flash slide",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "effect_trans_border",
+            "label": "Border",
+            "default": true
+          },
+          {
+            "type": "paragraph",
+            "content": "----- B. Color effects -----"
+          },
+          {
+            "type": "select",
+            "id": "effect_color",
+            "label": "Choose effect",
+            "options": [
+              {
+                "value": "blur",
+                "label": "Blur"
+              },
+              {
+                "value": "brightness",
+                "label": "Brightness"
+              },
+              {
+                "value": "contrast",
+                "label": "Contrast"
+              },
+              {
+                "value": "drop-shadow",
+                "label": "Drop shadow"
+              },
+              {
+                "value": "grayscale",
+                "label": "Grayscale"
+              },
+              {
+                "value": "hue-rotate",
+                "label": "Hue rotate"
+              },
+              {
+                "value": "invert",
+                "label": "Invert"
+              },
+              {
+                "value": "opacity",
+                "label": "Opacity"
+              },
+              {
+                "value": "saturate",
+                "label": "Saturate"
+              },
+              {
+                "value": "sepia",
+                "label": "Sepia"
+              },
+              {
+                "value": "contrast-brightness",
+                "label": "Contrast brightness"
+              },
+              {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "default": "none"
+          },
+          {
+            "type": "header",
+            "content": "Layout Settings"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width_mobile",
+            "label": "Image box width in mobile",
+            "default": 12,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width_tb",
+            "label": "Image box width tablet",
+            "default": 8,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "image_box_width",
+            "label": "Image box width in desktop",
+            "default": 6,
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "link_list_box_width_mobile",
+            "label": "Link list box width in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "link_list_box_width_tb",
+            "label": "Link list box width",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 8
+          },
+          {
+            "type": "range",
+            "id": "link_list_box_width",
+            "label": "Link list box width",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "unit": "col",
+            "default": 8
+          },
+          {
+            "type": "checkbox",
+            "id": "link_list_two_col",
+            "label": "Show the link list in 2 columns",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "ver_align_link_list",
+            "label": "Align link list in the vertical center",
+            "default": false,
+            "info": "Only affect when template is \"Image left - Link list right\" or \"Image right - Link list left\"."
+          },
+          {
+            "type": "header",
+            "content": "Label"
+          },
+          {
+            "type": "color",
+            "id": "link_list_color_label",
+            "label": "Text color",
+            "default": "#fff"
+          },
+          {
+            "type": "color",
+            "id": "link_list_bkg_label",
+            "label": "Background color",
+            "default": "#d9121f"
+          },
+          {
+            "type": "header",
+            "content": "Inside template settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "Only affect when \"Template\" is \"Inside\""
+          },
+          {
+            "type": "checkbox",
+            "id": "box_wrap",
+            "label": "Wrap the link list box in a container",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "standard_pos",
+            "label": "Standard position",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "Top left"
+              },
+              {
+                "value": "top-center",
+                "label": "Top center"
+              },
+              {
+                "value": "top-right",
+                "label": "Top right"
+              },
+              {
+                "value": "center-left",
+                "label": "Center left"
+              },
+              {
+                "value": "center-center",
+                "label": "Center center"
+              },
+              {
+                "value": "center-right",
+                "label": "Center right"
+              },
+              {
+                "value": "bottom-left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom-center",
+                "label": "Bottom center"
+              },
+              {
+                "value": "bottom-right",
+                "label": "Bottom right"
+              }
+            ],
+            "default": "center-center"
+          },
+          {
+            "type": "paragraph",
+            "content": "==== Custom positions ===="
+          },
+          {
+            "type": "checkbox",
+            "id": "custom_pos",
+            "label": "Use custom position",
+            "info": "If you would not like to use the standard positions, you can you can create the custom position by yourself."
+          },
+          {
+            "type": "range",
+            "id": "pos_left",
+            "label": "Link list box left position",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "pos_top",
+            "label": "Link list box top position",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Own Background for Link List"
+          },
+          {
+            "type": "checkbox",
+            "id": "link_list_bkg_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "link_list_bkg_color",
+            "label": "Background Color"
+          },
+          {
+            "type": "range",
+            "id": "link_list_bkg_opacity",
+            "label": "Opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "default": 100
+          },
+          {
+            "type": "image_picker",
+            "id": "link_list_bkg_image",
+            "label": "Background Image"
+          },
+          {
+            "type": "header",
+            "content": "Link list title settings"
+          },
+          {
+            "type": "select",
+            "id": "alignment_title",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_title",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 30,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_title",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 30,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "font_size_title_mb",
+            "label": "Font size on mobile",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "font_size_title",
+            "label": "Font size on tablet and desktop",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "line_height_title_mb",
+            "label": "Line height on mobile",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 24,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "range",
+            "id": "line_height_title",
+            "label": "Line height on desktop and tablet",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_title",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_title",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "color",
+            "id": "color_title",
+            "label": "Color"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_title",
+            "label": "Custom CSS class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          },
+          {
+            "type": "header",
+            "content": "Link list settings"
+          },
+          {
+            "type": "select",
+            "id": "alignment_link_list",
+            "label": "Alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "alignment_link_list_mobile",
+            "label": "Alignment in mobile",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_link_list",
+            "label": "Gutter top",
+            "min": 0,
+            "max": 30,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_link_list",
+            "label": "Gutter bottom",
+            "min": 0,
+            "max": 30,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "font_size_link_list_mb",
+            "label": "Font size on mobile",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "range",
+            "id": "line_height_link_list_mb",
+            "label": "Line height on mobile",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "range",
+            "id": "font_size_link_list",
+            "label": "Font size on tablet and desktop",
+            "min": 1,
+            "max": 70,
+            "unit": "px",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "line_height_link_list",
+            "label": "Line height on tablet and desktop",
+            "min": 0,
+            "max": 70,
+            "unit": "px",
+            "default": 27,
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_dim_line-height.asp) to get more about line height in css"
+          },
+          {
+            "type": "select",
+            "id": "font_style_link_list",
+            "label": "Font Style",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "italic",
+                "label": "Italic"
+              },
+              {
+                "value": "oblique",
+                "label": "Oblique"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_font-style.asp) for more details about font style"
+          },
+          {
+            "type": "select",
+            "id": "font_weight_link_list",
+            "label": "Font Weight",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "bold",
+                "label": "Bold"
+              },
+              {
+                "value": "bolder",
+                "label": "Bolder"
+              },
+              {
+                "value": "lighter",
+                "label": "Lighter"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              },
+              {
+                "value": "inherit",
+                "label": "Inherit"
+              }
+            ],
+            "default": "normal",
+            "info": "You can refer [w3schools](https://www.w3schools.com/cssref/pr_font_weight.asp) for more details about font style"
+          },
+          {
+            "type": "color",
+            "id": "color_link_list",
+            "label": "Color"
+          },
+          {
+            "type": "text",
+            "id": "custom_class_link_list",
+            "label": "Custom CSS class",
+            "info": "Tips: Add \"secondary-font\" class to display the text in the secondary font. You can change the secondary font in Theme Settings > Google Fonts."
+          }
+        ]
+      },
+      {
+        "type": "rich-banner-product",
+        "name": "Product",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Pick a product"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide on desktop",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "bkg_banner_enable",
+            "label": "Enable background color",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_banner",
+            "label": "Background color for banner"
+          },
+          {
+            "type": "header",
+            "content": "Product settings"
+          },
+          {
+            "type": "select",
+            "id": "main_thumbnail",
+            "label": "Show main thumbnail by",
+            "options": [
+              {
+                "value": "product_image",
+                "label": "Featured product image"
+              },
+              {
+                "value": "variant_image",
+                "label": "First available variant image"
+              }
+            ],
+            "default": "product_image"
+          },
+          {
+            "type": "text",
+            "id": "image_size",
+            "label": "Image Size",
+            "default": "250x"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_label",
+            "label": "Show label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_cart_btn",
+            "label": "Show Add to cart button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_qs_btn",
+            "label": "Show Quick Shop button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_compare_btn",
+            "label": "Show Compare button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_wishlist_btn",
+            "label": "Show wishlist button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_review_stars",
+            "label": "Show review stars",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_product_options",
+            "label": "Enable Product Options",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_countdown_timer",
+            "label": "Show countdown timer",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_vendor",
+            "label": "Show product vendors",
+            "default": false
+          },
+          {
+            "type": "range",
+            "id": "product_name_size",
+            "label": "Product name's size",
+            "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+            "min": 0,
+            "max": 30,
+            "default": 5,
+            "step": 1
+          }
+        ]
+      },
+      {
+        "type": "rich-banner-collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Pick a collection"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_bkg",
+            "label": "Enable background",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_title",
+            "label": "Title background",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "color_title",
+            "label": "Title color",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "font_size",
+            "label": "Font size",
+            "min": 10,
+            "max": 30,
+            "step": 1,
+            "unit": "px",
+            "default": 18
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide on desktop",
+            "default": false
+          }
+        ]
+      },
+      {
+        "type": "rich-banner-product-list",
+        "name": "Product List",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "subtitle",
+            "label": "Subheading"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide on desktop",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "HTML Tags"
+          },
+          {
+            "type": "paragraph",
+            "content": "Pick the HTML tags to display heading and subheading for optimizing SEO on your store."
+          },
+          {
+            "type": "select",
+            "id": "heading_tag",
+            "label": "Heading",
+            "options": [
+              {
+                "value": "h1",
+                "label": "H1"
+              },
+              {
+                "value": "h2",
+                "label": "H2"
+              },
+              {
+                "value": "h3",
+                "label": "H3"
+              },
+              {
+                "value": "h4",
+                "label": "H4"
+              },
+              {
+                "value": "h5",
+                "label": "H5"
+              },
+              {
+                "value": "h6",
+                "label": "H6"
+              },
+              {
+                "value": "p",
+                "label": "Paragraph"
+              }
+            ],
+            "default": "h2"
+          },
+          {
+            "type": "select",
+            "id": "sub_heading_tag",
+            "label": "Subheading",
+            "options": [
+              {
+                "value": "h1",
+                "label": "H1"
+              },
+              {
+                "value": "h2",
+                "label": "H2"
+              },
+              {
+                "value": "h3",
+                "label": "H3"
+              },
+              {
+                "value": "h4",
+                "label": "H4"
+              },
+              {
+                "value": "h5",
+                "label": "H5"
+              },
+              {
+                "value": "h6",
+                "label": "H6"
+              },
+              {
+                "value": "p",
+                "label": "Paragraph"
+              }
+            ],
+            "default": "h3"
+          },
+          {
+            "type": "header",
+            "content": "Colors"
+          },
+          {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Heading color",
+            "default": "#000"
+          },
+          {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Subheading color",
+            "default": "#000"
+          },
+          {
+            "type": "header",
+            "content": "Font sizes"
+          },
+          {
+            "type": "paragraph",
+            "content": "------- Mobile -------"
+          },
+          {
+            "type": "range",
+            "id": "heading_fs",
+            "label": "Heading",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 36
+          },
+          {
+            "type": "range",
+            "id": "subheading_fs",
+            "label": "Subheading",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "paragraph",
+            "content": "------- Tablet & Desktop -------"
+          },
+          {
+            "type": "range",
+            "id": "heading_fs_tb",
+            "label": "Heading",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 46
+          },
+          {
+            "type": "range",
+            "id": "subheading_fs_tb",
+            "label": "Subheading",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "header",
+            "content": "Collection settings"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Pick a collection",
+            "info": "Display the products which belong to the specified collection."
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "label": "Limit",
+            "min": 3,
+            "max": 50,
+            "step": 1,
+            "default": 3,
+            "info": "The number of products will be shown."
+          },
+          {
+            "type": "select",
+            "id": "product_item_size",
+            "label": "Choose a product item size",
+            "info": "You can change item size to change the number of products per row",
+            "options": [
+              {
+                "value": "small",
+                "label": "Small"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "large",
+                "label": "Large"
+              },
+              {
+                "value": "very-large",
+                "label": "Very Large"
+              }
+            ],
+            "default": "medium"
+          },
+          {
+            "type": "header",
+            "content": "Product item settings"
+          },
+          {
+            "type": "select",
+            "id": "main_thumbnail",
+            "label": "Show main thumbnail by",
+            "options": [
+              {
+                "value": "product_image",
+                "label": "Featured product image"
+              },
+              {
+                "value": "variant_image",
+                "label": "First available variant image"
+              }
+            ],
+            "default": "product_image"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_label",
+            "label": "Show label",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_cart_btn",
+            "label": "Show Add to cart button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_qs_btn",
+            "label": "Show Quick Shop button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_compare_btn",
+            "label": "Show Compare button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_wishlist_btn",
+            "label": "Show wishlist button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_review_stars",
+            "label": "Show review stars",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_product_options",
+            "label": "Enable Product Options",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_countdown_timer",
+            "label": "Show countdown timer",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_vendor",
+            "label": "Show product vendors",
+            "default": false
+          },
+          {
+            "type": "range",
+            "id": "product_name_size",
+            "label": "Product name's size",
+            "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+            "min": 0,
+            "max": 30,
+            "default": 5,
+            "step": 1
+          }
+        ]
+      },
+      {
+        "type": "rich-banner-video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Item size"
+          },
+          {
+            "type": "range",
+            "id": "item_size",
+            "label": "Item size",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "item_size_mobile",
+            "label": "Item size in mobile screen",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "default": 12,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in tablet and desktop"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Item gutters in mobile"
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_left_mb",
+            "label": "Left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "item_gutter_right_mb",
+            "label": "Right",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "General settings"
+          },
+          {
+            "type": "video_url",
+            "id": "video_url",
+            "label": "YouTube or Vimeo link",
+            "accept": ["youtube", "vimeo"]
+          },
+          {
+            "type": "image_picker",
+            "id": "video_thumbnail",
+            "label": "Video thumbnail",
+            "info": "The video will be played in a popup when user clicks the thumbnail"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_mobile",
+            "label": "Hide on mobile",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_on_desktop",
+            "label": "Hide on desktop",
+            "default": false
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner Creator Pro",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

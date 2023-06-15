@@ -1,0 +1,38 @@
+<div class="breadcrumbs-featured-collection bfc hidden-xs hidden-sm">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<div class="bfc__inner">
+					<ul class="list--inline">
+						{%- for i in (1..4) -%}
+							{%- assign index_bfc_image = 'breadcrumbs_collection_image_' | append: i -%}
+							{%- assign index_bfc = 'breadcrumbs_collection_' | append: i -%}
+							{%- assign bfc_collection = collections[settings[index_bfc]] -%}
+							{%- if bfc_collection -%}
+								<li class="bfc__col">
+									{%- assign bfc_image = settings[index_bfc_image] -%}
+									{%- if bfc_image != blank -%}
+										{%- assign bfc_img_url = bfc_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+										<a href="{{ bfc_collection.url }}" title="{{ bfc_collection.title | escape }}" class="flex flex-align-ver">
+											<div class="bfc__image-wrap{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} bfc__image-wrap--rtl{% endif %}">
+												<div class="dib img-container" style="padding-top:{{ 1 | divided_by: bfc_image.aspect_ratio | times: 100}}%;">
+													<img data-aspectratio="{{ bfc_image.aspect_ratio }}"
+								            data-src="{{ bfc_img_url }}"
+								            data-sizes="auto" class="w100 img-responsive center-block img-abs center-abs lazyload op1"{% include 'img-one-pixel' %} alt="{{ bfc_image.alt | escape }}" data-image-size="1x1"/>
+												</div>
+											</div>
+											<div class="text-left">
+												<span class="bfc__title db">{{ bfc_collection.title }}</span>
+												<span class="bfc__count db">{{ 'collections.general.items_with_count' | t: count: bfc_collection.all_products_count }}</span>
+											</div>
+										</a>
+									{%- endif -%}
+								</li>
+							{%- endif -%}
+						{%- endfor -%}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

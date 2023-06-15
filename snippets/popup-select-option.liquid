@@ -1,0 +1,28 @@
+<div class="modal fade selectOptionPopup" tabindex="-1" role="dialog" id="selectOptionPopup">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% include 'icon-close' with add_class: 'flex flex-align-hoz' %}</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="alert alert-danger">{{ 'products.product.select_option_message' | t }}</div>
+          </div>
+        </div>
+        <div class="row product-section-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .product-single__title--select-options {
+    font-size: 21px;
+  }
+  .selectOptionPopup span.product-price__price {
+    font-size: 17px;
+  }
+  @media(max-width:767px){
+    .product__select-opion-image {float:none;}
+  }
+</style>

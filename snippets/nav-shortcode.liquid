@@ -1,0 +1,53 @@
+{%- if str contains '{{' -%}
+{%- assign words = str | split: ' ' -%}
+{%- assign starting_sc = false -%}
+{%- assign capture_sc = '' -%}
+{%- assign sc_type = '' -%}
+{%- assign final_text = '' -%}
+{%- for word in words -%}
+	{%- if word == '{{image' or word == '{{label' or word == '{{icon' -%}
+		{%- assign starting_sc = true -%}
+		{%- assign capture_sc = '' -%}
+		{%- assign sc_type = word | replace: '{{', '' -%}
+	{%- endif -%}
+	{%- if word contains '}}' -%}
+		{%- assign starting_sc = 'end' -%}
+	{%- endif -%}
+	{%- if starting_sc == false -%}
+		{%- if final_text != '' -%}
+			{%- assign final_text  = final_text | append: ' ' -%}
+		{%- endif -%}
+		{%- assign final_text  = final_text | append: word -%}
+		{%- assign final_text  = final_text | strip -%}
+	{%- else -%}
+		{%- if starting_sc == 'end' -%}
+			{%- capture sc -%}
+				{%- assign sc_key = '{{' | append: sc_type -%}
+				{%- assign remain_texts = word | split: '}}' -%}
+				{%- assign capture_sc = capture_sc | append: ' ' | append: remain_texts[0] | strip -%}
+				{%- assign sc_final = capture_sc | replace: sc_key, '' | strip -%}
+				{%- if sc_type == 'image' -%}
+					<img src="{{ sc_final | file_img_url: 'master' }}" alt="{{ sc_final | escape }}"/>
+				{%- elsif sc_type == 'label' -%}
+					<span class="nav__item__label {{ sc_final | handleize | downcase | escape }}{% if custom_label_class %} {{ custom_label_class }}{% endif %}"{% if color or bkg %} style="{% if color %}color: {{ color  }};{% endif %}{% if bkg %}background: {{ bkg }};{% endif %}"{% endif %}>{{ sc_final }}</span>
+				{%- elsif sc_type == 'icon' -%}
+					<i class="{{ sc_final | downcase | escape }} nav__image"></i>	
+				{%- endif -%}
+			{%- endcapture -%}
+			
+			{%- assign final_text  = final_text | strip -%}
+			{%- if remain_texts.size > 1 -%}
+				{%- assign final_text  = final_text | append: sc | append: remain_texts[1] -%}
+			{%- else -%}
+				{%- assign final_text  = final_text | append: sc -%}	
+			{%- endif -%}	
+			{%- assign starting_sc = false -%}
+			{%- assign capture_sc = '' -%}
+			{%- assign sc_type = '' -%}
+		{%- else -%}
+			{%- assign capture_sc = capture_sc | append: ' ' | append: word -%}
+			{%- assign capture_sc = capture_sc | strip -%}
+		{%- endif -%}
+	{%- endif -%}
+{%- endfor -%}
+{{ final_text | strip | strip_newlines }}{%- else -%}{{ str }}{%- endif -%}

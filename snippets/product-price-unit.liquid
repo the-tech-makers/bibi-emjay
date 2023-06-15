@@ -1,0 +1,5 @@
+{%- if variant.unit_price_measurement -%}
+<span class="w100 gutter-ele{% unless is_single %}-small{% endunless %}-top product-price__unit db">
+  {%- render 'price' with variant.unit_price -%}<span class="product-price__unit__separator">/</span><span class="product-price__unit__base">{%- if variant.unit_price_measurement.reference_value != 1 -%}{{- variant.unit_price_measurement.reference_value -}}{%- endif -%}{{ variant.unit_price_measurement.reference_unit }}</span>
+</span>
+{%- endif -%}

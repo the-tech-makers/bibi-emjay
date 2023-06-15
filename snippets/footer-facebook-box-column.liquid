@@ -1,0 +1,17 @@
+{%- if block.settings.facebook_app_id != blank and block.settings.facebook_fanpage_url != blank -%}
+  {%- if block.settings.facebook_fanpage_url contains 'https://www.facebook.com' -%}
+  {%- assign facebook_fanpage_url = block.settings.facebook_fanpage_url -%}
+  {%- else -%}
+  {%- assign facebook_fanpage_url = 'https://www.facebook.com/' | append: block.settings.facebook_fanpage_url -%}
+  {%- endif -%}
+  <div class="social-app social-app--fb loading" data-app-id="{{ block.settings.facebook_app_id | escape }}" style="min-height: 50px;" data-block-id="{{ block.id }}">
+    <div id="fb-root"></div>
+    <div class="fb-page" data-href="{{ facebook_fanpage_url }}" data-small-header="false" data-adapt-container-width="true" data-hide-cover="" data-show-facepile="1">
+      <div class="fb-xfbml-parse-ignore">
+        <div cite="{{ facebook_fanpage_url }}">
+          <a href="{{ facebook_fanpage_url }}" title="{{ 'general.social.alt_text.share_on_facebook' | t | escape }}"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}  

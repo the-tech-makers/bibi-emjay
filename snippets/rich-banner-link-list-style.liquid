@@ -1,0 +1,27 @@
+{%- assign index_font_size_mb = 'font_size_' | append: index | append: '_mb' -%}
+{%- assign index_font_size = 'font_size_' | append: index -%}
+{%- assign index_font_style = 'font_style_' | append: index -%}
+{%- assign index_font_weight = 'font_weight_' | append: index -%}
+{%- assign index_color = 'color_' | append: index -%}
+{%- assign index_line_height_mb = 'line_height_' | append: index | append: '_mb' -%}
+{%- assign index_line_height = 'line_height_' | append: index -%}
+{%- assign index_gutter_top = 'gutter_top_' | append: index -%}
+{%- assign index_gutter_bottom = 'gutter_bottom_' | append: index -%}
+{%- assign index_alignment = 'alignment_' | append: index -%}
+{%- assign style = 'font-style:' | append: block.settings[index_font_style] | append: ';font-weight:' | append: block.settings[index_font_weight] | append: ';' -%}
+{%- if block.settings[index_color] != blank -%}
+	{%- assign style = style | append: 'color:' | append: block.settings[index_color] | append: ';' -%}
+{%- endif -%}
+{%- if block.settings[index_gutter_top] > 0 -%}
+	{%- assign style = style | append: 'padding-top:' | append: block.settings[index_gutter_top] | append: 'px;' -%}
+{%- endif -%}
+{%- if block.settings[index_gutter_bottom] > 0 -%}
+	{%- assign style = style | append: 'padding-bottom:' | append: block.settings[index_gutter_bottom] | append: 'px;' -%}
+{%- endif -%}
+{%- if block.settings.link_list_two_col -%}
+	{%- assign style = style | append: 'column-count:2;-moz-column-count:2;-webkit-column-count:2;column-width:50%;-webkit-column-width:50%;' -%}
+{%- endif -%}
+{%- capture banner_index_style_mb -%}.banner-item__{{ index }}-{{ block.id }}{font-size:{{ block.settings[index_font_size_mb] }}px;line-height:{{ block.settings[index_line_height_mb] }}px;}{%- endcapture -%}
+{%- assign banner_style_inline = banner_style_inline | append: banner_index_style_mb -%}
+{%- capture banner_index_style_dk -%}.banner-item__{{ index }}-{{ block.id }}{font-size:{{ block.settings[index_font_size] }}px;line-height:{{ block.settings[index_line_height] }}px;}{%- endcapture -%}
+{%- assign banner_style_inline_desktop = banner_style_inline_desktop | append: banner_index_style_dk -%}

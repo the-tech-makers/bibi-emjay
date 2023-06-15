@@ -1,0 +1,309 @@
+{%- include 'section-background-start' -%}
+<div class="container{% if section.settings.full_width %}-fluid{% endif %}{% include 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="collection-list" id="collection-list-{{ section.id }}">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- include 'section-heading' -%}
+      <div class="section__content">
+        {%- if section.blocks.size > 0 -%}
+        {% case section.settings.grid %}
+          {% when 2 %}
+            {%- assign grid_item_width = 'col-md-6' -%}
+          {% when 3 %}
+            {%- assign grid_item_width = 'col-md-4' -%}
+          {% when 4 %}
+            {%- assign grid_item_width = 'col-md-3' -%}
+          {% when 5 %}
+            {%- assign grid_item_width = 'col-md-20' -%}
+          {% when 6 %}
+            {%- assign grid_item_width = 'col-md-2' -%}  
+        {% endcase %}
+
+        {%- assign collection_color_count = blank -%}
+        {% if section.blocks.size > 1 %}
+          {%- assign grid_item_width_small = 'col-xs-6 col-sm-3' -%}
+        {% else %}
+          {%- assign grid_item_width_small = 'col-xs-12 col-sm-6' -%}
+        {% endif %}
+        {%- assign custom_title_class = 'collection-grid-item__title--' | append: section.id -%}
+        {%- assign custom_count_class = 'collection-grid-item__products_count--' | append: section.id -%}
+        {%- assign highlight_class = 'collection-grid-item__title__highlight-' | append: section.id -%}
+        {%- assign highlight_tag = '<span class="' | append: highlight_class | append: '">'-%}
+        
+        {%- if section.settings.item_style == 'style1' -%}
+          {%- assign custom_reply_btn_class = 'collection-grid-item__btn--' | append: section.id -%}
+        {%- else -%}
+          {%- assign custom_wrapper_class = 'collection-grid-item__title-wrapper--' | append: section.id -%}
+        {%- endif -%}
+        <div class="row flex"{% if section.blocks.size > 0 %} style="margin-bottom: -10px;"{% endif %}>
+          {% for block in section.blocks %}
+            <div class="{{ grid_item_width_small }} {{ grid_item_width }} grid__item" {{ block.shopify_attributes }}>
+              {%- assign collection = collections[block.settings.collection] -%}
+              {%- assign custom_title = block.settings.custom_title | replace: '<hl>', highlight_tag | replace: '</hl>','</span>' -%}
+              {%- if section.settings.item_style == 'style1' -%}
+                {% render 'collection-grid-item', collection: collection, custom_image: block.settings.custom_image, custom_title: custom_title, custom_title_class: custom_title_class, custom_count_class: custom_count_class, custom_reply_btn_class: custom_reply_btn_class, show_btn: true %}
+              {%- else -%}
+                {% render 'collection-grid-item-2' with collection as collection, custom_wrapper_class: custom_wrapper_class, custom_title: custom_title, custom_title_class: custom_title_class, custom_count_class: custom_count_class, custom_image: block.settings.custom_image %}
+              {%- endif -%}
+            </div>
+          {% endfor %}
+        </div>
+        {%- endif -%}
+
+        {% if section.blocks.size == 0 %}
+          {% render 'no-blocks' %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{%- include 'section-background-end' -%}
+{%- style -%}.{{ custom_title_class }}{color:{{ section.settings.color_title }};font-size:{{ section.settings.fs_title }}px;}.{{ highlight_class }}{color:{{ section.settings.highlight_color }};font-weight:lighter;}.{{ custom_count_class }}{color:{{ section.settings.count_color }};font-size:{{ section.settings.fs_count }}px;}
+{%- if section.settings.item_style == 'style1' -%}
+@media(min-width:1200px){.{{ custom_reply_btn_class }}{color:{{ section.settings.reply_btn_color }};background:{{ section.settings.reply_btn_bkg }};{%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}right{%- else -%}left{%- endunless -%}:10%;}.{{ custom_reply_btn_class }}:hover{color:{{ section.settings.reply_btn_bkg }};background:{{ section.settings.reply_btn_color }};} }
+{%- elsif section.settings.enable_bkg and section.settings.bkg_title != blank  -%}
+.{{ custom_wrapper_class }}{background:{{ section.settings.bkg_title | color_modify: 'alpha', 0.7 }};}
+{%- endif -%}
+{%- endstyle -%}
+{% schema %}
+  {
+    "name": "Collection list",
+    "class": "index-section collection-list dib w100",
+    "max_blocks": 12,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/collection-list-section)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection list"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Collections per row",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "radio",
+        "id": "item_style",
+        "label": "Collection item style",
+        "options": [
+          {
+            "value": "style1",
+            "label": "Style 1"
+          },
+          {
+            "value": "style2",
+            "label": "Style 2"
+          }
+        ],
+        "default": "style1"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_title",
+        "label": "Title",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight",
+        "default": "#e15679"
+      },
+      {
+        "type": "color",
+        "id": "count_color",
+        "label": "Number",
+        "default": "#a6a6a6"
+      },
+      {
+        "type": "color",
+        "id": "reply_btn_color",
+        "label": "Reply button",
+        "default": "#fff"
+      },
+       {
+        "type": "color",
+        "id": "reply_btn_bkg",
+        "label": "Reply button background",
+        "default": "#656565"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_bkg",
+        "label": "Enable title background",
+        "default": false,
+        "info": "Only work with collection item style 2."
+      },
+      {
+        "type": "color",
+        "id": "bkg_title",
+        "label": "Title background",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Font size"
+      },
+      {
+        "type": "range",
+        "id": "fs_title",
+        "label": "Collection title",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "fs_count",
+        "label": "Collection count",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      }
+    ],
+    "blocks": [
+      {
+        "type": "featured_collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "custom_image",
+            "label": "Custom image",
+            "info": "Leave empty to show the collection image or first product image in the collection."
+          },
+          {
+            "type": "text",
+            "id": "custom_title",
+            "label": "Custom title",
+            "info": "Leave empty to show the collection title. Use the \<hl\> tag to wrap your highlight text."
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection list",
+        "category": "Collection",
+        "blocks": [
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

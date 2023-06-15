@@ -1,0 +1,1031 @@
+{%- if template.suffix != 'quick_view' -%}
+<div class="product-template-section" id="ProductSection-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true">
+{%- endif -%}
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+  {%- capture description -%}
+    <div class="product-single__description rte{% if template.suffix == 'quick_view' %} product-single__description--quickview custom-scrollbar{% endif %}"{% if template.suffix == 'quick_view' %} style="padding-right:5px;"{% endif %}>
+      {{ product.description | replace: '<img src="','<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' }}
+    </div>
+  {%- endcapture -%}
+  {%- liquid
+    assign is_shown_desc = false
+    assign sizechart_vendor_key = 'sc_vender_' | append: product.vendor
+    assign sizechart_type_key = 'sc_vender_' | append: product.type
+    if template.suffix != 'quick_view' and section.settings.size_chart_enable
+      if product.metafields.btt.size_chart != blank
+        assign sizechart = product.metafields.btt.size_chart
+      elsif product.metafields.btt[sizechart_type_key] != blank  
+        assign sizechart = product.metafields.btt[sizechart_type_key]
+      elsif product.metafields.btt[sizechart_vendor_key] != blank  
+        assign sizechart = product.metafields.btt[sizechart_vendor_key]  
+      elsif collection and collection.metafields.btt.size_chart and collection.metafields.btt.apply_size_chart_product
+        assign sizechart = collection.metafields.btt.size_chart 
+      elsif product.collections[0] and product.collections[0].metafields.btt.size_chart and product.collections[0].metafields.btt.apply_size_chart_product
+        assign sizechart = product.collections[0].metafields.btt.size_chart  
+      elsif section.settings.use_size_chart_fallback and section.settings.size_chart_fallback != blank
+        assign sizechart = section.settings.size_chart_fallback | img_url: 'master' | img_tag: section.settings.size_chart_fallback.alt, 'img-responsive'
+      elsif product.description contains 'sizechart-table'
+        assign sizechart = 'inline'    
+      endif
+    endif
+    assign layout_name = 'product-single-'
+    if section.settings.use_one_layout
+      assign layout_name = layout_name | append: section.settings.default_layout
+    else
+      if product.template_suffix contains 'layout'
+        assign layout_name = layout_name | append: product.template_suffix
+      else
+        assign layout_name = layout_name | append: section.settings.default_layout   
+      endif
+    endif
+    unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+      assign left_holder = 'left'
+      assign right_holder = 'right'
+      assign enable_rtl = false
+    else
+      assign left_holder = 'right'
+      assign right_holder = 'left'
+      assign enable_rtl = true
+    endunless
+  -%}
+  <div class="product-single pg {{ layout_name }}" data-product-handle="{{ product.handle }}" data-zoom-scope="{% if template.suffix == 'quick_view' %}quick_view{% else %}single{% endif %}" data-ignore-sold-out-text="1"{% if template.suffix != 'quick_view' %} data-history="1"{% endif %}{% if template.suffix != 'quick_view' %} data-sync-pg=".sc"{% endif %}>
+    {%- include layout_name with left_holder: left_holder, right_holder: right_holder -%}
+    <script type="application/json" class="product-single-json" data-handle="{{ product.handle | escape }}" data-current-variant-id="{{ current_variant.id }}">
+      {%- include 'product-tjson' with product: product -%}
+    </script>
+    <script type="application/json" id="ModelJson-{% if template.suffix != 'quick_view' %}{{ section.id }}{% else %}quickview-{{ product.handle | escape }}{% endif %}" class="model-json">
+      {{ product.media | where: 'media_type', 'model' | json }}
+    </script>
+  </div>
+
+{%- if template.suffix != 'quick_view' -%}
+  {%- if layout_name != 'product-single-layout6' -%}
+    {%- include 'product-single-tabs' -%}
+  {%- endif -%}
+
+  {%- if layout_name != 'product-single-layout4' -%}
+  {%- include 'product-single-review-outside-tab' -%}
+  {%- endif -%}
+
+  {%- include 'product-single-cross-sell' -%}
+
+  {%- include 'product-single-next-prev' -%}
+  {%- if section.settings.sc_enable -%}
+  <div class="sc pg w100 hide" data-product-handle="{{ product.handle }}" data-ignore-sold-out-text="1" data-history="1" data-sync-pg=".product-single">
+    {%- form 'product', product, id: 'sc__form' -%}
+      <div class="sc__inner container por center-block gutter-ele-top gutter-ele-bottom">
+        <div class="row flex flex-align-ver">
+          <div class="col-xs-3 col-sm-2 col-md-{%- unless product.has_only_default_variant -%}1{% else %}2 text-right{% endunless %}">
+            <div class="sc__image-wrap dib">
+              <img data-src="{{ featured_media | img_url: '100x' }}"{% include 'img-one-pixel' %} 
+                class="sc__image w100 pg__main-image img-responsive lazyload" 
+                data-image-size="100x" 
+                alt="{{ featured_media.alt | escape }}"/>
+            </div>
+          </div>
+          <div class="col-xs-9 col-sm-4 col-md-2{% unless product.has_only_default_variant %} col-lg-1{% endunless %} no-gutter--{{ left_holder }} text-center mobile-text-left">
+            {%- include 'product-single-variant-price' with current_variant as variant -%}
+          </div>
+          {%- unless product.has_only_default_variant -%}
+          <div class="col-xs-12 col-sm-6 col-md-4">
+              {%- render 'product-group-variants', product: product enable_product_options: true, color_size: '60x', is_single_view: true, is_show_sub_info: false, is_single_sticky: true  -%}
+          </div>
+          {%- endunless -%}
+          <div class="col-xs-12 col-md-{% unless product.has_only_default_variant %}5 col-lg-6 sc__action-wrap{% else %}8{% endunless %}">
+            <div class="sc__action text-left gutter-ele-top-tbs">
+              <div class="product-form__item product-form__item--quantity flex{% if align_center_button %} center-block text-center{% endif %} w100">
+                {%- if section.settings.show_quantity_selector -%}
+                  <div class="qty-box qty-box--single qty-box--sticky flex flex-align-ver flex-align-space-between">
+                    <button type="button" class="qty-box__ctrl qty-box__ctrl--descrease flex flex-align-hoz flex-align-ver" aria-label="button">
+                      {%- include 'icon-minus' -%}
+                    </button>
+                    <input type="number" name="quantity" value="1" min="1" class="qty-box__input qty-box__input qty-box__input--sticky qty-box__input--sync qty-box__input--single w100 text-center h100" aria-label="form">
+                    <button type="button" class="qty-box__ctrl qty-box__ctrl--increase flex flex-align-hoz flex-align-ver" aria-label="button">
+                      {%- include 'icon-plus' -%}
+                    </button>
+                  </div>
+                {%- endif -%}
+                <button class="button button--cart add-cart-btn button--single-cart button--single-cart-sticky{% if product.has_only_default_variant %} button--single-cart-sticky-simple{% endif %} button--single-cart add-cart-btn--state button--one-line button--border-transparent por flex flex-align-ver flex-align-hoz" type="submit" name="add" title="{{ 'products.product.add_to_cart' | t | escape }}" aria-label="button" style="height:45px;"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
+                  {%- render 'icon-cart' with add_class: 'button__icon' -%}
+                  <span class="instock-text"{% unless current_variant.available %} style="display:none;"{% endunless %}>{{ 'products.product.add_to_cart' | t }}</span>
+                  <span class="outstock-text"{% if current_variant.available %} style="display: none;"{% endif %}>{{ 'products.product.sold_out' | t }}</span>
+                </button>
+                {% if section.settings.enable_payment_button %}
+                  <div class="shopify-payment-btn-wrap shopify-payment-btn-wrap--sticky{% if product.has_only_default_variant %} shopify-payment-btn-wrap--sticky-simple{% endif %} w100">
+                    {{ form | payment_button }}
+                  </div>
+                {% endif %}
+                {%- include 'cart-terms' with for_id: 'sticky-cart', sc_term_fs: 11, small_gutter_top: true -%}
+              </div>
+              <select name="id" class="hide variant-id">
+                {%- for variant in product.variants -%}
+                  <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                    {{ variant.title }}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="sc__close sc__close--working text-center hidden-xs hidden-sm" href="javascript:void(0);">
+        <div class="hidden-xs hidden-sm not-loading">
+          <div class="sc__close__active sc__close__active--desktop">
+            {% include 'icon-arrow-down' %}
+          </div>
+          <span class="sc__close__inactive text-uppercase fw-bold">{{ 'products.product.quick_buy' | t }}</span>
+        </div>
+      </a>
+      <div class="visible-xs visible-sm sc__mobile db w100">
+        <a class="sc__trigger sc__trigger--close text-center ver-sub por h100" href="#" title="{{ 'general.accessibility.close_modal' | t | escape }}">{%- include 'icon-close' -%}</a>
+        <div class="flex flex-align-ver sc__trigger--open">
+          <div class="sc__small-price product-price__price col-xs-3 text-right no-gutter">{%- include 'price' with current_variant.price -%}</div>
+          <div class="col-xs-6 flex flex-align-ver flex-align-hoz" style="padding:0 10px;">
+            <button class="button add-cart-btn button--single-cart button--single-sticky button--style1 w100 distance-top-ele add-cart-btn--state button--one-line flex flex-align-hoz flex-align-ver" type="submit" name="add" title="{{ 'products.product.add_to_cart' | t | escape }}" aria-label="button" style="margin:0;height:43px;font-size:13px;"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
+              {% include 'icon-cart' with add_class: 'sc__cart-icon button__icon' %}
+              <span class="instock-text"{% unless current_variant.available %} style="display:none;"{% endunless %}>{{ 'products.product.add_to_cart' | t }}</span>
+              <span class="outstock-text"{% if current_variant.available %} style="display: none;"{% endif %}>{{ 'products.product.sold_out' | t }}</span>
+            </button>
+          </div>
+          <div class="sc__variant-title col-xs-3 text-left no-gutter">
+            <a class="sc__trigger w100 dib" title="{{ 'general.buttons.edit' | t | escape }}" href="#">
+              {%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}
+                {% include 'icon-edit' %}
+              {%- endunless -%}
+              {%- unless product.has_only_default_variant -%}<span class="pg__variant-title">{{ current_variant.title }}</span>{%- else -%}<span>{{ 'general.buttons.edit' | t }}</span>{%- endunless -%}
+              {%- if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}
+                {% include 'icon-edit' %}
+              {%- endif -%}
+            </a>
+          </div>
+        </div>
+      </div>
+    {%- endform -%}
+  </div>
+  {%- endif -%}
+
+  {%- if settings.upsell_product_page_enable -%}
+  <div class="container{% include 'wide-css-class' %}">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="upsell-ele upsell-ele--single big-gutter-top big-gutter-bottom touch-mobile" data-limit="{{ settings.upsell_product_page_limit | escape }}" data-handle="{{ product.handle | escape }}" data-slider="1">
+          <h2 class="upsell-title section__title__text gutter-bottom" style="margin-top:0;">
+            {{ 'products.product.upsell_block_title' | t: product_title: product.title }}
+          </h2>
+        {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}
+          <div class="upsell-list grid grid--medium use-slider use-touch-mobile slick-shadow" data-slider='{"slidesToShow": 4, "responsive": [{"breakpoint": 767,"settings":{"slidesToShow":2}}]}'></div>
+          <div class="loading-not-full" style="margin-top:50px;">
+            <i class="loading-ajax"></i>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- if settings.recent_view_enable and settings.recent_view_product_enable -%}
+  <div class="container{% render 'wide-css-class' %} rencent-view-ele-point">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="rencent-view-ele big-gutter-top big-gutter-bottom touch-mobile" data-limit="{{ settings.upsell_product_page_limit | escape }}" data-handle="{{ product.handle | escape }}" style="display:none;">
+          <h2 class="upsell-title section__title__text gutter-bottom" style="margin-top:0;">
+            {{ 'products.product.recent_viewed_products' | t }}
+          </h2>
+          <div class="recent-view-list grid grid--medium use-slider use-touch-mobile" data-slider='{"slidesToShow": 4, "responsive": [{"breakpoint": 767,"settings":{"slidesToShow":2}}]}'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{%- if sizechart and sizechart != 'inline' -%}
+<div class="modal fade sizeChartModal sizeChartModal{{ section.id }} hide" tabindex="-1" role="dialog" id="sizeChartModal{{ section.id }}">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% render 'icon-close' %}</button>
+      </div>
+      <div class="modal-body">
+        <div class="rte">
+          {{ sizechart | raw }}
+        </div>
+      </div>
+    </div>  
+  </div>  
+</div>  
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Product pages",
+    "max_blocks": 7,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/product-page)"
+      },
+      {
+        "type": "header",
+        "content": "General settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_next_prev_products",
+        "label": "Show next/previous products",
+        "default": true,
+        "info": "Only work if the user views the product page with collection link. Ex: \/collections\/collection_handle\/products\/product_handle"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show quantity selector",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_compare_btn",
+        "label": "Show compare button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_wishlist_btn",
+        "label": "Show wishlist button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sku",
+        "label": "Show sku",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collections",
+        "label": "Show collections",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_tags",
+        "label": "Show product tags",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_label",
+        "label": "Show label",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_zoom",
+        "label": "Enable image zoom",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_media_btn",
+        "label": "Show Media button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_review_stars",
+        "label": "Show review stars",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_review_form_outside_tab",
+        "label": "Show review form outside tab",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_button",
+        "label": "Show dynamic checkout button",
+        "info": "Lets customers check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_store_pickup",
+        "label": "Show store pickup",
+        "info": "You can set up the option for customers to pick up their online orders at your retail store, curbside, or any location that you choose. [Learn more](https://help.shopify.com/en/manual/shipping/setting-up-and-managing-your-shipping/local-methods/local-pickup)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_shipping_policy_link",
+        "label": "Show the shipping policy link",
+        "info": "You can add your own shipping policy in Settings > Legal.",
+        "default": false
+      },
+      {
+        "type": "html",
+        "id": "general_info",
+        "label": "Short general information",
+        "info": "Tips: use [description] variable to show product's description"
+      },
+      {
+        "type": "header",
+        "content": "Discount text"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_discount_text",
+        "label": "Show discount text",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "discount_text",
+        "label": "Discount text",
+        "default": "save [percent]",
+        "info": "Tips: use \"[percent]\" variable to show the percent number. Ex: -50%."
+      },
+      {
+        "type": "header",
+        "content": "Small Images"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_small_images",
+        "label": "Show small images",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "thumbs_layout",
+        "label": "Display as",
+        "options": [
+          {
+            "value": "hoz_slider",
+            "label": "Horizontal slider"
+          },
+          {
+            "value": "ver_slider",
+            "label": "Vertical slider"
+          },
+          {
+            "value": "grid",
+            "label": "Grid layout"
+          }
+        ],
+        "default": "hoz_slider"
+      },
+      {
+        "type": "header",
+        "content": "Layouts"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_one_layout",
+        "label": "Only use one layout for all products",
+        "default": true
+      },
+      {
+        "type": "radio",
+        "id": "default_layout",
+        "label": "Pick default layout",
+        "options": [
+          {
+            "value": "layout1",
+            "label": "Layout 1 ( product )"
+          },
+          {
+            "value": "layout2",
+            "label": "Layout 2 ( product.layout2 )"
+          },
+          {
+            "value": "layout3",
+            "label": "Layout 3 ( product.layout3 )"
+          },
+          {
+            "value": "layout4",
+            "label": "Layout 4 ( product.layout4 )"
+          },
+          {
+            "value": "layout5",
+            "label": "Layout 5 ( product.layout5 )"
+          },
+          {
+            "value": "layout6",
+            "label": "Layout 6 ( product.layout6 )"
+          }
+        ],
+        "default": "layout1"
+      },
+      {
+        "type": "header",
+        "content": "Random sold number"
+      },
+      {
+        "type": "checkbox",
+        "id": "sold_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "sold_min",
+        "label": "Min sold number",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "sold_max",
+        "label": "Max sold number",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "sold_hour_min",
+        "label": "Min hour number",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "sold_hour_max",
+        "label": "Max hour number",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "header",
+        "content": "Countdown timer"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_countdown",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "countdown_text",
+        "label": "Text",
+        "default": "Limited time only!"
+      },
+      {
+        "type": "header",
+        "content": "Trusted payment badge"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_trusted_payment_badge",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "trusted_payment_badge",
+        "label": "Pick your badge image",
+        "info": "Leave empty to display the payment icons based on your payment settings."
+      },
+      {
+        "type": "header",
+        "content": "limited stock text"
+      },
+      {
+        "type": "checkbox",
+        "id": "ls_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "ls_text1",
+        "label": "The text when quantity is greater than zero",
+        "default": "Hurry! – Only [quantity] left in stock.",
+        "info": "Only show this text when the quantity is greater than zero. Tip: leave \"[quantity]\" to show the quantity."
+      },
+      {
+        "type": "radio",
+        "id": "ls_quantity",
+        "label": "The quantity in text",
+        "options": [
+          {
+            "value": "real",
+            "label": "Real quantity"
+          },
+          {
+            "value": "random",
+            "label": "Random"
+          }
+        ],
+        "default": "real"
+      },
+      {
+        "type": "paragraph",
+        "content": "------- Random quantity -------"
+      },
+      {
+        "type": "range",
+        "id": "ls_quantity_min",
+        "label": "Minimum",
+        "min": 1,
+        "max": 99,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "ls_quantity_max",
+        "label": "Maximum",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "default": 100
+      },
+      {
+        "type": "text",
+        "id": "ls_text2",
+        "label": "The text without quantity",
+        "default": "Hurry, low quantity!",
+        "info": "Only show this text when the quantity is zero."
+      },
+      {
+        "type": "color",
+        "id": "ls_color_text",
+        "label": "The text color",
+        "default": "#222"
+      },
+      {
+        "type": "range",
+        "id": "ls_fs_text",
+        "label": "The text font size",
+        "min": 12,
+        "max": 30,
+        "step": 1,
+        "default": 17,
+        "unit": "px"
+      },
+      {
+        "type": "paragraph",
+        "content": "------- The progress bar -------"
+      },
+      {
+        "type": "range",
+        "id": "ls_percent",
+        "label": "The percent number in the progress bar",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 70,
+        "info": "Leave zero to hide the progress bar."
+      },
+      {
+        "type": "text",
+        "id": "ls_progress_bar_text",
+        "label": "The text in the progress bar",
+        "default": "[number]% completed",
+        "info": "Tip: leave \"[number]\" to shown the percent number."
+      },
+      {
+        "type": "color",
+        "id": "ls_progress_bar_color_text",
+        "label": "The text color",
+        "default": "#fff"
+      },
+      {
+        "type": "range",
+        "id": "ls_progress_bar_fs_text",
+        "label": "The text font size",
+        "min": 12,
+        "max": 27,
+        "step": 1,
+        "default": 16,
+        "unit": "px"
+      },
+      {
+        "type": "color",
+        "id": "ls_progress_bar_bkg_complete",
+        "label": "The background color of completed area",
+        "default": "#D9121F"
+      },
+      {
+        "type": "color",
+        "id": "ls_progress_bar_bkg_remain",
+        "label": "The background color of remain area",
+        "default": "#f5f5f5"
+      },
+      {
+        "type": "range",
+        "id": "ls_progress_bar_height",
+        "label": "The height of progress bar",
+        "min": 1,
+        "max": 45,
+        "step": 1,
+        "default": 37,
+        "unit": "px"
+      },
+      {
+        "type": "header",
+        "content": "The sticky add to cart"
+      },
+      {
+        "type": "checkbox",
+        "id": "sc_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Size chart"
+      },
+      {
+        "type": "checkbox",
+        "id": "size_chart_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_size_chart_fallback",
+        "label": "Use fallback size chart",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "size_chart_fallback",
+        "label": "Fallback size chart",
+        "info": "Upload your fallback image. This image will be displayed as the size chart of product when a product does not have own size chart in metafields."
+      },
+      {
+        "type": "header",
+        "content": "Customization fields"
+      },
+      {
+        "type": "paragraph",
+        "content": "======= Field 1 ========"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_field_1",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "label_field_1",
+        "label": "Label"
+      },
+      {
+        "type": "select",
+        "id": "type_field_1",
+        "label": "Type",
+        "options": [
+          {
+            "value": "text",
+            "label": "Text - short"
+          },
+          {
+            "value": "textarea",
+            "label": "Text - long"
+          },
+          {
+            "value": "radio",
+            "label": "Radio buttons"
+          },
+          {
+            "value": "select",
+            "label": "Drop-down select"
+          },
+          {
+            "value": "checkbox",
+            "label": "Checkbox"
+          },
+          {
+            "value": "checkbox_group",
+            "label": "Checkbox group"
+          },
+          {
+            "value": "file",
+            "label": "File uploader"
+          }
+        ],
+        "default": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "options_field_1",
+        "label": "Option values",
+        "info": "Options if using radio buttons, a drop-down select, or checkbox group. Separate your options with a comma."
+      },
+      {
+        "type": "text",
+        "id": "accepted_types_field_1",
+        "label": "Accepted types",
+        "info": "Specifies a filter for what file types the user can pick from the file input dialog box. Syntax: \"file_extension|audio/*|video/*|image/*|media_type\"."
+      },
+      {
+        "type": "checkbox",
+        "id": "required_field_1",
+        "label": "Required",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "error_msg_field_1",
+        "label": "Required message",
+        "info": "Only work if the field is required."
+      },
+      {
+        "type": "paragraph",
+        "content": "======= Field 2 ========"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_field_2",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "label_field_2",
+        "label": "Label"
+      },
+      {
+        "type": "select",
+        "id": "type_field_2",
+        "label": "Type",
+        "options": [
+          {
+            "value": "text",
+            "label": "Text - short"
+          },
+          {
+            "value": "textarea",
+            "label": "Text - long"
+          },
+          {
+            "value": "radio",
+            "label": "Radio buttons"
+          },
+          {
+            "value": "select",
+            "label": "Drop-down select"
+          },
+          {
+            "value": "checkbox",
+            "label": "Checkbox"
+          },
+          {
+            "value": "checkbox_group",
+            "label": "Checkbox group"
+          },
+          {
+            "value": "file",
+            "label": "File uploader"
+          }
+        ],
+        "default": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "options_field_2",
+        "label": "Option values",
+        "info": "Options if using radio buttons, a drop-down select, or checkbox group. Separate your options with a comma."
+      },
+      {
+        "type": "text",
+        "id": "accepted_types_field_2",
+        "label": "Accepted types",
+        "info": "Specifies a filter for what file types the user can pick from the file input dialog box. Syntax: \"file_extension|audio/*|video/*|image/*|media_type\"."
+      },
+      {
+        "type": "checkbox",
+        "id": "required_field_2",
+        "label": "Required",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "error_msg_field_2",
+        "label": "Required message",
+        "info": "Only work if the field is required."
+      },
+      {
+        "type": "paragraph",
+        "content": "======= Field 3 ========"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_field_3",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "label_field_3",
+        "label": "Label"
+      },
+      {
+        "type": "select",
+        "id": "type_field_3",
+        "label": "Type",
+        "options": [
+          {
+            "value": "text",
+            "label": "Text - short"
+          },
+          {
+            "value": "textarea",
+            "label": "Text - long"
+          },
+          {
+            "value": "radio",
+            "label": "Radio buttons"
+          },
+          {
+            "value": "select",
+            "label": "Drop-down select"
+          },
+          {
+            "value": "checkbox",
+            "label": "Checkbox"
+          },
+          {
+            "value": "checkbox_group",
+            "label": "Checkbox group"
+          },
+          {
+            "value": "file",
+            "label": "File uploader"
+          }
+        ],
+        "default": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "options_field_3",
+        "label": "Option values",
+        "info": "Options if using radio buttons, a drop-down select, or checkbox group. Separate your options with a comma."
+      },
+      {
+        "type": "text",
+        "id": "accepted_types_field_3",
+        "label": "Accepted types",
+        "info": "Specifies a filter for what file types the user can pick from the file input dialog box. Syntax: \"file_extension|audio/*|video/*|image/*|media_type\"."
+      },
+      {
+        "type": "checkbox",
+        "id": "required_field_3",
+        "label": "Required",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "error_msg_field_3",
+        "label": "Required message",
+        "info": "Only work if the field is required."
+      },
+      {
+        "type": "paragraph",
+        "content": "======= Field 4 ========"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_field_4",
+        "label": "Enable"
+      },
+      {
+        "type": "text",
+        "id": "label_field_4",
+        "label": "Label"
+      },
+      {
+        "type": "select",
+        "id": "type_field_4",
+        "label": "Type",
+        "options": [
+          {
+            "value": "text",
+            "label": "Text - short"
+          },
+          {
+            "value": "textarea",
+            "label": "Text - long"
+          },
+          {
+            "value": "radio",
+            "label": "Radio buttons"
+          },
+          {
+            "value": "select",
+            "label": "Drop-down select"
+          },
+          {
+            "value": "checkbox",
+            "label": "Checkbox"
+          },
+          {
+            "value": "checkbox_group",
+            "label": "Checkbox group"
+          },
+          {
+            "value": "file",
+            "label": "File uploader"
+          }
+        ],
+        "default": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "options_field_4",
+        "label": "Option values",
+        "info": "Options if using radio buttons, a drop-down select, or checkbox group. Separate your options with a comma."
+      },
+      {
+        "type": "text",
+        "id": "accepted_types_field_4",
+        "label": "Accepted types",
+        "info": "Specifies a filter for what file types the user can pick from the file input dialog box. Syntax: \"file_extension|audio/*|video/*|image/*|media_type\"."
+      },
+      {
+        "type": "checkbox",
+        "id": "required_field_4",
+        "label": "Required",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "error_msg_field_4",
+        "label": "Required message",
+        "info": "Only work if the field is required."
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Product description tab",
+        "type": "tab_item_desc",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Tab title"
+          },
+          {
+            "type": "paragraph",
+            "content": "This tab item will show the product description automatically."
+          }
+        ]
+      },
+      {
+        "name": "Review tab",
+        "type": "tab_item_review",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Tab title"
+          },
+          {
+            "type": "paragraph",
+            "content": "This tab item will show the product review automatically base on your configuration in Theme Settings > Product Settings > Review app."
+          }
+        ]
+      },
+      {
+        "name": "Custom html tab",
+        "type": "tab_item_custom",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Tab title"
+          },
+          {
+            "type": "html",
+            "id": "custom_html",
+            "label": "Custom html"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

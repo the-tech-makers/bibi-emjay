@@ -1,0 +1,166 @@
+<div class="collection__filter cf" id="cf_filter_desktop">
+  {%- if section.blocks.size > 0 -%}
+    {%- liquid 
+      unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+        assign enable_rtl = false
+      else
+        assign enable_rtl = true
+      endunless
+      assign filter_options_data_array = filter_options_str | split: ';' | sort
+      assign filter_item_name_with_values_array = filter_item_name_with_values | split: ';' | sort
+      assign metafields_values_array = count_product_metafields_str | split: ';' | sort
+      assign has_auto_current = false
+      if filter_item_name_with_values_array.size > 0
+        assign has_auto_current = true
+      endif
+    -%}
+    {%- render 'collection-filter-item-auto-current' with filter_param_value: filter_param_value -%}
+    <div class="cf__content">
+      {%- for block in section.blocks -%}
+        {%- assign filter_item_type = 'collection-' | append: block.type -%}
+        {%- if block.type == 'filter-item-category' -%}
+          {%- include 'collection-filter-item-category' with block as block, is_first: forloop.first, enable_rtl: enable_rtl, force_no_first: has_auto_current -%}
+        {%- elsif block.type == 'filter-item-swatch' -%}
+          {%- render 'collection-filter-item-swatch-auto' with block as block, is_first: forloop.first, enable_rtl: enable_rtl, filter_options_data_array: filter_options_data_array, filter_item_name_with_values: filter_item_name_with_values, filter_item_name_with_values_array: filter_item_name_with_values_array , force_no_first: has_auto_current, use_scroll : true -%}
+        {%- elsif block.type == 'filter-item-price' -%}
+          {%- render 'collection-filter-item-price-auto' with block as block, is_first: forloop.first, enable_rtl: enable_rtl, filter_param_value: filter_param_value, price_min: price_min, price_max: price_max, force_no_first: has_auto_current -%}
+        {%- elsif block.type == 'filter-item-product-type' -%}
+          {%- unless collection.current_type -%}
+            {%- assign has_current = false -%}
+            {%- capture filter_item_content -%}
+              {%- assign types = count_product_types_str | split: ';' | sort -%}
+              {%- for type in types -%}
+                {%- if type != '' -%}
+                  {%- assign type_parts = type | split: '%5f' -%}
+                  {%- assign filter_item_name_with_value = 'type%5f' | append: type_parts[0] -%}
+                  {%- assign is_current = false -%}
+                  {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+                    {%- assign is_current = true -%}
+                    {%- assign has_current = true -%}
+                  {%- endif -%}
+                  {%- render 'collection-filter-item-auto' with filter_item_name_with_values_array: filter_item_name_with_values_array, filter_item_name_with_value: filter_item_name_with_value, value: type_parts[0], count: type_parts[1], is_current: is_current -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, option_name: 'type', force_no_first: has_auto_current, use_scroll : true, has_current: has_current -%}
+          {%- endunless -%}
+        {%- elsif block.type == 'filter-item-product-brand' -%}
+          {%- unless collection.current_vendor -%}
+            {%- assign has_current = false -%}
+            {%- capture filter_item_content -%}
+              {%- assign brands = count_product_brands_str | split: ';' | sort -%}
+              {%- for brand in brands -%}
+                {%- if brand != '' -%}
+                  {%- assign brand_parts = brand | split: '%5f' -%}
+                  {%- assign filter_item_name_with_value = 'brand%5f' | append: brand_parts[0] -%}
+                  {%- assign is_current = false -%}
+                  {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+                    {%- assign is_current = true -%}
+                    {%- assign has_current = true -%}
+                  {%- endif -%}
+                  {%- render 'collection-filter-item-auto' with value: brand_parts[0], count: brand_parts[1], is_current: is_current -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, option_name: 'brand', force_no_first: has_auto_current, use_scroll : true, has_current: has_current -%}
+          {%- endunless -%}  
+        {%- elsif block.type == 'filter-item-checkbox' -%}
+          {%- if block.settings.auto_filter_option_name != blank -%}
+            {%- assign has_current = false -%}
+            {%- assign compare_option_filter = block.settings.auto_filter_option_name | append: '%5f' | downcase -%}
+            {%- capture filter_item_content -%}
+              {%- for filter_item in filter_options_data_array -%}
+                {%- if filter_item contains compare_option_filter -%}
+                  {%- assign filter_item_parts = filter_item | split: '%5f' -%}
+                  {%- assign filter_item_name_with_value = filter_item_parts[0] | append: '%5f' | append: filter_item_parts[1] -%}
+                  {%- assign is_current = false -%}
+                  {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+                    {%- assign is_current = true -%}
+                    {%- assign has_current = true -%}
+                  {%- endif -%}
+                  {%- render 'collection-filter-item-auto' with value: filter_item_parts[1], count: filter_item_parts[2], is_current: is_current -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, force_no_first: has_auto_current, use_scroll : true, has_current: has_current -%}
+          {%- endif -%}
+        {%- elsif block.type == 'filter-item-ratings' -%}
+          {%- assign has_current = false -%}
+          {%- capture filter_item_content -%}
+            {%- assign revert = 5 | minus: block.settings.min_rating -%}
+            {%- for i in (0..revert) -%}
+              {%- assign rating_level = 5 | minus: i -%}
+              {%- assign rating_index = ';' | append: rating_level | append: '%5f' -%}
+              {%- assign filter_item_name_with_value = 'ratings%5f' | append: rating_level -%}
+              {%- assign is_current = false -%}
+              {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+                {%- assign is_current = true -%}
+                {%- assign has_current = true -%}
+              {%- endif -%}
+              {%- if count_product_ratings_str contains rating_index -%}
+                {%- assign rating_products_count = count_product_ratings_str | split: rating_index | last | split: ';' | first -%}
+                <li class="w100 cf__item__link">
+                  <a href="#" data-value="{{ rating_level }}" class="cf__link cf__link--auto cf__link--option cf__link--rating{% if is_current %} current{% endif %} flex flex-align-space-between">
+                    <span>
+                      {%- render 'rating-stars' with count_rating_stars: rating_level -%}
+                    </span>
+                    {%- unless is_current -%}
+                      <span>{{ rating_products_count }}</span>
+                    {%- else -%}
+                      <div class="flex flex-align-ver">
+                        <span>{{ rating_products_count }}</span>
+                        {%- render 'icon-close' with add_class: 'cf__link--rating__close alternative' -%}
+                      </div>  
+                    {%- endunless -%}
+                  </a>
+                </li>
+              {%- else -%}
+                <li class="w100 cf__item__link">
+                  <a href="#" data-value="{{ rating_level }}" class="cf__link cf__link--auto cf__link--option cf__link--rating flex flex-align-space-between{% if is_current %} current{% endif %}">
+                    <span>
+                      {%- render 'rating-stars' with count_rating_stars: rating_level -%}
+                    </span>
+                    {%- unless is_current -%}
+                      <span>0</span>
+                    {%- else -%}
+                      <div class="flex flex-align-ver">
+                        <span>0</span>
+                        {%- render 'icon-close' with add_class: 'cf__link--rating__close alternative' -%}
+                      </div>  
+                    {%- endunless -%}
+                  </a>
+                </li>  
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+          {%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, option_name: 'ratings', force_no_first: has_auto_current, use_scroll: true, has_current: has_current -%}
+        {%- elsif block.type == 'filter-item-metafields' -%}
+          {%- assign namespace = block.settings.namespace | handleize -%}
+          {%- assign key = block.settings.key | handleize -%}
+          {%- assign field_filter = namespace | append: '-' | append: key -%}
+          {%- assign option_field_name = 'field-' | append: field_filter -%}
+          {%- assign compare_field_filter = field_filter | append: '%5f' -%}
+          {%- assign has_current = false -%}
+          {%- capture filter_item_content -%}
+            {%- for filter_item in metafields_values_array -%}
+              {%- if filter_item contains compare_field_filter -%}
+                {%- assign metafield_parts = filter_item | split: '%5f' -%}
+                {%- assign filter_item_name_with_value = compare_field_filter | append: metafield_parts[1] -%}
+                {%- assign is_current = false -%}
+                {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+                  {%- assign is_current = true -%}
+                  {%- assign has_current = true -%}
+                {%- endif -%}
+                {%- render 'collection-filter-item-auto' with value: metafield_parts[1], count: metafield_parts[2], is_current: is_current -%}
+              {%- endif -%}  
+            {%- endfor -%}
+          {%- endcapture -%}
+          {%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, option_name: option_field_name, force_no_first: has_auto_current, use_scroll : true, has_current: has_current -%}
+        {%- endif -%}  
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+{%- if layout_name != 'no_sidebar' -%}
+  {%- render 'collection-recently-viewed' -%}
+{%- endif -%}

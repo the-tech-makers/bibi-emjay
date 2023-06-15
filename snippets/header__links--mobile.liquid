@@ -1,0 +1,52 @@
+{%- if settings.enable_wishlist -%}
+	<a href="javascript:void(0);" class="header__link header__link--wishlist por hidden-xs" title="{{ 'general.accessibility.your_wishlist' | t | escape }}">
+		{%- render 'icon-wishlist' -%}
+		<span class="wishlist-number abs-number"></span>
+	</a>
+{%- endif -%}
+{%- if settings.enable_compare -%}
+	<a href="javascript:void(0);" class="header__link header__link--compare por hidden-xs" title="{{ 'general.accessibility.your_compare' | t | escape }}">
+		{%- render 'icon-compare' -%}
+		<span class="compare-number abs-number bmt__abs-number fw-bold"></span>
+	</a>
+{%- endif -%}
+{%- if shop.customer_accounts_enabled -%}
+	<a href="#" class="bt-sidebar-btn header__link" data-target="#bt-sidebar-login" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}" title="{% unless customer %}{{ 'customer.login.title' | t | escape }}{% else %}{{ 'customer.account.title' | t | escape }}{% endunless %}">
+		{%- render 'icon-account' -%}
+	</a>
+{%- endif -%}
+{%- if template.name != 'collection' -%}
+	<a href="{{ routes.all_products_collection_url }}" class="header__link hidden-xs" title="{{ 'layout.navigation.shop' | t | escape }}">
+		{%- render 'icon-shop' -%}
+	</a>
+{%- endif -%}
+{%- if template.name != 'search' -%}
+	<a href="#" class="search-full-trigger header__link hidden-xs" title="{{ 'layout.navigation.search' | t | escape }}">
+		{%- render 'icon-search' with add_class: 'ver-sub' -%}
+	</a>
+{%- endif -%}
+{%- unless template.name == 'cart' -%}
+	{%- assign header_cart_layout_mobile = settings.header_cart_layout_mobile -%}
+{%- else -%}
+	{%- assign header_cart_layout_mobile = 'only_link' -%}
+{%- endunless -%}	
+{%- if header_cart_layout_mobile != 'no_display' -%}
+	{%- capture header_cart_link_html -%}
+	<a href="{% if header_cart_layout_mobile == 'only_link' %}{{ routes.cart_url }}{% else %}#{% endif %}" class="por{% if header_cart_layout_mobile != 'only_link' %} header__cart-trigger-mobile{% endif %}{% if header_cart_layout_mobile == 'dropdown' %} bt-dropdown__trigger w100 dib{% elsif header_cart_layout_mobile == 'sidebar' %} bt-sidebar-btn{% endif %} header__link"{% if header_cart_layout_mobile == 'sidebar' %} data-target="#bt-sidebar-cart" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}"{% endif %} title="{{ 'layout.cart.title' | t | escape }}">
+		{% render 'icon-cart-header' with add_class: 'ver-sub' %}
+		<span class="cart-number text-center abs-number">{{ cart.item_count }}</span>	
+	</a>
+	{%- endcapture -%}
+	{%- if header_cart_layout_mobile == 'dropdown' -%}
+	<div class="bt-dropdown" data-group="header__links__mobile">
+		{{ header_cart_link_html }}
+		<div class="bt-dropdown__content bt-dropdown__content--right w100 load-header-cart">
+		</div>
+	</div>
+	{%- else -%}
+	{{ header_cart_link_html }}
+	{%- endif -%}
+{%- endif -%}
+{%- if header_cart_layout_mobile != 'dropdown' and header_cart_layout_mobile != 'sidebar' and settings.add_cart_action == 'open_cart' -%}
+	<a href="#" class="hide bt-sidebar-btn header__cart-trigger-mobile" data-target="#bt-sidebar-cart" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}" title="{{ 'layout.cart.title' | t | escape }}">&nbsp;</a>
+{%- endif -%}

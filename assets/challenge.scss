@@ -1,0 +1,63 @@
+/* Responsive screen */
+$mobile_width: 767px;
+$min_tablet_small_width: 768px;
+$max_tablet_small_width: 991px;
+$min_tablet_large_width: 992px;
+$max_tablet_large_width: 1199px;
+$desktop_width: 1200px;
+$transition: ease-in-out all 0.3s;
+
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      -webkit-#{$property}: $value;
+    } 
+    @else if $prefix == moz {
+      -moz-#{$property}: $value;
+    } 
+    @else if $prefix == ms {
+      -ms-#{$property}: $value;
+    } 
+    @else if $prefix == o {
+      -o-#{$property}: $value;
+    } 
+    @else if $prefix == spec {
+      #{$property}: $value;
+    } 
+    @else  {
+      @warn 'Unrecognized prefix: #{$prefix}';
+    }
+  }
+}
+
+@mixin transition($transition) {
+  @include prefix(transition, $transition, ms webkit spec);
+}
+
+@mixin border-radius($border-radius) {
+  border-radius: $border-radius; 
+}
+
+.shopify-challenge__button {
+	font-size: 10px;
+	padding: 0 20px;
+	border-width: 2px;
+	font-weight: 400;
+	@include transition($transition);
+	text-align: center;
+	text-transform: uppercase;
+	height: 35px;
+	line-height: 32px;
+	@include border-radius(25px);
+	font-weight: bold;
+	@media(min-width: $min_tablet_small_width) {
+		padding: 0 35px;
+		height: 45px;
+		line-height: 44px;
+	}
+	&:hover {
+    color: var(--color_btn_s1_hover);
+    border: 1px solid var(--border_btn_s1_hover);
+    background: var(--bkg_btn_s1_hover);
+  }
+}

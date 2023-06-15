@@ -1,0 +1,23 @@
+<div class="sidebar__item grid__item">
+  <div class="sidebar__title gutter-bottom">
+    {{ "blogs.sidebar.filter" | t }}
+  </div>
+  <div class="sidebar__content dib w100">
+    {% if blog.tags.size > 0 %}
+    <div class="article__tags--list item__tags gutter-bottom">
+      <ul class="no-gutter" style="margin: 0 -5px;">
+        {% for tag in blog.all_tags %}
+          <li class="article__tag-li">
+            <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="article__tag{% if current_tags contains tag %} active{% endif %}">
+              {{ tag }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <a href="{{ blog.url }}" title="{{ 'blogs.article.all_topics' | t | escape }}">
+      <strong>{{ 'blogs.article.all_topics' | t }}</strong>
+    </a>
+    {% endif %}
+  </div>
+</div>

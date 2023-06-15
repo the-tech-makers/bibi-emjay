@@ -1,0 +1,59 @@
+$mobile_width: 767px;
+$fw_bold: 700;
+@mixin box-shadow($box-shadow){  
+  @include prefix(box-shadow, $box-shadow, moz webkit spec); 
+}
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      -webkit-#{$property}: $value;
+    } 
+    @else if $prefix == moz {
+      -moz-#{$property}: $value;
+    } 
+    @else if $prefix == ms {
+      -ms-#{$property}: $value;
+    } 
+    @else if $prefix == o {
+      -o-#{$property}: $value;
+    } 
+    @else if $prefix == spec {
+      #{$property}: $value;
+    } 
+    @else  {
+      @warn 'Unrecognized prefix: #{$prefix}';
+    }
+  }
+}
+.rp {
+  background-color: var(--bkg_body);
+  position: fixed;
+  left: 10px;
+  bottom: 60px;
+  width: 315px;
+  @include box-shadow(-1px 2px 6px rgba(30,32,40,.3));
+  z-index: 6;
+}
+.rp__item-left {
+  width: 90px;
+  padding: 0 10px;
+  .product-image {
+    display: block;
+    margin-left: -10px;
+  }
+}
+.rp__item-right {
+  padding: 6px 0;
+  width: calc(100% - 90px);
+}
+.rp__product-name {
+  font-weight: $fw_bold;
+}
+.rp__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 21px;
+  line-height: 1;
+  padding: 5px;
+}

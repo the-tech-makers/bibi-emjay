@@ -1,0 +1,11 @@
+{%- if show_countdown_timer -%}
+{%- assign countdown = false -%}
+{%- if product.metafields.btt.countdown -%}
+{%- assign countdown = product.metafields.btt.countdown -%}
+{%- elsif settings.enable_countdown_all and settings.countdown_expression -%}
+{%- assign countdown = settings.countdown_expression -%}
+{%- endif -%}
+{%- if countdown -%}
+	<div class="pg__countdown pg__countdown-js text-center hidden-xs w100" data-product-id="{{ product.id }}" data-timer="{{ countdown }}"{% if product.metafields.btt.countdown_extend %} data-extend="{{ product.metafields.btt.countdown_extend }}"{% endif %} style="padding: 10px 0;"></div>
+{%- endif -%}
+{%- endif -%}

@@ -1,0 +1,41 @@
+{%- if media.alt contains '{{' -%}
+{%- assign words = media.alt | split: ' ' -%}
+{%- assign starting_sc = false -%}
+{%- assign capture_sc = '' -%}
+{%- assign sc_type = '' -%}
+{%- assign final_text = '' -%}
+{%- for word in words -%}
+	{%- if word == '{{video' or word == '{{youtube' or word == '{{vimeo' -%}
+		{%- assign starting_sc = true -%}
+		{%- assign capture_sc = '' -%}
+		{%- assign sc_type = word | replace: '{{', '' -%}
+	{%- endif -%}
+	{%- if word contains '}}' -%}
+		{%- assign starting_sc = 'end' -%}
+	{%- endif -%}
+	{%- if starting_sc == false -%}
+		{%- if final_text != '' -%}
+			{%- assign final_text  = final_text | append: ' ' -%}
+		{%- endif -%}
+		{%- assign final_text  = final_text | append: word -%}
+		{%- assign final_text  = final_text | strip -%}
+	{%- else -%}
+		{%- if starting_sc == 'end' -%}
+			{%- assign sc_key = '{{' | append: sc_type -%}
+			{%- assign remain_texts = word | split: '}}' -%}
+			{%- assign capture_sc = capture_sc | append: ' ' | append: remain_texts[0] | strip -%}
+			{%- assign sc_final = capture_sc | replace: sc_key, '' | strip -%}
+			{%- if sc_type == 'video' -%}
+				{%- render 'product-single-main-video-iframe' with video_type: 'mp4', video_url: video_url -%}
+			{%- elsif sc_type == 'youtube' -%}
+				{%- render 'product-single-main-video-iframe' with video_type: 'youtube', video_id: sc_final -%}
+			{%- else -%}
+				{%- render 'product-single-main-video-iframe' with video_type: 'vimeo', video_id: sc_final -%}
+			{%- endif -%}
+		{%- else -%}
+			{%- assign capture_sc = capture_sc | append: ' ' | append: word -%}
+			{%- assign capture_sc = capture_sc | strip -%}
+		{%- endif -%}
+	{%- endif -%}
+{%- endfor -%}
+{%- endif -%}

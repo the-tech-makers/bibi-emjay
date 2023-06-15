@@ -1,0 +1,9 @@
+{%- if settings.cart_terms_enable -%}
+<div class="checkbox-one-line{% unless small_gutter_top %} gutter-top{% else %} gutter-ele-top{% endunless %} cart-terms flex flex-align-ver{% if cart_term_add_classes %} {{ cart_term_add_classes }}{% endif %} w100">
+  <input type="checkbox" name="terms-check" class="terms-check checkbox-one-line__input hide" style="font-size: 20px;" id="{{ for_id }}">
+  <label class="cart-terms__label checkbox-one-line__label por text-left" style="font-size: {% unless sc_term_fs %}12{% else %}{{ sc_term_fs }}{% endunless %}px;" for="{{ for_id }}" data-clone-id="{{ for_id }}">
+    {%- assign term_url = settings.cart_terms_url | default: '#' -%}
+    {{ 'cart.general.terms_label_html' | t: term_url: term_url }}
+  </label>  
+</div>
+{%- endif -%}

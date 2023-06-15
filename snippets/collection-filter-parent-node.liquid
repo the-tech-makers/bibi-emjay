@@ -1,0 +1,5 @@
+{%- if collection_parent_node != blank -%}
+<li class="gutter-ele-bottom">
+<a class="cfc__link cf__link" href="{{ collection_parent_node.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_parent_node.title | escape }}" style="padding-{% unless enable_rtl %}left{% else %}right{% endunless %}:{{ padding_left }}px;">{%- unless enable_rtl -%}{%- render 'icon-chevron-left' with add_classes: 'cf__back-icon' -%}{%- endunless -%}{{ collection_parent_node.title }}{%- if enable_rtl -%}{%- render 'icon-chevron-right' with add_classes: 'cf__back-icon' -%}{%- endif -%}</a>
+</li>
+{%- endif -%}

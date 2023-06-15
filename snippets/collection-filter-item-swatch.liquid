@@ -1,0 +1,54 @@
+{%- assign has_current = false -%}
+{%- capture tag_list -%}
+{%- for i in (1..30) -%}
+	{%- assign indexColorTag = 'cs_tag_' | append: i -%}
+	{%- assign indexColorCode = 'cs_code_' | append: i -%}
+	{%- assign indexColorCustom = 'cs_custom_' | append: i -%}
+	{%- assign t = settings[indexColorTag] | split: ',' | first | trim -%}
+	{%- if t != blank -%}
+		{%- assign tag = t | strip | downcase -%}
+		{%- assign clowTagD = t | downcase -%}
+		{%- assign clowTag = t | strip | downcase -%}
+		{%- assign ctagU = t | strip | upcase -%}
+		{%- assign ctagUF = clowTag | strip | capitalize -%}
+		{%- assign ctagCa = clowTag | strip | camelcase -%}
+		{%- if collection.all_tags contains t or collection.all_tags contains tag or collection.all_tags contains clowTagD or collection.all_tags contains clowTag or collection.all_tags contains ctagU or collection.all_tags contains ctagUf or collection.all_tags contains ctagCa -%}
+			{%- capture item_content -%}
+				{%- if settings[indexColorCustom] != blank -%}
+					<img src="{{ settings[indexColorCustom] | img_url: '16x16' }}" alt="{{ t | escape }}" class="w100 cf__link__box{% if section.settings.checkboxes_format == 'circle' %} cf__link__box-circle{% endif %}"/>
+				{%- elsif settings[indexColorCode] -%}
+					<span class="w100 cf__link__box{% if section.settings.checkboxes_format == 'circle' %} cf__link__box-circle{% endif %} color-load" data-color-tag="{{ t | escape | downcase }}" style="background:{{ settings[indexColorCode] }};"></span>
+				{%- endif -%}
+				<span class="cf__link--title">{{ t }}</span>
+			{%- endcapture -%}
+			<li class="w100 cf__item__link">
+				{%- if current_tags contains t -%}
+					{%- assign active_tag = t -%}
+				{%- elsif current_tags contains tag -%}
+					{%- assign active_tag = tag -%}
+				{%- elsif current_tags contains clowTagD -%}
+					{%- assign active_tag = clowTagD -%}
+				{%- elsif current_tags contains clowTag -%}
+					{%- assign active_tag = clowTag -%}
+				{%- elsif current_tags contains ctagU -%}
+					{%- assign active_tag = ctagU -%}
+				{%- elsif current_tags contains ctagUF -%}
+					{%- assign active_tag = ctagUF -%}
+				{%- elsif current_tags contains ctagCa -%}
+					{%- assign active_tag = ctagCa -%}
+				{%- else -%}
+					{%- assign active_tag = '' -%}
+				{%- endif -%}
+				{%- capture title_replace -%} class="cf__link cf__link--option cf__link--color{% if active_tag != '' %} current{% endif %} flex" title={%- endcapture -%}
+				{%- if active_tag != '' -%}
+				{%- assign has_current = true -%}
+					{{ item_content | link_to_remove_tag: active_tag | replace: 'title=', title_replace }}
+				{%- else -%}
+					{{ item_content | link_to_add_tag: tag | replace: 'title=', title_replace }}	
+				{%- endif -%}	
+			</li>
+		{%- endif -%}	
+	{%- endif -%}	
+{%- endfor -%}
+{%- endcapture -%}
+{%- render 'collection-filter-item-display' with block: block, filter_item_content: tag_list, use_scroll: true, force_no_first: force_no_first, has_current: has_current -%}

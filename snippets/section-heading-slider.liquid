@@ -1,0 +1,14 @@
+{%- if section.settings.title != blank -%}
+<div class="section__heading section__heading--slider{% if section.settings.sub_title != blank %} section__heading--with-sub{% endif %}{% if section_heading_custom_class %} {{ section_heading_custom_class }}{% endif %} flex flex-align-space-between flex-align-ver">
+  <div class="section__title{% if heading_align %} text-{{ heading_align }}{% endif %}">
+    <h2 class="section__title__text margin0 tbs-text-center">{{ section.settings.title | replace: '<hl>','<span class="section__title__highline">' | replace: '</hl>','</span>' | raw }}</h2>
+    {%- if section.settings.sub_title != blank -%}
+      <h3 class="section__sub-title w100 gutter-top">{{ section.settings.sub_title | raw }}</h3>
+    {%- endif -%}
+  </div>
+  <div class="section__heading__slider-btn{% if use_touch_mobile %} hidden-xs{% endif %}">
+  	<button aria-label="button" class="slick-arrow slick-prev button button--style2 button--square slick-box" id="slick-prev-{{ section.id }}" style="position:relative;{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}float:left;margin-right:5px;{% endif %}"><span></span></button>
+  	<button aria-label="button" class="slick-arrow slick-next button button--style2 button--square slick-box" id="slick-next-{{ section.id }}" style="position:relative;"><span></span></button>
+  </div>
+</div>
+{%- endif -%}

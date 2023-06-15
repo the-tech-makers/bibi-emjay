@@ -1,0 +1,17 @@
+{%- if section.settings.enable_countdown -%}
+  {%- assign countdown = false -%}
+  {%- if product.metafields.btt.countdown -%}
+  {%- assign countdown = product.metafields.btt.countdown -%}
+  {%- elsif settings.enable_countdown_all and settings.countdown_expression -%}
+  {%- assign countdown = settings.countdown_expression -%}
+  {%- endif -%}
+  {%- if countdown -%}
+  <div class="gutter-ele-top gutter-ele-bottom{% if align_countdown_center %} text-center{% endif %} pg__countdown-wrap flex w100">
+    {%- if section.settings.countdown_text != blank -%}
+      <div class="pg__countdown__single-ele">{%- render 'icon-schedule' with add_class: 'dib' -%}&nbsp;<span class="pg__countdown-text dib" style="padding-bottom: 7px;">{{ section.settings.countdown_text }}</span></div>
+    {%- endif -%}
+    
+    <div class="pg__countdown pg__countdown-js pg__countdown--single pg__countdown__single-ele" data-product-id="{{ product.id }}" data-timer="{{ countdown }}"{% if product.metafields.btt.countdown_extend %} data-extend="{{ product.metafields.btt.countdown_extend }}"{% endif %} style="background:none;font-size:{{ settings.product_page_countdown_fs }}px;position:static;"></div>
+  </div>
+  {%- endif -%}
+{%- endif -%}

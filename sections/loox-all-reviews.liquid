@@ -1,0 +1,134 @@
+{%- render 'section-background-start' -%}
+<div id="loox-reviews-{{ section.id }}" class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="logo-bar">
+  <div class="row">
+  	<div class="section__inner col-xs-12">
+  		{%- render 'section-heading' -%}
+      <div class="section__content">
+      	<div id="looxReviews" data-loox-aggregate data-limit="{{section.settings.data-limit}}" {% if section.settings.only_photos %}data-mode="img"{% endif %} style="margin:0 auto;"></div>
+      </div>
+  	</div>
+	</div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+{
+	"name": "Loox Widget",
+	"class": "index-section",
+	"settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/loox-widget)"
+    },
+		{
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "checkbox",
+      "id": "bkg_enable",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bkg",
+      "label": "Pick a color"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bkg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_gutter",
+      "label": "Background size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "medium"
+        },
+        {
+          "value": "high",
+          "label": "High"
+        }
+      ],
+      "default": "high"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_style",
+      "label": "Background image style",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "header",
+      "content": "Section Gutters"
+    },
+    {
+      "type": "checkbox",
+      "id": "top_gutter",
+      "label": "Enable top gutter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bottom_gutter",
+      "label": "Enable bottom gutter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Logo list"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "label": "Sub heading"
+    },
+    {
+    	"type": "header",
+    	"content": "Loox settings"
+    },
+		{
+			"id": "only_photos",
+			"type": "checkbox",
+			"label": "Display only reviews with photos",
+			"default": false
+		},
+		{
+			"type": "range",
+			"id": "data-limit",
+			"min": 1,
+			"max": 40,
+			"step": 1,
+			"label": "Number of reviews to display",
+			"default": 20
+		}
+	],
+	"presets": [{
+		"name": "Loox widget",
+		"category": "Loox"
+	}]
+}
+{% endschema %}

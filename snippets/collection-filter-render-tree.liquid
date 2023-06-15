@@ -1,0 +1,87 @@
+{%- if treeNodes != blank -%}
+<ul class="link-list mobile-nav gutter-ele-small-top" style="padding-{% unless enable_rtl %}left{% else %}right{% endunless %}:{% if parent_nodes_html != '' %}{{ padding_left }}px{% else %}0{% endif %};">
+	{%- for c in treeNodes -%}
+		{%- assign c_handle = c.id | split: '|' | last -%}
+		{%- assign collection_node = collections[c_handle] -%}
+		{%- if collection_node != blank -%}
+		<li class="link-list__item mobile-nav__item flex flex-align-ver mobile-nav__item--level0{% if c.children != blank %} link-list__item--parent-mobile{% endif %}">
+			<div class="flex flex-align-ver flex-align-space-between w100">
+				<a class="cfc__link cf__link" href="{{ collection_node.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_node.title | escape }}">{{ collection_node.title }}</a>
+				{%- if c.children != blank -%}
+					{%- render 'collection-filter-category-arrow' -%}
+				{%- endif -%}
+			</div>
+			{%- if c.children != blank -%}
+				<ul class="col-xs-12 cfc__dropdown mobile-nav__children gutter-ele-top no-gutter--{{ right_holder }}" style="display:none;">
+					{%- for c1 in c.children -%}
+						{%- assign c_handle1 = c1.id | split: '|' | last -%}
+						{%- assign collection_node1 = collections[c_handle1] -%}
+						{%- if collection_node1 != blank -%}
+						<li class="link-list__item mobile-nav__item flex flex-align-ver mobile-nav__item--level1">
+							<div class="flex flex-align-ver flex-align-space-between w100">
+								<a class="cfc__link cf__link" href="{{ collection_node1.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_node1.title | escape }}">{{ collection_node1.title }}</a>
+								{%- if c1.children != blank -%}
+									{%- render 'collection-filter-category-arrow' -%}
+								{%- endif -%}
+							</div>
+							{%- if c1.children != blank -%}
+								<ul class="col-xs-12 cfc__dropdown mobile-nav__children gutter-ele-top no-gutter--{{ right_holder }}" style="display:none;">
+									{%- for c2 in c1.children -%}
+										{%- assign c_handle2 = c2.id | split: '|' | last -%}
+										{%- assign collection_node2 = collections[c_handle2] -%}
+										{%- if collection_node2 != blank -%}
+										<li class="link-list__item mobile-nav__item flex flex-align-ver mobile-nav__item--level2">
+											<div class="flex flex-align-ver flex-align-space-between w100">
+												<a class="cfc__link cf__link" href="{{ collection_node2.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_node2.title | escape }}">{{ collection_node2.title }}</a>
+												{%- if c2.children != blank -%}
+													{%- render 'collection-filter-category-arrow' -%}
+												{%- endif -%}
+											</div>
+											{%- if c2.children != blank -%}
+												<ul class="col-xs-12 cfc__dropdown mobile-nav__children gutter-ele-top no-gutter--{{ right_holder }}" style="display:none;">
+													{%- for c3 in c2.children -%}
+														{%- assign c_handle3 = c3.id | split: '|' | last -%}
+														{%- assign collection_node3 = collections[c_handle3] -%}
+														{%- if collection_node3 != blank -%}
+														<li class="link-list__item mobile-nav__item flex flex-align-ver mobile-nav__item--level3{% if c3.children != blank %} link-list__item--parent-mobile{% endif %}">
+															<div class="flex flex-align-ver flex-align-space-between w100">
+																<a class="cfc__link cf__link" href="{{ collection_node3.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_node3.title | escape }}">
+																	{{ collection_node3.title }}
+																</a>
+																{%- if c3.children != blank -%}
+																	{%- render 'collection-filter-category-arrow' -%}
+																{%- endif -%}
+															</div>
+															{%- if c3.children != blank -%}
+																<ul class="col-xs-12 cfc__dropdown mobile-nav__children gutter-ele-top no-gutter--{{ right_holder }}" style="display:none;">
+																	{%- for c4 in c3.children -%}
+																		{%- assign c_handle4 = c4.id | split: '|' | last -%}
+																		{%- assign collection_node4 = collections[c_handle4] -%}
+																		{%- if collection_node4 != blank -%}
+																		<li class="link-list__item mobile-nav__item flex flex-align-ver mobile-nav__item--level4">
+																			<a class="cfc__link cf__link" href="{{ collection_node4.url }}{{ tag_url }}{{ filter_sortby_param | raw }}" title="{{ collection_node4.title | escape }}">{{ collection_node4.title }}</a>
+																		</li>
+																		{%- endif -%}
+																	{%- endfor -%}
+																</ul>
+															{%- endif -%}
+														</li>
+														{%- endif -%}
+													{%- endfor -%}
+												</ul>
+											{%- endif -%}
+										</li>
+										{%- endif -%}
+									{%- endfor -%}
+								</ul>
+							{%- endif -%}
+						</li>
+						{%- endif -%}
+					{%- endfor -%}
+				</ul>
+			{%- endif -%}
+		</li>
+		{%- endif -%}
+	{%- endfor -%}
+</ul>
+{%- endif -%}

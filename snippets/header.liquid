@@ -1,0 +1,82 @@
+{%- assign is_fixed_header = false -%}
+{%- if settings.header_style == 'style1' or settings.header_style == 'style3' or settings.header_style == 'style6' or settings.header_style == 'style10' -%}
+	{%- assign is_fixed_header = true -%}
+{%- endif -%}
+{%- assign has_border_bottom = false -%}
+{%- if settings.header_style == 'style9' -%}
+	{%- if template.name != 'index' -%}
+		{%- assign has_border_bottom = true -%}
+		{%- if template.name == 'collection' and settings.breadcrumbs_bkg_image != blank -%}
+			{%- assign has_border_bottom = false -%}
+		{%- endif -%}
+	{%- endif -%}
+{%- endif -%}
+<div class="header-sticker w100{% if is_fixed_header and template.name == 'index' %} header-sticker--abs-tb{% endif %}">
+	{%- assign style_header_fixed =  '' -%}
+	{%- if is_fixed_header -%}
+		{%- if template.name == 'index' -%}
+			{%- assign style_header_fixed = 'position:absolute;' -%}
+		{%- endif -%}
+		{%- assign header_style_index = settings.header_style | remove: 'style' -%}
+		{%- assign nav_item_bkg_index = 'bkg_header' | append: header_style_index -%}
+		{%- if settings[nav_item_bkg_index] != blank -%}
+			{%- assign opacity_bkg_index = nav_item_bkg_index | append: '_opacity' -%}
+			{%- if template.name == 'index' -%}
+				{%- assign bg_fixed_rgba_alpha = settings[opacity_bkg_index] | divided_by: 100.00 -%}
+			{%- else -%}
+				{%- assign bg_fixed_rgba_alpha = 1 -%}
+			{%- endif -%}
+			{%- assign bg_fixed_rgba_color = settings[nav_item_bkg_index] | color_modify: 'alpha', bg_fixed_rgba_alpha -%}
+			{%- if settings.header_style != 'style1' and settings.header_style != 'style3' and settings.header_style != 'style6' -%}	
+				{%- assign style_header_fixed = style_header_fixed | append: 'background-color:' | append: bg_fixed_rgba_color | append: ';' -%}
+			{%- endif -%}
+			{%- if settings.header_style == 'style6' and template.name != 'index' -%}
+				{%- assign style_header_fixed = style_header_fixed | append: 'background-color:' | append: settings.bkg_header6 | append: ';' -%}
+			{%- endif -%}
+		{%- endif -%}
+	{%- endif -%}
+	<div class="header-sticker__inner w100{% if settings.use_sticky %} use-sticky{% endif %}">
+		<header class="header header--desktop header--{{ settings.header_style }}{% if is_fixed_header %} w100{% endif %}{% if has_border_bottom %} header--border-bottom{% endif %} site-header hidden-xs hidden-sm{% if settings.use_sticky %}{% if settings.header_style == 'style1' or settings.header_style == 'style4' or settings.header_style == 'style5' or settings.header_style == 'style7' or settings.header_style == 'style8' %} use-sticky--desktop-collapse{% endif %}{% endif %} por">
+		  {%- case settings.header_style -%}
+			  {%- when 'style1' -%}
+			    {%- render 'header-style1' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style2' -%}
+			    {%- render 'header-style2' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style3' -%}
+			    {%- render 'header-style3' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style4' -%}
+			    {%- render 'header-style4' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style5' -%}
+			    {%- render 'header-style5' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style6' -%}
+			    {%- render 'header-style6' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style7' -%}
+			    {%- render 'header-style7' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style8' -%}
+			    {%- render 'header-style8' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- when 'style9' -%}
+			    {%- render 'header-style9' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			  {%- else -%}
+			    {%- render 'header-style10' with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}
+			{%- endcase -%}
+		</header>
+		<div class="header header--mobile visible-xs visible-sm por{% if settings.use_sticky %} use-sticky use-sticky--mobile use-sticky--transition{% endif %}">
+			<div class="container-fluid">
+				{%- case settings.header_style_mobile -%}
+				  {%- when 'style1' -%}
+				    {%- render 'header-mobile-style1' -%}
+				  {%- when 'style2' -%}
+				    {%- render 'header-mobile-style2' -%}
+				  {%- when 'style3' -%}
+				    {%- render 'header-mobile-style3' -%}
+				  {%- when 'style4' -%}
+				    {%- render 'header-mobile-style4' -%}
+				  {%- else -%}
+				    {%- render 'header-mobile-style5' -%}
+				{%- endcase -%}
+			</div>
+		</div>
+	</div>
+</div>
+<style rel="stylesheet" media="all and (max-width:991px)">.header-sticker__inner{background:{{ settings.bkg_header_mobile | default: '#fff' }};}</style>
+{%- if style_header_fixed != '' -%}<style rel="stylesheet" media="all and (min-width:992px)">.header-sticker__inner{ {{ style_header_fixed }} }</style>{%- endif -%}

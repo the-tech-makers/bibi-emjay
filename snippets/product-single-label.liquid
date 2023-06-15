@@ -1,0 +1,23 @@
+<div class="pg__lbs text-center">
+	{%- include 'label-sale' -%}
+	{%- for tag in product.tags -%}
+	{%- if tag == 'best' or tag == 'new' or tag == 'trend' -%}
+	{%- assign label_active = tag | append : '_active' -%}
+	{%- if settings[label_active] -%}
+	{%- assign label_type = tag | append : '_type' -%}
+	{%- assign label_text = tag | append : '_text' -%}
+	{%- assign label_color = tag | append : '_color' -%}
+	{%- assign label_bkgcolor = tag | append : '_bkgcolor' -%}
+	{%- assign label_img = 'label_' | append: tag | append : '_img.png' -%}
+	{%- assign text_trans = tag | append : '_text_trans' -%}
+	<div class="lb-item lb-item--{{ tag }}" style="color:{{ settings[label_color] }}; background-color: {{ settings[label_bkgcolor] }};">
+		{%- if settings[label_type] == 'text' -%}
+			{{ settings[label_text] }}
+		{%- else -%}
+		<img src="{{ label_img | asset_url }}" alt="{{ tag }}-label"/>
+		{%- endif -%}
+	</div>
+	{%- endif -%}
+	{%- endif -%}
+	{%- endfor -%}
+</div>

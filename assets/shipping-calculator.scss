@@ -1,0 +1,44 @@
+/* Responsive screen */
+$mobile_width: 767px;
+$min_tablet_small_width: 768px;
+$max_tablet_small_width: 991px;
+$min_tablet_large_width: 992px;
+$max_tablet_large_width: 1199px;
+$desktop_width: 1200px;
+
+#shipping-calculator .field {
+  margin: 0 0.6em 1em 0;
+}
+.est-field {
+  padding: 0 10px;
+  font-size: 16px;
+  @media(min-width: $desktop_width) {
+    font-size: 13px;
+  }
+}
+input.est-field {
+  font-size: 16px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1.4em .6em;
+  border: 1px solid var(--color_general_blur);
+  outline: 0;
+  -webkit-appearance: none;
+  @media(min-width: $desktop_width) {
+    font-size: 13px;
+  }
+}
+#shipping-calculator #wrapper-response {
+  clear: both;
+}
+@media (max-width: 800px) {
+  #shipping-calculator .field {
+    float: none;
+  }
+  #shipping-calculator .field:last-child:before { 
+    content: none;
+  }
+}

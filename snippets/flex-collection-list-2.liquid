@@ -1,0 +1,55 @@
+<div class="flex flex-wrap"{% if index < section.blocks.size %} style="margin-bottom: 30px;"{% endif %}>		
+	<div class="col-xs-12 col-sm-6">
+		{%- render 'flex-collection-grid-item' with 
+			settings_image: block.settings.image_1,
+			settings_collection: block.settings.collection_1,
+			collection_use_bkg: block.settings.use_bkg_1,
+			collection_bkg_title: block.settings.bkg_title_1,
+			collection_color_title: block.settings.color_title_1,
+			collection_fs_title: block.settings.font_size_title_1,
+			collection_fs_title_mobile: block.settings.mobile_font_size_title_1,
+			distance_btn: block.settings.distance_btn_1,
+			distance_btn_mobile: block.settings.distance_btn_mobile_1,
+			btn_fs: block.settings.font_size_btn_1,
+			btn_fs_mobile: block.settings.mobile_font_size_btn_1,
+			show_button: block.settings.show_button_1,
+			settings_pos: block.settings.standard_pos_1,
+			index: 1 -%}
+	</div>
+	<div class="visible-xs col-xs-12 gutter-bottom"></div>
+	<div class="col-xs-12 col-sm-6">
+		{%- render 'flex-collection-grid-item' with 
+			settings_image: block.settings.image_2,
+			settings_collection: block.settings.collection_2,
+			collection_use_bkg: block.settings.use_bkg_2,
+			collection_bkg_title: block.settings.bkg_title_2,
+			collection_color_title: block.settings.color_title_2,
+			collection_fs_title: block.settings.font_size_title_2,
+			collection_fs_title_mobile: block.settings.mobile_font_size_title_2,
+			distance_btn: block.settings.distance_btn_2,
+			distance_btn_mobile: block.settings.distance_btn_mobile_2,
+			btn_fs: block.settings.font_size_btn_2,
+			btn_fs_mobile: block.settings.mobile_font_size_btn_2,
+			show_button: block.settings.show_button_2,
+			settings_pos: block.settings.standard_pos_2,
+			index: 2 -%}
+	</div>
+	<div class="col-xs-12 gutter-top">
+		{%- render 'flex-collection-grid-item' with 
+			settings_image: block.settings.image_3,
+			settings_collection: block.settings.collection_3,
+			collection_use_bkg: block.settings.use_bkg_3,
+			collection_bkg_title: block.settings.bkg_title_3,
+			collection_color_title: block.settings.color_title_3,
+			collection_fs_title: block.settings.font_size_title_3,
+			collection_fs_title_mobile: block.settings.mobile_font_size_title_3,
+			distance_btn: block.settings.distance_btn_3,
+			distance_btn_mobile: block.settings.distance_btn_mobile_3,
+			btn_fs: block.settings.font_size_btn_3,
+			btn_fs_mobile: block.settings.mobile_font_size_btn_3,
+			show_button: block.settings.show_button_3,
+			settings_pos: block.settings.standard_pos_3,
+			no_margin_bottom: true,
+			index: 3 -%}
+	</div>
+</div>

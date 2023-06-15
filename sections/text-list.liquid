@@ -1,0 +1,285 @@
+{%- render 'section-background-start' -%}
+<div class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if section.settings.hidden_mobile %} hidden-xs{% endif %}{% if section.settings.text_uppercase %} text-uppercase{% endif %}" data-section-id="{{ section.id }}" data-section-type="text-list"{% if section.settings.color_text_list %} style="color:{{ section.settings.color_text_list  }}"{% endif %}>
+  {%- if section.blocks.size > 0 -%}
+  <div class="row">
+    {%- assign col_class = 12 | divided_by: section.blocks.size -%}
+    {%- for block in section.blocks -%}
+    {%- assign own_bkg = '' -%}
+    {%- if block.settings.bkg_enable and block.settings.bkg_color != blank -%}
+      {%- assign own_bkg = block.settings.bkg_color -%}
+    {%- endif -%}
+    <div class="col-xs-6 col-sm-{{ col_class }} text-center text-list--content{% if section.settings.sep_line_enable %}{% unless section.settings.hidden_mobile %}{% cycle '', ' text-list--border-left' %}{% endunless %}{% unless forloop.last %} text-list--border-right{% endunless %}{% endif %} flex flex-align-ver flex-align-hoz{% if own_bkg != '' %} gutter-ele-top gutter-ele-bottom{% endif %}"{% if own_bkg != '' %} style="background-color:{{ own_bkg }};"{% endif %}>
+      {%- if block.settings.icon_class != '' -%}
+        <i class="{{ block.settings.icon_class | escape }} text-center text-list--icon text-list--icon-{{ section.id }} flex flex-align-ver flex-align-hoz"></i>
+      {%- endif -%}
+      
+      {%- if block.settings.title != blank -%}
+        <div style="font-size:{{ section.settings.fs_text_list }}px" class="text-list--title text-list--title-{{ section.id }}">
+          <div class="text-left mobile-text-center">
+            {{ block.settings.title }}
+            {%- if block.settings.subtitle != blank -%}
+              <br><span class="text-list--subtitle text-list--subtitle-{{ section.id }}">{{ block.settings.subtitle }}</span>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+</div>
+{%- render 'section-background-end' -%}
+{%- assign css_tb = '' -%}
+{%- style -%}
+.text-list--icon-{{ section.id }}{font-size:{{ section.settings.fs_i_mobile }}px;width:{{ section.settings.fs_i_mobile | plus: 35 }}px;height:{{ section.settings.fs_i_mobile | plus: 35 }}px;line-height:{{ section.settings.fs_i_mobile | plus: 35 }}px;color:{{ section.settings.color_icon_list }};}
+{%- if section.settings.fs_i != section.settings.fs_i_mobile -%}
+  {%- capture css_tb_ele -%}
+  .text-list--icon-{{ section.id }}{font-size:{{ section.settings.fs_i }}px;width:{{ section.settings.fs_i | plus: 25 }}px;height:{{ section.settings.fs_i | plus: 25 }}px;line-height:{{ section.settings.fs_i | plus: 25 }}px;}
+  {%- endcapture -%}
+  {%- assign css_tb = css_tb | append: css_tb_ele -%}
+{%- endif -%}
+.text-list--title-{{ section.id }}{color:{{ section.settings.color_text_list }};font-size:{{ section.settings.fs_text_list_mobile }}px;width:100%;}
+{%- capture css_tb_ele -%}.text-list--title-{{ section.id }}{width:calc(100% - {{ section.settings.fs_i }}px - 35px);}{%- endcapture -%}
+{%- assign css_tb = css_tb | append: css_tb_ele -%}
+{%- if section.settings.fs_text_list != section.settings.fs_text_list_mobile -%}
+  {%- capture css_tb_ele -%}.text-list--title-{{ section.id }}{font-size:{{ section.settings.fs_text_list_mobile }}px;}{%- endcapture -%}
+  {%- assign css_tb = css_tb | append: css_tb_ele -%}
+{%- endif -%}
+.text-list--subtitle-{{ section.id }}{color:{{ section.settings.color_subtitle_list }};}
+{%- if css_tb != '' -%}@media(min-width: 768px){ {{ css_tb }} }{%- endif -%}
+{%- endstyle -%}
+{% schema %}
+  {
+    "name": "Text list",
+    "max_blocks": 4,
+    "class": "index-section text-list-section section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/text/text-list)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "text_uppercase",
+        "label": "Show the text in uppercase format",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden_mobile",
+        "label": "Hide this section in mobile screen",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Separated line"
+      },
+      {
+        "type": "checkbox",
+        "id": "sep_line_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_text_list",
+        "label": "Title color",
+        "default": "#323232"
+      },
+      {
+        "type": "color",
+        "id": "color_subtitle_list",
+        "label": "Subtitle color",
+        "default": "#999"
+      },
+      {
+        "type": "color",
+        "id": "color_icon_list",
+        "label": "Icon color",
+        "default": "#c5c5c5"
+      },
+      {
+        "type": "header",
+        "content": "Font sizes"
+      },
+      {
+        "type": "range",
+        "id": "fs_text_list",
+        "label": "Text font size",
+        "unit": "px",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "fs_text_list_mobile",
+        "label": "Mobile text font size",
+        "unit": "px",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "default": 13
+      },
+      {
+        "type": "range",
+        "id": "fs_i",
+        "label": "Icon font size",
+        "unit": "px",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "default": 25
+      },
+      {
+        "type": "range",
+        "id": "fs_i_mobile",
+        "label": "Mobile icon font size",
+        "unit": "px",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "default": 17
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text_item",
+        "name": "Text Item",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "text",
+            "id": "icon_class",
+            "label": "Icon Class",
+            "info": "Go to [this page](https://boostheme.com/vodoma/icons) and copy class of icon you want to add."
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "text",
+            "id": "subtitle",
+            "label": "Subtitle"
+          },
+          {
+            "type": "header",
+            "content": "Background color"
+          },
+          {
+            "type": "paragraph",
+            "content": "Set own background for each item."
+          },
+          {
+            "type": "checkbox",
+            "id": "bkg_enable",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_color",
+            "label": "Pick a color"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Text list",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,106 @@
+{%- liquid 
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign right_holder = 'right'
+  else
+    assign right_holder = 'left'
+  endunless  
+-%}
+<div class="section__content">
+  {%- if section.blocks.size > 0 -%}
+    {%- assign index_data = 0 -%}
+    {%- assign current_tags_size = current_tags | size -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'filter-item-swatch' or block.type == 'filter-item-checkbox' -%}
+        {%- liquid   
+          assign active_tag = ''
+          assign tag_list = false
+          if index_data <= current_tags_size
+            if index_data == 0
+              assign collection_tags = collection.all_tags
+            else  
+              assign collection_tags = collection.tags
+            endif
+            if block.type == 'filter-item-swatch'
+              capture tag_list
+                for i in (1..30)
+                  assign indexColorTag = 'cs_tag_' | append: i
+                  assign indexColorCode = 'cs_code_' | append: i
+                  assign indexColorCustom = 'cs_custom_' | append: i
+                  assign t = settings[indexColorTag] | split: ',' | first | trim
+                  if t != blank
+                    assign tag = t | strip | downcase
+                    assign clowTagD = t | downcase
+                    assign clowTag = t | strip | downcase
+                    assign ctagU = t | strip | upcase
+                    assign ctagUF = clowTag | strip | capitalize
+                    assign ctagCa = clowTag | strip | camelcase
+                    if collection_tags contains t or collection_tags contains tag or collection_tags contains clowTagD or collection_tags contains clowTag or collection_tags contains ctagU or collection_tags contains ctagUf or collection_tags contains ctagCa
+                      assign tag_handle = tag | handle
+                      if current_tags contains t or current_tags contains tag or current_tags contains clowTagD or current_tags contains clowTag or current_tags contains ctagU or current_tags contains ctagUF or current_tags contains ctagCa
+                        assign active_tag = t
+                        echo '<li><a data-value="' | append: tag_handle | append: '" href="#" class="cfs__link selected w100 db">' | append: t | append: '</a></li>'
+                      else
+                        echo '<li><a data-value="' | append: tag_handle | append: '" href="#" class="cfs__link w100 db">' | append: t | append: '</a></li>'  
+                      endif
+                    endif
+                  endif
+                endfor
+              endcapture
+            else
+              assign array_tag = block.settings.group_tag | replace: '  ', '' | replace: ' ,', ',' | replace: ', ', ',' | split: ','
+              if array_tag.size > 0 and block.settings.enable
+                capture tag_list
+                  for t in array_tag
+                    assign tag = t | strip | downcase
+                    assign clowTagD = t | downcase
+                    assign clowTag = t | strip | downcase
+                    assign ctagU = t | strip | upcase
+                    assign ctagUF = clowTag | strip | capitalize
+                    assign ctagCa = clowTag | strip | camelcase
+                    if collection_tags contains t or collection_tags contains tag or collection_tags contains clowTagD or collection_tags contains clowTag or collection_tags contains ctagU or collection_tags contains ctagUF or collection_tags contains ctagCa
+                      assign tag_handle = tag | handle
+                      if current_tags contains t or current_tags contains tag or current_tags contains clowTagD or current_tags contains clowTag or current_tags contains ctagU or current_tags contains ctagUF or current_tags contains ctagCa
+                        assign active_tag = t
+                        echo '<li><a data-value="' | append: tag_handle | append: '" href="#" class="cfs__link selected w100 db">' | append: t | append: '</a></li>'
+                      else
+                        echo '<li><a data-value="' | append: tag_handle | append: '" href="#" class="cfs__link w100 db">' | append: t | append: '</a></li>'  
+                      endif
+                    endif
+                  endfor
+                endcapture
+              endif
+            endif
+          endif
+          assign index_data = index_data | plus: 1  
+        -%}  
+        {%- if tag_list != '' -%}
+        <div class="cfs__item cfs__item--{{ block.id }} col-xs-12 col-sm-6 col-md-3 gutter-ele-top gutter-ele-bottom" data-index="{{ index_data }}">
+          <div class="cfs__dropdown-wrap por">
+            <div class="cfs__dropdown w100">
+              <div href="#" class="cfs__dropdown__trigger cfs__item__title flex flex-align-ver">
+                <span class="cfs__item__index cfs__item__index--{{ right_holder }}-border">{{ index_data }}</span>
+                <div class="cfs__item__title-value">
+                  <span class="cfs__dropdown__title{% if active_tag != '' %} cfs__dropdown__title--top{% endif %} transition w100 db text-uppercase lh1">{{ block.settings.title }}</span>
+                  <span class="cfs__dropdown__value w100 db fw-bold lh1 gutter-ele-small-top">{{ active_tag }}</span>
+                </div>
+                {%- render 'icon-arrow-down' with add_classes: 'cfs__item__arrow transition' -%}
+              </div>
+              <div class="cfs__dropdown__content transition custom-scrollbar custom-scrollbar--thick">
+                {%- if tag_list -%}
+                <ul class="no-gutter margin0">{{ tag_list }}</ul>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </div>
+        {%- elsif tag_list != false -%}
+          {%- assign index_data = index_data | minus: 1 -%}
+        {%- endif -%}
+      {%- endif -%} 
+    {%- endfor -%}
+  {%- endif -%}
+  {%- assign no_center_btn_align = index_data | modulo: 2 -%}
+  <div class="gutter-ele-top-mb{% if no_center_btn_align != 0 %} col-xs-12 col-sm-6 col-md-3{% else %} col-xs-12 col-sm-3 {% if index_data > 3 %}gutter-top{% else %}gutter-ele-top-tbs{% endif %}{% endif %} cfs__item--btn" data-index-data="{{ no_center_btn_align }}">
+    <a class="button button--style1 cfs__btn w100" href="#" title="{{ 'layout.navigation.search' | t | escape }}">{{ 'layout.navigation.search' | t }}</a>
+  </div>
+</div>

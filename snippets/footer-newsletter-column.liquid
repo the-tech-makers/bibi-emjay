@@ -1,0 +1,31 @@
+<div class="row">
+	{%- if block.settings.enable_blog -%}
+		{%- assign footer_blog = blogs[block.settings.blog] -%}
+		{%- if footer_blog.articles.size > 0 -%}
+		<div class="col-xs-12">
+			<ul class="no-gutter--left footer__blog">
+				{%- for article in footer_blog.articles limit: block.settings.limit -%}
+					<li class="gutter-ele-small-bottom"><a href="{{ article.url }}" title="{{ article.title | escape }}" class="footer__blog__link">{{ article.title }}</a></li>
+				{%- endfor -%}
+			</ul>
+		</div>
+		{%- endif -%}
+	{%- endif -%}
+	
+	{%- if block.settings.enable_newsletter -%}
+	  <div class="newsletter newsletter--footer {% if block.settings.display_one_line %}col-xs-6 text-left{% else %}col-xs-12{% endif %}" id="newsletter-footer-{{ block.id }}">
+	  	{%- if block.settings.title_newsletter != blank -%}
+	  		<div class="footer__column__title footer__column__title--newsletter w100 text-uppercase">
+          {{ block.settings.title_newsletter }}
+        </div>
+	  	{%- endif -%}
+		  {%- assign footer_news_form_id = 'newsletter-footer-form-' | append: block.id -%}
+		  {%- assign footer_news_input_id = 'FooterNewsletterEmail-' | append: block.id -%}
+
+		  {%- render 'newsletter-form', news_form_id: footer_news_form_id, news_input_id: footer_news_input_id -%}
+	  </div>
+  {%- endif -%}
+  <div class="{% if block.settings.display_one_line %}col-xs-6 text-right{% else %}col-xs-12{% endif %}">
+    {%- render 'footer-social-icons', has_content: true, enable_social: block.settings.enable_social -%}
+  </div>
+</div>  

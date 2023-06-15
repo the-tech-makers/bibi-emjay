@@ -1,0 +1,11 @@
+{%- if variant.available -%}
+	{%- assign compare_at_price = variant.compare_at_price -%}
+	{%- assign price = variant.price -%}
+	{%- assign available = variant.available -%}
+{%- else -%}
+	{%- assign compare_at_price = product.compare_at_price -%}
+	{%- assign price = product.price -%}
+	{%- assign available = product.available -%}
+{%- endif -%}
+
+{%- render 'product-price-html', compare_at_price: compare_at_price, price: price, available: available, variant: variant -%}

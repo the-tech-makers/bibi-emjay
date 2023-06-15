@@ -1,0 +1,56 @@
+{%- unless enable_rtl -%}
+	{%- case settings.header_style_mobile -%}
+	  {%- when 'style1' -%}
+	    {%- assign direction = 'left' -%}
+	  {%- when 'style2' -%}
+	    {%- assign direction = 'left' -%}
+	  {%- when 'style3' -%}
+	    {%- assign direction = 'right' -%}
+	  {%- when 'style4' -%}
+	    {%- assign direction = 'left' -%}
+	  {%- else -%}
+	    {%- assign direction = 'left' -%}
+	{%- endcase -%}
+{%- else -%}
+	{%- case settings.header_style_mobile -%}
+		{%- when 'style1' -%}
+	    {%- assign direction = 'right' -%}
+	  {%- when 'style2' -%}
+	    {%- assign direction = 'right' -%}
+	  {%- when 'style3' -%}
+	    {%- assign direction = 'left' -%}
+	  {%- when 'style4' -%}
+	    {%- assign direction = 'left' -%}
+	  {%- else -%}
+	    {%- assign direction = 'left' -%}
+  {%- endcase -%}  
+{%- endunless -%}
+<div class="bt-sidebar">
+  <div id="sidebar-mobile-nav" class="bt-sidebar__inner no-gutter">
+  	<div class="bt-sidebar__header flex bt-sidebar__header--{{ direction }}" style="padding:0 10px;">
+  		{%- render 'sidebar-close-btn', direction: direction -%}
+  		<h4 class="bt-sidebar__title">{{ 'layout.navigation.menu' | t }}</h4>
+  	</div>
+    <div class="bt-sidebar__content">
+    	<div class="block-mobile-nav" style="padding-bottom:15px;">
+    		{%- section 'navigation-mobile' -%}
+    	</div>
+    	
+    	{%- if settings.show_multiple_currencies -%}
+			<hr>
+			<div class="block-mobile-nav">
+				<div class="currency-switcher-mobile">
+					{%- render 'currency-switcher-inline' -%}
+				</div>
+			</div>
+			{%- endif -%}
+			
+			{%- if settings.enable_language_picker and shop.published_locales.size > 1 -%}
+			<hr>
+			<div class="block-mobile-nav">
+				{%- render 'ajax-sidebar-mobile-languages' with enable_rtl: enable_rtl -%}
+			</div>
+			{%- endif -%}
+    </div>
+  </div>
+</div>

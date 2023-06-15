@@ -1,0 +1,208 @@
+{%- render 'section-background-start' -%}
+<div id="instaram_{{ section.id }}" class="touch-mobile {% unless section.settings.full_wide %}container{% if section.settings.full_width %}-fluid{% endif %}{% endunless %}{% render 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="instagram"{% if section.settings.full_wide %} style="padding-left: 15px;padding-right: 15px;"{% endif %}>
+  <div class="row">
+    <div class="section__inner col-xs-12{% if section.settings.full_wide %} no-gutter{% endif %}">
+      {%- render 'section-heading-slider', use_touch_mobile: true -%}
+      <div class="section__content">
+        {%- assign column_count = section.settings.slides_to_show -%}
+        {%- assign grid_class = 'small' -%}
+        {%- if column_count == 2 -%}
+          {%- assign grid_class = 'very-large' -%}
+        {%- elsif column_count == 3 -%}
+          {%- assign grid_class = 'large' -%}
+        {%- elsif column_count == 4 -%}
+          {%- assign grid_class = 'medium' -%}
+        {%- elsif column_count == 6 -%}
+          {%- assign column_count = 5 -%}  
+        {%- elsif column_count == 7 -%}  
+          {%- assign grid_class = 'very-small' -%}
+        {%- endif -%}
+        <div class="instagram use-slider use-touch-mobile grid--{{ grid_class }} flex" data-section-id="instaram_{{ section.id }}" data-slider='{"prevArrow": "#slick-prev-{{ section.id }}","nextArrow": "#slick-next-{{ section.id }}","autoplay": true,"dots":false,"slidesToShow":{{ section.settings.slides_to_show | escape }},"responsive":[{"breakpoint":992,"settings":{"slidesToShow":4}},{"breakpoint":426,"settings":{"slidesToShow":2}}]}'>
+          {%- for item in section.blocks -%}
+          <div class="item grid__item effect-hover no-gutter{% if forloop.index > column_count %} ov-slider-tb{% endif %}">
+            {%- if item.settings.image != blank -%}
+            <div class="item__top por">
+              {%- assign img_url = item.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <a ref="noreferrer" title="{{ item.settings.photo_title | escape }}" href="{{ item.settings.photo_url }}" class="item__image loading img-container" target="_blank" style="padding-top:{{ 1 | divided_by: item.settings.image.aspect_ratio | times: 100}}%;">
+                <img data-aspectratio="{{ item.settings.image.aspect_ratio }}"
+                  data-src="{{ img_url }}"
+                  data-sizes="auto" class="w100 img-responsive img-abs lazyload zoom-fade"{% render 'img-one-pixel' %} alt="{{ item.settings.image.alt | escape }}" data-image-size="1x1"/>
+              </a>
+              <div class="hidden-xs hidden-sm hidden-md text-center effect-hover__content effect-hover__instagram w100 h100 flex flex-align-hoz flex-align-ver">
+                <a ref="noreferrer" title="{{ item.settings.photo_title | escape }}" href="{{ item.settings.photo_url }}" target="_blank" class="button button--icon button--instagram">{%- render 'icon-instagram' -%}</a>
+              </div>  
+            </div>
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          {%- endfor -%}
+        </div>
+        {%- if section.settings.hashtag != blank -%}
+        <div class="instagram-hashtag text-center"><span class="instagram-hashtag__text dib">#{{ section.settings.hashtag }}</span></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+{
+  "name": "Instagram",
+  "class": "index-section instagram-section section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/banner-and-image/instagram-slider)"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "checkbox",
+      "id": "bkg_enable",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bkg",
+      "label": "Pick a color"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bkg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_gutter",
+      "label": "Background size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "medium"
+        },
+        {
+          "value": "high",
+          "label": "High"
+        }
+      ],
+      "default": "high"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_style",
+      "label": "Background image style",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "header",
+      "content": "Section Gutters"
+    },
+    {
+      "type": "checkbox",
+      "id": "top_gutter",
+      "label": "Enable top gutter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bottom_gutter",
+      "label": "Enable bottom gutter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "My Style Shop on Instagram"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "label": "Sub Title",
+      "default": "Follow us on Instagram"
+    },
+    {
+      "type": "text",
+      "id": "hashtag",
+      "label": "Hashtag",
+      "default": "VodomaStyles"
+    },
+    {
+      "type": "range",
+      "id": "slides_to_show",
+      "label": "The number of items to show on the screen",
+      "min": 2,
+      "max": 7,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Wide display"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_wide",
+      "label": "Full width",
+      "info": "If you enable this option, the \"Wide display\" option will be ignored."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Pick an image"
+        },
+        {
+          "type": "text",
+          "id": "photo_url",
+          "label": "The post URL on Instagram"
+        },
+        {
+          "type": "text",
+          "id": "photo_title",
+          "label": "The post title on Instagram"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram Slider",
+      "category": "Image",
+      "settings": {
+        "title": "My Style Shop on Instagram",
+        "sub_title": "Follow us on Instagram"
+      }
+    }
+  ]
+}
+{% endschema %}

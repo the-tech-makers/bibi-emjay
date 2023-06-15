@@ -1,0 +1,11 @@
+{%- if product.price_varies -%}
+	<div class="product-price">
+		<span class="dib product-price__starting">{{ 'products.product.starting_price' | t }}&nbsp;</span><span class="product-price__price">{%- render 'price', price: product.price_min -%}</span>
+		{%- unless product.available -%}
+	    <span class="product-price__sold-out">{{ 'products.product.sold_out' | t }}</span>
+	  {%- endunless -%}
+	  {%- render 'product-price-unit' with variant: product.first_available_variant -%}
+	</div>
+{%- else -%}
+	{%- render 'product-variant-price', variant: product.first_available_variant, product: product -%}
+{%- endif -%}

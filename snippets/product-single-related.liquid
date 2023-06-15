@@ -1,0 +1,64 @@
+{%- if settings.rel_enable -%}
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="related-ele big-gutter-top touch-mobile" data-handle="{{ product.handle | escape }}" data-slider="1">
+          <h4 class="related-title text-uppercase section__heading" style="margin:0;">
+            <span class="section__title__text">{{ 'products.product.related_block_title' | t }}</span>
+          </h4>
+          <div class="related-list grid grid--medium use-slider use-touch-mobile slick-shadow" data-slider='{"slidesToShow": 4, "responsive": [{"breakpoint": 767,"settings":{"slidesToShow":2}}]}'>
+            {%- assign number_of_related_products_to_show = settings.rel_limit | default: 10 -%}
+
+            {%- assign number_of_related_products_to_fetch = number_of_related_products_to_show | times: 1 -%}
+
+            {%- if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' -%}
+            {%- assign found_a_collection = false -%}
+            {%- for c in product.collections -%}
+            {%- if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 -%}
+            {%- assign found_a_collection = true -%}
+            {%- assign collection = c -%}
+            {%- endif -%}
+            {%- endfor -%}
+            {%- endif -%}
+
+            {%- if collection and collection.products_count > 1 -%}
+              {%- assign current_product = product -%}
+              {%- assign current_product_found = false -%}
+              {%- assign current_index = 1 -%}
+              {%- for product in collection.products limit: number_of_related_products_to_fetch -%}
+              {%- if product.handle == current_product.handle -%}
+              {%- assign current_product_found = true -%}
+              {%- else -%}
+              {%- unless current_product_found == false and forloop.last -%}
+                {%- include 'product-grid-item' with 
+                  use_slider: true, 
+                  index: forloop.index, 
+                  lazy_index: 999,
+                  column_count: 4, 
+                  main_thumbnail: settings.main_thumbnail_related, 
+                  image_size: '375x', 
+                  truncate_count: settings.product_name_size_related,
+                  enable_product_options: settings.enable_product_options_related, 
+                  show_review_stars: settings.show_review_stars_related,
+                  enable_small_images: false,
+                  show_wishlist_btn: settings.show_wishlist_btn_related,
+                  small_image: 'small',
+                  show_label : settings.show_label_related,
+                  show_cart_btn: settings.show_cart_btn_related,
+                  show_wishlist : false,
+                  show_compare_btn: settings.show_compare_btn_related,
+                  show_qs_btn: settings.show_qs_btn_related,
+                  small_image_slider: false,
+                  withinCollection: collection 
+                -%}
+              {%- assign current_index = current_index | plus: 1 -%}
+              {%- endunless -%}
+              {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

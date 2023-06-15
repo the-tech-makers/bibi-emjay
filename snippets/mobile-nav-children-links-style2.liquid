@@ -1,0 +1,19 @@
+<div class="col-xs-12 {{ no_gutter_right_class }}">
+	<ul class="margin0 no-gutter w100">
+		{%- for l in links -%}
+			<li class="gutter-ele-top gutter-ele-bottom mobile-nav__item w100">
+				<div class="mobile-nav__level2-wrap-style2 flex flex-align-ver flex-align-space-between w100">
+					{%- render 'mobile-nav-render-level2' with title: l.title, url: l.url, item_id: item_id, custom_label_classes: custom_label_classes, has_arrow: true -%}
+					{%- if l.links != blank -%}
+						<a href="#" class="mobile-nav__arrow mobile-nav__arrow--{{ item_id }} mobile-nav__arrow--level2 h100 lnr-chevron-down flex flex-align-ver flex-align-hoz transition" title="{{ 'layout.navigation.arrow' | t | escape }}"></a>
+					{%- endif -%}	
+				</div>
+				{%- if l.links != blank -%}
+					<div class="mobile-nav__children mobile-nav__children--mega flex col-xs-12 {{ no_gutter_right_class }} gutter-ele-top gutter-ele-bottom" style="display:none;">
+						{%- render 'mobile-nav-render-links' with links: l.links, item_id: item_id, custom_label_classes: custom_label_classes -%}
+					</div>	
+				{%- endif -%}
+			</li>
+		{%- endfor -%}
+</ul>
+</div>

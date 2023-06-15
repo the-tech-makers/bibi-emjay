@@ -1,0 +1,216 @@
+{%- render 'section-background-start' -%}
+<div class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if section.settings.small_top_gutter %} gutter-top{% endif %}{% if section.settings.small_bottom_gutter %} gutter-bottom{% endif %} psd" data-section-id="{{ section.id }}" data-section-type="single-deal" id="product-single-deal-{{ section.id }}">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- render 'section-heading' -%}
+      <div class="section__content">
+        {%- assign product = all_products[section.settings.product] -%}
+        {%- if product -%}
+          {%- assign deal_image = blank -%}
+          {%- if section.settings.image != blank -%}
+            {%- assign deal_image = section.settings.image -%}
+          {%- elsif product.featured_image -%}
+            {%- assign deal_image = product.featured_image -%}
+          {%- endif -%}
+          <div class="row">
+            <div class="col-xs-12 col-sm-7{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endunless %}">
+              <div class="row">
+                <div class="flex flex-align-ver">
+                  <div class="col-xs-12 col-sm-10">
+                    {%- if deal_image != blank -%}
+                      <div class="img-container" style="padding-top:{{ 1 | divided_by: deal_image.aspect_ratio | times: 100}}%;">
+                        {%- assign img_url = deal_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                        <img data-aspectratio="{{ deal_image.aspect_ratio }}"
+                        data-src="{{ img_url }}"
+                        data-sizes="auto" class="w100 img-responsive img-abs center-abs lazyload op1"{% render 'img-one-pixel' %} alt="{{ deal_image.alt | escape }}"/>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  <div class="col-xs-12 col-sm-2">
+                    {%- assign countdown = false -%}
+                    {%- if product.metafields.btt.countdown -%}
+                    {%- assign countdown = product.metafields.btt.countdown -%}
+                    {%- elsif settings.enable_countdown_all and settings.countdown_expression -%}
+                    {%- assign countdown = settings.countdown_expression -%}
+                    {%- endif -%}
+                    {%- if countdown -%}
+                      <div class="pg__countdown-js psd__countdown-wrap text-center" data-product-id="{{ product.id }}" data-timer="{{ countdown }}" data-tpl-hour=".single-deal-hour" data-tpl-day=".single-deal-day" data-tpl-week=".single-deal-week"{% if product.metafields.btt.countdown_extend %} data-extend="{{ product.metafields.btt.countdown_extend }}"{% endif %}></div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-5 gutter-ele-top-mb">
+              <h4 class="psd__title gutter-ele-top-mb">{{ section.settings.deal_title | default: product.title }}</h4>
+              {%- capture deal_price -%}<span class="product-price__price">{%- render 'price' with product.price_min -%}</span>{%- endcapture -%}
+              <div class="psd__price gutter-ele-top gutter-ele-bottom">
+                {%- render 'product-variant-price' with variant: product.first_available_variant, product: product -%} 
+              </div>
+              <div class="psd__desc gutter-ele-top gutter-ele-bottom rte">{{ section.settings.deal_desc | default: product.description }}</div>
+              <div class="gutter-ele-top">
+                <a href="{{ product.url }}" title="{{ section.settings.btn_label | escape }}" class="button button--style1 button--rad">{{ section.settings.btn_label }}</a>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% style %}{%- render 'preload-single-deal.scss' -%}{% endstyle %}
+{% schema %}
+  {
+    "name": "Product Single Deal",
+    "class": "index-section product-single-deal",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/product-single-deal)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_top_gutter",
+        "label": "Enable small top gutter",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_bottom_gutter",
+        "label": "Enable small bottom gutter",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Product single deal"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Product"
+      },
+      {
+        "type": "product",
+        "id": "product",
+        "label": "Pick a product"
+      },
+      {
+        "type": "text",
+        "id": "deal_title",
+        "label": "Deal title",
+        "info": "If this field is empty, the product name will be dispayed."
+      },
+      {
+        "type": "textarea",
+        "id": "deal_desc",
+        "label": "Deal description",
+        "info": "If this field is empty, the product description will be displayed."
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Deal image",
+        "info": "If this field is empty, the product featured image will be displayed."
+      },
+      {
+        "type": "text",
+        "id": "btn_label",
+        "label": "Button label",
+        "default": "Get it now"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product single deal",
+        "category": "Collection"
+      }
+    ]
+  }
+{% endschema %}

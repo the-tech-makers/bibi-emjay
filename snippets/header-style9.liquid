@@ -1,0 +1,74 @@
+<div class="container-fluid">
+	<div class="row header__wrap{% if settings.use_sticky %} use-sticky--desktop{% endif %} flex flex-align-ver">
+		<div class="col-xs-1">
+			<div class="header__wrap-logo text-center">{% render 'header__logo' %}</div>
+		</div>
+		<div class="col-xs-11 position-static">
+			<div class="header__right position-static">
+				<div class="header__top w100 flex flex-align-space-between flex-align-ver{% if settings.use_sticky %} hide-in-sticky{% endif %}">
+					{%- if settings.header_text != blank -%}
+					<div class="header__link-text header__top__typo rte">{{ settings.header_text | raw }}</div>
+					{%- endif -%}
+					<div class="header__top__right flex">
+						{%- render 'language-picker', data_group: 'header__links', show_language_icon: false, hide_language_code: false, wrap_class: 'header__top__ele dib', flex_trigger: true, addition_classes: 'header__top__typo bt-dropdown__trigger--arrow', no_full_height: true -%}
+						{%- render 'currency-switcher', flex_trigger: true, addition_classes: 'header__top__typo bt-dropdown__trigger--arrow', add_wrap_classes: 'dib header__top__ele', data_group: 'header__links', currency_dropdown_align: 'bt-dropdown__content--auto-center', no_full_height: true -%}
+						{%- render 'header-social-links', add_wrap_classes: 'dib header__top__ele' -%}	
+					</div>
+				</div>
+				<div class="header__bottom w100 flex flex-align-space-between">
+					{% section 'navigation' %}
+					<div class="header__bottom__right flex flex-align-ver">
+						{%- if settings.enable_compare -%}
+							<a href="javascript:void(0);" class="header__link--compare header__bottom__ele header__bottom__typo por" title="{{ 'collections.product_item.compare' | t | escape }}">
+								{%- render 'icon-compare' -%}
+								<span class="compare-number abs-number"></span>
+							</a>
+						{%- endif -%}
+						{%- if settings.enable_wishlist -%}
+							<a href="javascript:void(0);" class="por header__link--wishlist header__bottom__ele header__bottom__typo" title="{{ 'collections.product_item.wishlist' | t | escape }}">
+								{%- render 'icon-wishlist' -%}
+								<span class="wishlist-number abs-number"></span>
+							</a>
+						{%- endif -%}
+						<a href="/search" class="header__bottom__ele header__bottom__typo search-full-trigger" title="{{ 'general.search.placeholder' | t | escape }}">
+							{% render 'icon-search' %}
+						</a>
+						{%- if shop.customer_accounts_enabled -%}
+							<div class="bt-dropdown h100 flex flex-align-ver header__bottom__ele{% if customer %} por{% endif %}" data-group="header__links">
+								{%- if customer -%}
+									<a class="bt-dropdown__trigger header__bottom__typo header__top__typo" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_url }}">
+										{%- render 'icon-account' -%}
+									</a>
+									<div class="bt-dropdown__content bt-dropdown__content--auto-center" style="white-space:nowrap;min-width:auto;">
+										<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+											{%- unless enable_rtl -%}
+												{% render 'icon-account' %}&nbsp;<span>{{ 'customer.account.title' | t }}</span>
+											{%- else -%}
+												<span>{{ 'customer.account.title' | t }}</span>&nbsp;{% render 'icon-account' %}
+											{%- endunless -%}
+										</a>
+										<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+											{%- unless enable_rtl -%}
+												{%- render 'icon-sign-out' -%}&nbsp;<span>{{ 'layout.customer.log_out' | t }}</span>
+											{%- else -%}
+												<span>{{ 'layout.customer.log_out' | t }}</span>&nbsp;{%- render 'icon-sign-out' -%}
+											{%- endunless -%}
+										</a>
+									</div>
+								{%- else -%}
+									<a class="bt-dropdown__trigger header__link header__top__typo header__bottom__typo" title="{{ 'customer.login.title' | t | escape }}" href="{{ routes.account_login_url }}">
+										{%- render 'icon-account' -%}
+									</a>
+									<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+										{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+									</div>
+								{%- endif -%}
+							</div>
+						{%- endif -%}
+						{%- render 'header-cart', data_group: 'header__links', cart_dropdown_direction: 'bt-dropdown__content--right bt-dropdown__content--right-fluid', addition_classes: 'header__bottom__ele header__bottom__typo flex flex-align-ver flex-align-space-between', show_cart_text: true -%}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,236 @@
+{%- render 'section-background-start' -%}
+<div id="newsletter_{{ section.id }}" class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="newsletter">
+  <div class="row">
+    <div class="section__inner col-xs-12 text-center">
+      {%- render 'section-heading' -%}
+      <div class="section__content">
+        {%- assign section_news_form_id = 'newsletter-section-form-' | append: section.id -%}
+        {%- assign section_news_input_id = 'SectionNewsletterEmail-' | append: section.id -%}
+        {%- if settings.news_platform == 'shopify' -%}
+          {% form 'customer', id: section_news_form_id, class: 'newsletter-form' %}
+            {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' }}
+            {%- if form.posted_successfully? -%}
+              <div class="note form-success text-center alert alert-success col-xs-12 col-sm-5 center-block" style="float:none;">
+                {{ 'general.newsletter_form.confirmation' | t }}
+              </div>
+            {%- endif -%}
+            <div class="field por center-block{% unless settings.news_terms_enable and settings.news_platform == 'shopify' %}{% if section.settings.social_icons %} gutter-bottom gutter-ele-bottom-tbs{% endif %}{% endunless %}" style="margin-top: 0;max-width: 600px;float:none;">
+              <input type="email" name="contact[email]" id="{{ section_news_input_id }}" class="w100{% if form.errors contains 'email' %} input--error{% endif %}" autocapitalize="off" placeholder="{{ 'general.newsletter_form.email_placeholder' | t | escape }}" style="height:45px;line-height:45px;border:none;background:{{ section.settings.input_bkg_color }};color:{{ section.settings.input_color }};" required>
+              <button type="submit" class="button button--style1 newsletter__submit--{{ section.id }} button--icon no-gutter flex flex-align-ver" name="commit" aria-label="button" style="border:none;background:none;position:absolute;top:0;">
+                {%- assign news_icon_class = 'newsletter__icon--' | append: section.id -%}
+                {%- render 'icon-paper-plane' with add_class: news_icon_class -%}
+              </button>
+            </div>
+            {%- if settings.news_terms_enable and settings.news_platform == 'shopify' -%}
+              <div class="center-block newsletter__terms-{{ section.id }}" style="max-width: 600px;float:none;">
+                {%- assign section_news_terms_input_id = 'SectionNewsletterTerms-' | append: section.id -%}
+                {%- render 'newsletter-terms' with inputId: section_news_terms_input_id -%}
+              </div>
+            {%- endif -%}
+            {%- if section.settings.social_icons -%}
+            <div class="gutter-top{% unless settings.news_terms_enable and settings.news_platform == 'shopify' %} gutter-ele-top-tbs{% endunless %}">
+              {%- assign custom_link_class = 'social-icons__link--' | append: 'news-' | append: section.id -%}
+              {%- render 'footer-social-icons' with enable_social: section.settings.social_icons, custom_link_class: custom_link_class -%}
+            </div>
+            {%- endif -%}
+          {% endform %}
+        {%- elsif settings.news_platform == 'klaviyo' and section.settings.klaviyo_embed_code != blank -%}
+          {{ section.settings.klaviyo_embed_code | raw }}  
+        {%- elsif settings.news_platform == 'mailchimp' -%}
+          {{ settings.news_mailchimp_html | raw }}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{%- liquid
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign right_holder = 'right'
+    assign enable_rtl = false
+  else
+    assign right_holder = 'left'
+    assign enable_rtl = true
+  endunless
+-%}
+{%- style -%}.section__title__text--{{ section.id }}{color:{{ section.settings.section_title_color }};}{%- if section.settings.sub_title != blank -%}.section__sub-title--{{ section.id }}{color:{{ section.settings.section_subtitle_color }};}{%- endif -%}.newsletter__terms-{{ section.id }}{color:{{ section.settings.terms_color }};}a.{{ custom_link_class }}{color:{{ section.settings.social_color }}!important;}#{{ section_news_input_id }}{padding:{%- unless enable_rtl -%}0 70px 0 35px{%- else -%}0 35px 0 70px{%- endunless -%};-webkit-box-shadow: 1px 2px 5px 0px {{ section.settings.icon_color | color_modify: 'alpha', 0.07 }};-moz-box-shadow: 1px 2px 5px 0px {{ section.settings.icon_color | color_modify: 'alpha', 0.07 }};box-shadow: 1px 2px 5px 0px {{ section.settings.icon_color | color_modify: 'alpha', 0.07 }};-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;}@media(min-width:1200px){#{{ section_news_input_id }}{font-size:{{ section.settings.input_fs }}px;} }.newsletter__submit--{{ section.id }}{ {{ right_holder }}:35px;}.{{ news_icon_class }}{font-size:23px!important;color:{{ section.settings.icon_color }};}{%- endstyle -%}
+{% schema %}
+  {
+    "name": "Newsletter",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/newsletter)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color",
+        "default": "#f7f7f7"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Subscribe your email"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Subheading"
+      },
+      {
+        "type": "text",
+        "id": "klaviyo_embed_code",
+        "label": "Klaviyo embed code",
+        "info": "Only work when you choose the newsletter platform is Klaviyo in Theme settings > Newsletter > Platform."
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "checkbox",
+        "id": "social_icons",
+        "label": "Enable social icons",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Color & font size"
+      },
+      {
+        "type": "color",
+        "id": "section_title_color",
+        "label": "Section heading color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "section_subtitle_color",
+        "label": "Section subheading color",
+        "default": "#555"
+      },
+      {
+        "type": "color",
+        "id": "input_color",
+        "label": "Input text color",
+        "default": "#828282"
+      },
+      {
+        "type": "color",
+        "id": "input_bkg_color",
+        "label": "Input background color",
+        "default": "#fff"
+      },
+      {
+        "type": "range",
+        "id": "input_fs",
+        "label": "Input font size",
+        "min": 10,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "default": 12,
+        "info": "Only apply in the desktop screen."
+      },
+      {
+        "type": "color",
+        "id": "icon_color",
+        "label": "Input icon color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "terms_color",
+        "label": "Terms & conditions color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "social_color",
+        "label": "Social icons color",
+        "default": "#696969"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Newsletter",
+        "category": "Marketing"
+      }
+    ]
+  }
+{% endschema %}

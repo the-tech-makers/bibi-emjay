@@ -1,0 +1,21 @@
+{%- layout none -%}
+{%- assign exist_keys = ',' -%}
+{
+  {%- for i in (1..30) -%}
+    {%- assign index_color_tag = 'cs_tag_' | append: i -%}
+    {%- assign index_color_code = 'cs_code_' | append: i -%}
+    {%- assign index_color_custom = 'cs_custom_' | append: i -%}
+    {%- if settings[index_color_tag] != blank -%}
+      {%- capture color_value -%}{%- if settings[index_color_code] != blank -%}"color":"{{ settings[index_color_code] }}"{%- endif -%}{%- if settings[index_color_custom] != blank -%}{%- if settings[index_color_code] != blank -%},{%- endif -%}"image":"{{ settings[index_color_custom] | img_url: 'master' }}"{%- endif -%}{%- endcapture -%}
+      {%- assign color_translate_group = settings[index_color_tag] | split:',' -%}
+      {%- for color_tag in color_translate_group -%}
+        {%- assign key_tag = color_tag | escape | handleize -%}
+        {%- assign compare_key = ',' | append: key_tag | append: ',' -%}
+        {%- unless exist_keys contains compare_key -%}
+          {%- if exist_keys != ',' -%},{%- endif -%}"{{ key_tag }}":{ {{ color_value }} }
+          {%- assign exist_keys = exist_keys | append: key_tag | append: ',' -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+}

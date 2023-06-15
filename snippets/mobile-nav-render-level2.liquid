@@ -1,0 +1,17 @@
+{%- if title != blank -%}
+	{% unless has_arrow %}
+		<div class="gutter-ele-bottom w100">
+	{% endunless %}
+		{%- if url != blank -%}
+			<a href="{{ url }}" title="{%- render 'nav-shortcode-ign', str: title -%}" class="dib mobile-nav__level2 mobile-nav__level2--{{ item_id }} fw-bold por">
+				{%- render 'mobile-nav-label' with str: title, item_id: item_id, custom_label_classes: custom_label_classes -%}
+			</a>
+		{%- else -%}
+			<span class="dib mobile-nav__level2 mobile-nav__level2--{{ item_id }} fw-bold por">
+				{%- render 'mobile-nav-label' with str: title, item_id: item_id, custom_label_classes: custom_label_classes -%}
+			</span>
+		{%- endif -%}
+	{% unless has_arrow %}
+		</div>
+	{% endunless %}
+{%- endif -%}

@@ -1,0 +1,9 @@
+<div class="header-mobile__top flex flex-align-ver flex-align-space-between" style="padding: 10px 0;">
+	<div class="col-xs-7 col-sm-6 flex flex-align-ver no-gutter">
+		<a class="mobile-nav-bar bt-sidebar-btn" href="#" title="menu-bar" data-target="#sidebar-mobile-nav" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}" style="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}padding-right:15px;{% else %}padding-left:15px;{% endunless %}">{% render 'icon-bar' with add_class: 'ver-sub' %}</a>
+		{%- render 'header-mobile-logo' -%}
+	</div>
+	<div class="col-xs-5 col-sm-6 no-gutter flex header__links header__links--flex" style="position: static;">
+		{%- render 'header__links--mobile' -%}
+	</div>
+</div>

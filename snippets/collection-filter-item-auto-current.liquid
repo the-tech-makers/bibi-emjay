@@ -1,0 +1,50 @@
+{%- if filter_param_value != '' -%}
+<div class="cf__content">
+	{%- assign filter_param_array = filter_param_value | split: ',' -%}
+	<div class="cf__item w100 cf__item--first flex flex-align-space-between flex-align-ver">
+    <h5 class="cf__item__title cf__item__title--first fw-bold secondary-font">
+      {{ 'collections.general.active_filters' | t }}
+    </h5>
+    <a href="#" class="fw-bold expand-trigger open">
+      {%- render 'icon-collapse' with add_classes: 'cf__item__collapse' -%}
+    </a>
+    <div class="cf__item__content expand-content w100">
+    	<ul>
+    		{%- for filter_item in filter_param_array -%}
+	    		{%- if filter_item != '' -%}
+	    			{%- assign filter_item_parts = filter_item | split: '=' -%}
+	    			<li class="cf__item__content--auto{% unless forloop.last %} gutter-ele-bottom{% endunless %}" data-option-name="{{ filter_item_parts[0] | escape }}">
+	    				<strong class="db cf__item-current-label gutter-ele-small-bottom">{{ filter_item_parts[0] | split: '-' | last }}</strong>
+	    				{%- assign filter_item_values = filter_item_parts[1] | split: '+' -%}
+	    				<div class="w100 gutter-ele-small-top gutter-ele-bottom">
+	    					<ul class="list--inline cf__current-list">
+	    						{%- for filter_item_value in filter_item_values -%}
+	    							<li class="cf__item-current">
+	    								<a href="#" data-value="{{ filter_item_value | escape }}" class="cf__link--current cf__link--current-js por current" id="cf-current-{{ filter_item_parts[0] | escape | handleize }}-{{ filter_item_value | escape | handleize }}">
+	    									<span class="cf__link--current__content">
+								    			{%- if filter_item_parts[0] == 'price' -%}
+								    				{%- assign price_parts = filter_item_value | split: '-' -%}
+								    				<span class="cf__price cf__price-from dib">{%- render 'price' with price: price_parts[0] -%}</span>
+								    				<span class="cf__price__sep">-</span>
+								    				<span class="cf__price cf__price-to dib">{%- render 'price' with price: price_parts[1] -%}</span>
+								    			{%- elsif filter_item_parts[0] == 'ratings' -%}
+								    				{%- assign count_rating_stars = filter_item_value | plus: 0 -%}
+								    				{%- render 'rating-stars' with count_rating_stars: count_rating_stars -%}
+								    			{%- else -%}
+								    				{{ filter_item_value | replace: '-', ' ' }}
+								    			{%- endif -%}
+								    		</span>
+						    			</a>
+	    							</li>
+	    						{%- endfor -%}
+	    					</ul>	
+	    				</div>
+		    		</li>	
+	    		{%- endif -%}
+    		{%- endfor -%}
+    	</ul>
+    	<a href="#" class="button button--style2 cf__link--clear-all distance-top-ele pull-right">{{ 'collections.general.filter_clear_all_button' | t }}</a>
+    </div>
+	</div>
+</div>
+{%- endif -%}

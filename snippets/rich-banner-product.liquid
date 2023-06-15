@@ -1,0 +1,32 @@
+<div class="{% include 'rich-banner-item-size' %} banner-item banner-item--{{ block.id }}{% if block.settings.hide_on_mobile %} hidden-xs{% endif %}{% if block.settings.hide_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %}{% if section.settings.enable_slider %}{{ slider_class }}{% if current_index_mobile > lazyload_index_mobile %} ov-slider-mb{% endif %}{% if current_index_tb > lazyload_index %} ov-slider-tb{% endif %}{% endif %}" {{ block.shopify_attributes }}>
+  {%- capture banner_html -%}
+    {%- assign product = all_products[block.settings.product] -%}
+    {%- if product != blank -%}
+    	{%- include 'product-grid-item' with 
+      use_slider: section.settings.enable_slider, 
+      index: forloop.index, 
+      lazy_index: -1,
+      column_count: item_size_number, 
+      main_thumbnail: block.settings.main_thumbnail, 
+      image_size: block.settings.image_size, 
+      truncate_count: block.settings..product_name_size,
+      enable_product_options: block.settings.enable_product_options, 
+      show_review_stars: block.settings.show_review_stars,
+      enable_small_images: false,
+      show_wishlist_btn: block.settings.show_wishlist_btn,
+      small_image: '1x',
+      show_label : block.settings.show_label,
+      show_cart_btn: block.settings.show_cart_btn,
+      show_wishlist : false,
+      show_compare_btn: block.settings.show_compare_btn,
+      show_qs_btn: block.settings.show_qs_btn,
+      small_image_slider: false,
+      show_countdown_timer: block.settings.show_countdown_timer,
+      no_grid_item_class: true
+    -%}
+    {%- else -%}
+    	{%- include 'product-grid-item-placeholder' with no_grid_item_class: true -%}	
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- include 'rich-banner-display' -%}
+</div>

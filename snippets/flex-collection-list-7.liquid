@@ -1,0 +1,158 @@
+<div{% if index < section.blocks.size %} style="margin-bottom: 30px;"{% endif %}>
+	<div class="col-xs-12 col-sm-9{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endif %}">
+		<div class="row flex flex-align-ver">
+			<div class="col-xs-12 col-sm-4 gutter-ele-bottom-mb">
+				{%- if block.settings.title != blank -%}
+				<h3 class="fcl__heading-{{ section.id }}-{{ block.id }} secondary-font"{% if block.settings.title_color != blank %} style="color:{{ block.settings.title_color }};"{% endif %}>{{ block.settings.title }}</h3>
+				{%- endif -%}
+				{%- if block.settings.short_desc != blank -%}
+				<p class="fcl__short-desc-{{ section.id }}-{{ block.id }}"{% if block.settings.short_desc != blank %} style="color:{{ block.settings.short_desc_color }};"{% endif %}>{{ block.settings.short_desc }}</p>
+				{%- endif -%}
+				{%- if block.settings.btn_text != blank -%}
+				<a class="button button--{{ block.settings.btn_style }} fcl__btn-{{ section.id }}-{{ block.id }}" href="{{ block.settings.btn_url | default: '#' }}" title="{{ block.settings.btn_text | escape }}">{{ block.settings.btn_text }}</a>
+				{%- endif -%}
+			</div>
+			<div class="col-xs-12 col-sm-8 gutter-ele-top-mb">
+				{%- render 'flex-collection-grid-item7' with 
+					settings_image: block.settings.image_1,
+					settings_collection: block.settings.collection_1,
+					collection_title: block.settings.title_1,
+					collection_subtitle: block.settings.subtitle_1,
+					collection_color_title: block.settings.color_title_1,
+					collection_color_subtitle: block.settings.color_subtitle_1,
+					collection_fs_title: block.settings.font_size_title_1,
+					collection_fs_title_mobile: block.settings.mobile_font_size_title_1,
+					collection_fs_subtitle: block.settings.font_size_subtitle_1,
+					collection_fs_subtitle_mobile: block.settings.mobile_font_size_subtitle_1,
+					settings_pos: block.settings.standard_pos_1,
+					label_text: block.settings.label_1,
+					label_color: block.settings.color_label_text_1,
+					label_bkg: block.settings.color_label_bkg_1,
+					block_id: block.id,
+					index: 1,
+					enable_rtl: enable_rtl,
+					revert_in_rtl: block.settings.revert_in_rtl -%}
+			</div>
+		</div>
+		<div class="row flex gutter-top distance-top-ele">
+			<div class="col-xs-4 hidden-xs"></div>
+			<div class="col-xs-6 col-sm-4">
+				{%- render 'flex-collection-grid-item7' with 
+					settings_image: block.settings.image_2,
+					settings_collection: block.settings.collection_2,
+					collection_title: block.settings.title_2,
+					collection_subtitle: block.settings.subtitle_2,
+					collection_color_title: block.settings.color_title_2,
+					collection_color_subtitle: block.settings.color_subtitle_2,
+					collection_fs_title: block.settings.font_size_title_2,
+					collection_fs_title_mobile: block.settings.mobile_font_size_title_2,
+					collection_fs_subtitle: block.settings.font_size_subtitle_2,
+					collection_fs_subtitle_mobile: block.settings.mobile_font_size_subtitle_2,
+					settings_pos: block.settings.standard_pos_2,
+					label_text: block.settings.label_2,
+					label_color: block.settings.color_label_text_2,
+					label_bkg: block.settings.color_label_bkg_2,
+					block_id: block.id,
+					index: 2,
+					enable_rtl: enable_rtl,
+					revert_in_rtl: block.settings.revert_in_rtl -%}
+			</div>
+			<div class="col-xs-6 col-sm-4">
+				{%- render 'flex-collection-grid-item7' with 
+					settings_image: block.settings.image_3,
+					settings_collection: block.settings.collection_3,
+					collection_title: block.settings.title_3,
+					collection_subtitle: block.settings.subtitle_3,
+					collection_color_title: block.settings.color_title_3,
+					collection_color_subtitle: block.settings.color_subtitle_3,
+					collection_fs_title: block.settings.font_size_title_3,
+					collection_fs_title_mobile: block.settings.mobile_font_size_title_3,
+					collection_fs_subtitle: block.settings.font_size_subtitle_3,
+					collection_fs_subtitle_mobile: block.settings.mobile_font_size_subtitle_3,
+					settings_pos: block.settings.standard_pos_3,
+					label_text: block.settings.label_3,
+					label_color: block.settings.color_label_text_3,
+					label_bkg: block.settings.color_label_bkg_3,
+					block_id: block.id,
+					index: 3,
+					enable_rtl: enable_rtl,
+					revert_in_rtl: block.settings.revert_in_rtl -%}
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-3">
+		<div class="w100 gutter-top distance-top-ele visible-xs"></div>
+		{%- render 'flex-collection-grid-item7' with 
+			settings_image: block.settings.image_4,
+			settings_collection: block.settings.collection_4,
+			collection_title: block.settings.title_4,
+			collection_subtitle: block.settings.subtitle_4,
+			collection_color_title: block.settings.color_title_4,
+			collection_color_subtitle: block.settings.color_subtitle_4,
+			collection_fs_title: block.settings.font_size_title_4,
+			collection_fs_title_mobile: block.settings.mobile_font_size_title_4,
+			collection_fs_subtitle: block.settings.font_size_subtitle_4,
+			collection_fs_subtitle_mobile: block.settings.mobile_font_size_subtitle_4,
+			settings_pos: block.settings.standard_pos_4,
+			label_text: block.settings.label_4,
+			label_color: block.settings.color_label_text_4,
+			label_bkg: block.settings.color_label_bkg_4,
+			block_id: block.id,
+			index: 4,
+			enable_rtl: enable_rtl,
+			revert_in_rtl: block.settings.revert_in_rtl -%}
+		<div class="w100 gutter-top distance-top-ele"></div>
+		{%- render 'flex-collection-grid-item7' with 
+			settings_image: block.settings.image_5,
+			settings_collection: block.settings.collection_5,
+			collection_title: block.settings.title_5,
+			collection_subtitle: block.settings.subtitle_5,
+			collection_color_title: block.settings.color_title_5,
+			collection_color_subtitle: block.settings.color_subtitle_5,
+			collection_fs_title: block.settings.font_size_title_5,
+			collection_fs_title_mobile: block.settings.mobile_font_size_title_5,
+			collection_fs_subtitle: block.settings.font_size_subtitle_5,
+			collection_fs_subtitle_mobile: block.settings.mobile_font_size_subtitle_5,
+			settings_pos: block.settings.standard_pos_5,
+			label_text: block.settings.label_5,
+			label_color: block.settings.color_label_text_5,
+			label_bkg: block.settings.color_label_bkg_5,
+			block_id: block.id,
+			index: 5,
+			enable_rtl: enable_rtl,
+			revert_in_rtl: block.settings.revert_in_rtl -%}
+	</div>
+</div>
+{%- assign has_label = false -%}
+{%- if block.settings.label_1 != blank or block.settings.label_2 != blank or block.settings.label_3 != blank or block.settings.label_4 != blank or block.settings.label_5 != blank -%}
+	{%- assign has_label = true -%}
+{%- endif -%}
+{%- if block.settings.title != blank or block.settings.short_desc != blank or block.settings.btn_text != blank or has_label -%}
+	{%- style -%}
+	{%- if has_label -%}.fcl__label-{{ section.id }}-{{ block.id }}{font-size:11px;position: absolute;top: 11px;right: 10px;padding: 5px 10px;transform: rotate(-90deg);-webkit-transform: rotate(-90deg);-moz-transform: rotate(-90deg);-ms-transform: rotate(-90deg);-o-transform: rotate(-90deg);letter-spacing:1px;}{%- endif -%}
+	{%- assign flex_desktop_css = '' -%}
+	{%- if block.settings.title != blank -%}
+		.fcl__heading-{{ section.id }}-{{ block.id }}{font-size:{{ block.settings.mobile_font_size_heading }}px;}
+		{%- if block.settings.mobile_font_size_heading != block.settings.font_size_heading -%}
+		{%- capture flex_css -%}.fcl__heading-{{ section.id }}-{{ block.id }}{font-size:{{ block.settings.font_size_heading_tablet }}px;}{%- endcapture -%}
+		{%- assign flex_desktop_css = flex_desktop_css | append: flex_css -%}
+		{%- endif -%}
+	{%- endif -%}
+	{%- if block.settings.short_desc != blank -%}
+		.fcl__short-desc-{{ section.id }}-{{ block.id }}{padding-top:15px;font-size:{{ block.settings.mobile_font_size_desc }}px;line-height:1.5em;}
+		{%- capture flex_css -%}.fcl__short-desc-{{ section.id }}-{{ block.id }}{padding-top:35px;{%- if block.settings.mobile_font_size_desc != block.settings.font_size_desc -%}font-size:{{ block.settings.font_size_desc }}px;{%- endif -%} }{%- endcapture -%}
+		{%- assign flex_desktop_css = flex_desktop_css | append: flex_css -%}
+	{%- endif -%}
+	{%- if block.settings.btn_text != blank -%}
+		.fcl__btn-{{ section.id }}-{{ block.id }}{font-size:{{ block.settings.mobile_font_size_btn }}px;margin-top:10px;}
+		{%- capture flex_css -%}.fcl__btn-{{ section.id }}-{{ block.id }}{ {%- if block.settings.mobile_font_size_btn != block.settings.font_size_btn -%}font-size:{{ block.settings.font_size_btn }}px;{%- endif -%}margin-top:70px;}{%- endcapture -%}
+		{%- assign flex_desktop_css = flex_desktop_css | append: flex_css -%}
+	{%- endif -%}
+	{%- if flex_desktop_css != '' -%}
+		@media(min-width: 768px){ {{ flex_desktop_css }} }
+	{%- endif -%}
+	{%- if block.settings.title != blank -%}
+		@media(min-width: 1024px){ .fcl__heading-{{ section.id }}-{{ block.id }}{font-size:{{ block.settings.font_size_heading }}px;} }
+	{%- endif -%}
+	{%- endstyle -%}
+{%- endif -%}

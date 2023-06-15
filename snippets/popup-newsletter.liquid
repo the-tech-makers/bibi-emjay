@@ -1,0 +1,55 @@
+{%- if settings.news_popup_enable -%}
+<div class="modal fade newsletterPopup news-popup" tabindex="-1" role="dialog" id="newsletterPopup" style="{% if settings.news_img_picker != blank %}top:5vh;{% else %}top:25%;{% endif %}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"{% if settings.news_bkg_color != blank %} style="background-color: {{ settings.news_bkg_color }};"{% endif %}>
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-label="Close" class="close">{% render 'icon-close' with add_class: 'flex flex-align-hoz' %}</button>
+      </div>
+      <div class="modal-body">
+      	<div class="row flex flex-align-ver flex-align-hoz por">
+      		<div class="col-xs-12 col-sm-{% if settings.news_img_picker != blank %}6{% else %}12 news-popup__info--no-image{% endif %} news-popup__info">
+      			{%- if settings.news_text != blank -%}
+      				<div class="news-popup__text secondary-font">{{ settings.news_text }}</div>
+      			{%- endif -%}
+      			<div class="news-popup__form-wrap flex">
+              {%- if settings.news_platform == 'shopify' -%}
+                {% form 'customer', id: 'newsletter-popup-form', class: 'newsletter-form' %}
+                  {{ form.errors | default_errors | replace: 'class="errors"','class="errors alert alert-danger"' }}
+                  {%- if form.posted_successfully? -%}
+                    <div class="note form-success text-center alert alert-success col-xs-12 col-sm-5 center-block" style="float:none;">
+                      {{ 'general.newsletter_form.confirmation' | t }}
+                    </div>
+                  {%- endif -%}
+                  <div class="field" style="margin-top: 0;">
+                    <input type="email" name="contact[email]" id="newsPopupEmail" class="w100{% if form.errors contains 'email' %} input--error{% endif %}" autocapitalize="off" placeholder="{{ 'general.newsletter_form.email_placeholder' | t | escape }}" required>
+                    <button type="submit" class="newsletter__submit--popup button--icon" name="commit" aria-label="button" style="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}:0;">
+                      {%- render 'icon-paper-plane' -%}
+                    </button>
+                  </div>
+                  {%- render 'newsletter-terms' with inputId: 'newsTermPopup' -%}
+                {% endform %}
+              {%- elsif settings.news_platform == 'klaviyo' and settings.news_klaviyo_code != blank -%}
+                {{ settings.news_klaviyo_code | raw }}  
+              {%- elsif settings.news_platform == 'mailchimp' -%}
+                {{ settings.news_mailchimp_html | raw }}
+              {%- endif -%}
+      			</div>
+      		</div>
+          {%- if settings.news_img_picker != blank -%}
+            <div class="col-xs-6 hidden-xs news-popup__image">
+              {%- assign img_url = settings.news_img_picker | img_url: 'master' -%}
+              <img  class="img-responsive lazyload fade-in"
+                    data-src="{{ img_url }}"
+                    alt="{{ settings.news_img_picker.alt | escape }}"{% render 'img-one-pixel' %} style="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}border-bottom-right-radius{% else %}border-bottom-left-radius{% endunless %}:6px;">
+            </div>
+          {%- endif -%}
+          <div class="news-popup__checkbox checkbox-one-line">
+            <input type="checkbox" id="newsPopupHide" value="1" class="hide checkbox-one-line__input" checked="checked" />
+            <label for="newsPopupHide" class="checkbox-one-line__label por">{{ 'general.newsletter_form.hide_popup' | t }}</label>  
+          </div>
+      	</div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}

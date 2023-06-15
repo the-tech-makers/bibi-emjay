@@ -1,0 +1,535 @@
+{% capture blockId %}tab_list_{{ section.id }}{% endcapture %}
+{%- render 'section-background-start' -%}
+<div id="product-tabs_{{ section.id }}" class="product-tabs container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}" data-section-id="{{ section.id }}" data-section-type="product-tabs">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- render 'section-heading' -%}
+      <div class="section__content">
+        <ul class="nav nav-tabs flex{% if section.blocks.size < 2 %} hide{% endif %} use-touch-mobile">
+          {%- for block in section.blocks -%}
+          <li class="nav-tab-item{% if forloop.index == 1 %} active{% endif %}">
+            <a class="data switch" data-toggle="tab" href="#{{ blockId }}_{{ forloop.index }}" title="{{ block.settings.title | escape }}">
+              <span>{{ block.settings.title }}</span>
+            </a>
+          </li>
+          {%- endfor -%}  
+        </ul>
+
+        <div class="nav-tab-content tab-content">
+          {%- for block in section.blocks -%}
+          {%- assign lazy_index = 999 -%}
+          {%- if section.settings.use_lazyload -%}
+            {%- assign lazy_index = 0 -%}
+          {%- endif -%}
+          {%- assign use_loading_data = false -%}
+          {%- if forloop.first == false -%}
+            {%- assign use_loading_data = true -%}
+          {%- endif -%}
+          {%- assign layout_style = block.settings.layout_style -%}
+          {%- if layout_style == 'style1' -%}
+            {%- assign max_index = 4 -%}
+            {%- assign small_grid_size = 'very-large' -%}
+            {%- assign big_grid_size = 6 -%}
+          {%- elsif layout_style == 'style2' -%}  
+            {%- assign max_index = 6 -%}
+            {%- assign small_grid_size = 'large' -%}
+            {%- assign big_grid_size = 5 -%}
+          {%- elsif layout_style == 'style3' -%}
+            {%- assign max_index = 8 -%}  
+            {%- assign small_grid_size = 'medium' -%}
+            {%- assign big_grid_size = 4 -%}
+          {%- endif -%}
+          {%- assign collection = collections[block.settings.collection] -%}
+          <div class="tab-pane fade in{% if forloop.index == 1 %} active{% endif %}" id="{{ blockId }}_{{ forloop.index }}">
+            <div class="row grid">
+              {%- capture big_product_html -%}
+                {%- if block.settings.big_product -%}
+                  {%- assign product = all_products[block.settings.big_product] -%}
+                  <div class="col-xs-12 col-sm-{{ big_grid_size }} gutter-ele-bottom-mb">
+                    {%- if product != blank -%}
+                      {%- render 'product-grid-item' with
+                        product: product, 
+                        use_slider: false, 
+                        index: 1, 
+                        lazy_index: lazy_index,
+                        column_count: 0, 
+                        main_thumbnail: block.settings.main_thumbnail_big, 
+                        image_size: block.settings.image_size_big, 
+                        truncate_count: block.settings.product_name_size_big,
+                        enable_product_options: block.settings.enable_product_options_big, 
+                        show_review_stars: block.settings.show_review_stars_big,
+                        enable_small_images: false,
+                        show_wishlist_btn: block.settings.show_wishlist_btn_big,
+                        small_image: '1x',
+                        show_label : block.settings.show_label_big,
+                        show_cart_btn: block.settings.show_cart_btn_big,
+                        show_compare_btn: block.settings.show_compare_btn_big,
+                        show_qs_btn: block.settings.show_qs_btn_big,
+                        small_image_slider: false,
+                        show_countdown_timer: block.settings.show_countdown_timer_big,
+                        show_vendor: block.settings.show_vendor_big,
+                        additional_classes: 'w100 h100 grid__item--big flex',
+                        additional_data: 'style="flex-direction:column;padding:0;"'
+                      -%}
+                    {%- else -%}
+                      {%- render 'product-grid-item-placeholder' with no_grid_item_class: true -%}        
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endcapture -%}
+              {%- capture small_products_html -%}
+                <div class="col-xs-12 col-sm-{{ 12 | minus: big_grid_size }} gutter-ele-top-mb">
+                  <div class="grid grid--{{ small_grid_size }} {% if block.settings.position_big == 'left' %}gutter-ele-top-mb{% else %}gutter-ele-bottom-mb{% endif %}">
+                    {% for i in (1..max_index) %}
+                      {%- assign index_product = 'small_product_' | append: i -%}
+                      {%- assign picked_product = block.settings[index_product] -%}
+                      {%- assign product = all_products[picked_product] -%}
+                      {%- if product != blank -%}
+                        {%- render 'product-grid-item' with
+                          product: product,  
+                          use_slider: false, 
+                          index: forloop.index, 
+                          lazy_index: lazy_index,
+                          column_count: 0, 
+                          main_thumbnail: block.settings.main_thumbnail_small, 
+                          image_size: block.settings.image_size_small,
+                          truncate_count: block.settings.product_name_size_small,
+                          enable_product_options: block.settings.enable_product_options_small, 
+                          show_review_stars: block.settings.show_review_stars_small,
+                          enable_small_images: false,
+                          show_wishlist_btn: block.settings.show_wishlist_btn_small,
+                          small_image: '1x',
+                          show_label : block.settings.show_label_small,
+                          show_cart_btn: block.settings.show_cart_btn_small,
+                          show_compare_btn: block.settings.show_compare_btn_small,
+                          show_qs_btn: block.settings.show_qs_btn_small,
+                          small_image_slider: false,
+                          show_countdown_timer: block.settings.show_countdown_timer_small,
+                          show_vendor: block.settings.show_vendor_small 
+                        -%}
+                      {%- else -%}
+                        {%- render 'product-grid-item-placeholder' -%}  
+                      {%- endif -%}  
+                    {% endfor %}
+                  </div>
+                </div>
+              {%- endcapture -%}
+              {%- if block.settings.position_big == 'left' -%}
+                {{ big_product_html }}
+                {{ small_products_html }}
+              {%- else -%}
+                {{ small_products_html }}  
+                {{ big_product_html }}
+              {%- endif -%}
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+{
+  "name": "Powerful product block 2",
+  "class": "product-tabs-section section",
+  "max_blocks": 7,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/powerful-product-block-2)"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "checkbox",
+      "id": "bkg_enable",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bkg",
+      "label": "Pick a color"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bkg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_gutter",
+      "label": "Background size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "medium"
+        },
+        {
+          "value": "high",
+          "label": "High"
+        }
+      ],
+      "default": "high"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_style",
+      "label": "Background image style",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "header",
+      "content": "Section Gutters"
+    },
+    {
+      "type": "checkbox",
+      "id": "top_gutter",
+      "label": "Enable top gutter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bottom_gutter",
+      "label": "Enable bottom gutter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Block product tabs"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "label": "Sub heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_lazyload",
+      "label": "Use lazy loading image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Wide display",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Tab Item",
+      "type": "tab_item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab Title"
+        },
+        {
+          "type": "select",
+          "id": "layout_style",
+          "label": "Layout style",
+          "options": [
+            {
+              "value": "style1",
+              "label": "Style 1"
+            },
+            {
+              "value": "style2",
+              "label": "Style 2"
+            },
+            {
+              "value": "style3",
+              "label": "Style 3"
+            }
+          ],
+          "default": "style1"
+        },
+        {
+          "type": "header",
+          "content": "Big product"
+        },
+        {
+          "type": "product",
+          "id": "big_product",
+          "label": "Pick a product"
+        },
+        {
+          "type":"radio",
+          "id": "position_big",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "image_size_big",
+          "label": "Big image size",
+          "default": "300x"
+        },
+        {
+          "type": "select",
+          "id": "main_thumbnail_big",
+          "label": "Show main thumbnail by",
+          "options": [
+            {
+              "value": "product_image",
+              "label": "Featured product image"
+            },
+            {
+              "value": "variant_image",
+              "label": "First available variant image"
+            }
+          ],
+          "default": "product_image"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_label_big",
+          "label": "Show label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_cart_btn_big",
+          "label": "Show Add to cart button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_qs_btn_big",
+          "label": "Show Quick Shop button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_compare_btn_big",
+          "label": "Show Compare button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_wishlist_btn_big",
+          "label": "Show wishlist button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_review_stars_big",
+          "label": "Show review stars",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_product_options_big",
+          "label": "Enable Product Options",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown_timer_big",
+          "label": "Show countdown timer_big",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor_big",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "product_name_size_big",
+          "label": "Product name's size",
+          "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+          "min": 0,
+          "max": 30,
+          "default": 5,
+          "step": 1
+        },
+        {
+          "type": "header",
+          "content": "Small products"
+        },
+        {
+          "type": "product",
+          "id": "small_product_1",
+          "label": "Pick product 1",
+          "info": "Shown in layout style 1,2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_2",
+          "label": "Pick product 2",
+          "info": "Shown in layout style 1,2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_3",
+          "label": "Pick product 3",
+          "info": "Shown in layout style 1,2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_4",
+          "label": "Pick product 4",
+          "info": "Shown in layout style 1,2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_5",
+          "label": "Pick product 5",
+          "info": "Shown in layout style 2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_6",
+          "label": "Pick product 6",
+          "info": "Shown in layout style 2,3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_7",
+          "label": "Pick product 7",
+          "info": "Shown in layout style 3."
+        },
+        {
+          "type": "product",
+          "id": "small_product_8",
+          "label": "Pick product 8",
+          "info": "Shown in layout style 3."
+        },
+        {
+          "type": "text",
+          "id": "image_size_small",
+          "label": "Normal image size",
+          "default": "300x"
+        },
+        {
+          "type": "select",
+          "id": "main_thumbnail_small",
+          "label": "Show main thumbnail by",
+          "options": [
+            {
+              "value": "product_image",
+              "label": "Featured product image"
+            },
+            {
+              "value": "variant_image",
+              "label": "First available variant image"
+            }
+          ],
+          "default": "product_image"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_label_small",
+          "label": "Show label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_cart_btn_small",
+          "label": "Show Add to cart button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_qs_btn_small",
+          "label": "Show Quick Shop button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_compare_btn_small",
+          "label": "Show Compare button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_wishlist_btn_small",
+          "label": "Show wishlist button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_review_stars_small",
+          "label": "Show review stars",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_product_options_small",
+          "label": "Enable Product Options",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown_timer_small",
+          "label": "Show countdown timer_small",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor_small",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "product_name_size_small",
+          "label": "Product name's size",
+          "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+          "min": 0,
+          "max": 30,
+          "default": 5,
+          "step": 1
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Powerful product block 2",
+      "category": "Collection",
+      "settings": {
+        "full_width": false
+      }
+    }
+  ]
+}
+{% endschema %}

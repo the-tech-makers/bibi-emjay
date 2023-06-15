@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="page-title text-center">{{ 'customer.account.title' | t }}</h1>
+      <div class="page-content w100">
+        <div class="section-header">
+          {{ 'layout.customer.log_out' | t | customer_logout_link }}
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <h2>{{ 'customer.orders.title' | t }}</h2>
+            {% paginate customer.orders by 20 %}
+              {% if customer.orders.size != 0 %}
+              <div class="table-responsive">
+                <table class="table table-bordered table-responsive">
+                  <thead>
+                    <tr>
+                      <th class="text-center">{{ 'customer.orders.order_number' | t }}</th>
+                      <th class="text-center">{{ 'customer.orders.date' | t }}</th>
+                      <th class="text-center">{{ 'customer.orders.payment_status' | t }}</th>
+                      <th class="text-center">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                      <th class="text-center">{{ 'customer.orders.total' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in customer.orders %}
+                      <tr>
+                        <td data-label="{{ 'customer.orders.order_number' | t }}">
+                          <a href="{{ order.customer_url }}" class="button button--style2" title="{{ order.name | escape }}">{{ order.name }}</a>
+                        </td>
+                        <td data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: format: 'month_day_year' }}</td>
+                        <td data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                        <td data-label="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                        <td data-label="{{ 'customer.orders.total' | t }}">
+                          <span class="product-price__price">{%- include 'price' with order.total_price -%}</span>
+                          </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>  
+            {% else %}
+
+              <p>{{ 'customer.orders.none' | t }}</p>
+
+            {% endif %}
+            {% if paginate.pages > 1 %}
+              {% include 'pagination' %}
+            {% endif %}
+            {% endpaginate %}
+          </div>
+          <div class="col-xs-12">
+            <h2>{{ 'customer.account.details' | t }}</h2>
+
+            {{ customer.default_address | format_address }}
+
+            <p><a href="{{ routes.account_addresses_url }}" class="button button--style2">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style type="text/css">
+  .table>thead>tr>th, .table>thead>tr>td, .table>tbody>tr>th, .table>tbody>tr>td, .table>tfoot>tr>th, .table>tfoot>tr>td {
+    vertical-align: middle!important;
+  }
+  .table>tbody>tr>td {
+    text-align: center;
+  }
+</style>

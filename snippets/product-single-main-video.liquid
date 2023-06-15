@@ -1,0 +1,27 @@
+{%- if video_type == 'youtube' -%}
+	<div data-player-id="youtube-player-{{ media.id }}" data-video-id="{{ video_id }}" data-image-id="{{ media.id }}" class="youtube-player pg__video pg__video--youtube pg__main__link ignore-lightbox" style="position: relative;padding-bottom:{% unless video_ratio %}62.49{% else %}{{ video_ratio }}{% endunless %}%;">
+	</div>
+	{%- capture yt -%}
+	<div class="youtube-wrapper hide">
+		<div class="video-box video-box--youtube"{% if video_ratio %} style="padding-bottom:{{ video_ratio }}%;"{% endif %}>
+			<div id="youtube-player-{{ media.id }}" class="video-{{ media.id }}" style="position:absolute;top:0;left:0;right:0;"></div>
+		</div>
+	</div>
+	{%- endcapture -%}
+	{%- assign youtubeCapture = youtubeCapture | append: yt -%}
+{%- elsif video_type == 'vimeo' -%}
+	<div data-player-id="vimeo-player-{{ media.id }}" data-video-id="{{ video_id }}" data-image-id="{{ media.id }}" class="vimeo-player pg__video pg__video--vimeo pg__main__link ignore-lightbox" style="position: relative;padding-bottom:{% unless video_ratio %}50{% else %}{{ video_ratio }}{% endunless %}%;">
+	</div>
+	{%- capture vim -%}
+		<iframe id="vimeo-player-{{ media.id }}" class="vimeo-player pg__video hide" src="https://player.vimeo.com/video/{{ video_id }}" width="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="autoplay" style="position:absolute;top:0;left:0;right:0;min-height: 100%;"></iframe>
+	{%- endcapture -%}
+	{%- assign vimeoCapture = vimeoCapture | append: vim -%}
+{%- else -%}
+	<div data-video-type="mp4" class="pg__video-wrapper" data-video-style="muted">
+		<video controls loop playsinline muted data-image-count="20" data-video-type="mp4" data-video-style="muted" id="ProductVideo-{{ media.id }}" class="pg__video pg__main__link ignore-lightbox" style="width:100%;" data-image-id="{{ media.id }}">
+			{%- for source in media.sources -%}
+      	<source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {%- endfor -%}
+		</video>
+	</div>		
+{%- endif -%}

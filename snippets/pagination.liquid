@@ -1,0 +1,10 @@
+{%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}  
+  {%- assign previous_text = '<i class="lnr-chevron-left button__prev-page"></i>' -%}
+  {%- assign next_text = '<i class="lnr-chevron-right button__next-page"></i>' -%}
+{%- else -%}
+  {%- assign previous_text = '<i class="lnr-chevron-right button__prev-page"></i>' -%}
+  {%- assign next_text = '<i class="lnr-chevron-left button__next-page"></i>' -%}
+{%- endunless -%}  
+<div class="big-gutter-top text-center pagination">
+{{ paginate | default_pagination: previous: previous_text, next: next_text | replace: '<a ','<a class="button button--style2 button--circle cf__link dib" ' | replace: 'current','button button--style1 button--circle button--current dib' | replace: 'class="deco"','class="button button--style2 button--dot button--circle dib"' }}
+</div>

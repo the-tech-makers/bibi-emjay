@@ -1,0 +1,16 @@
+{%- if price_max > price_min -%}
+	{%- assign has_current = false -%}
+	{%- capture filter_item_content -%}
+		{%- if filter_param_value contains 'price' -%}
+			{%- assign price_values = filter_param_value | split: 'price=' | last | split: ',' | first | split: '-' -%}
+			{%- assign has_current = true -%}
+		{%- endif -%}
+		<div class="cf__price-slider" id="price-slider-{{ block.id }}" data-min="{{ price_min }}" data-max="{{ price_max }}" {% if filter_param_value contains 'price' %}data-start="{{ price_values[0] | at_least: price_min }}" data-end="{{ price_values[1] | at_most: price_max }}"{% else %}data-start="{{ price_min }}" data-end="{{ price_max }}"{% endif %}></div>
+		<div class="gutter-top text-center">
+			<span class="cf__price cf__price-from dib">{%- render 'price' with price: price_min -%}</span>
+			<span class="cf__price__sep">-</span>
+			<span class="cf__price cf__price-to dib">{%- render 'price' with price: price_max -%}</span>
+		</div>
+	{%- endcapture -%}
+	{%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, no_list_mode: true, force_no_first: force_no_first, is_first: is_first, has_current: has_current -%}
+{%- endif -%}

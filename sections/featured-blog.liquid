@@ -1,0 +1,337 @@
+{%- render 'section-background-start' -%}
+<div id="featured-blog_{{ section.id }}" class="{% render 'section-gutters-nobkg' %} featured-blog" data-section-id="{{ section.id }}" data-section-type="featured-blog">
+  <div class="section__content flex flex-align-ver {% if section.settings.full_width %}container-fluid{% else %}content-fluid-right{% endif %}">
+    {%- assign blog = blogs[section.settings.blog] -%}
+    {%- assign post_limit = section.settings.post_limit -%}
+    <div class="featured-blog__col-{{ section.id }} featured-blog__col-left-{{ section.id }} gutter-ele-bottom-mb">
+      {%- if section.settings.title != blank -%}
+      <div class="featured-blog__title-{{ section.id }} flex">
+        <h2 class="section__title__text section__title__text-{{ section.id }} text-center">{{ section.settings.title | replace: '<hl>','<span class="section__title__highline">' | replace: '</hl>','</span>' | raw }}</h2>
+      </div>
+      {%- endif -%}
+      {%- unless blog == blank -%}
+        {%- unless blog.articles_count == 0 -%}
+          <div class="featured-blog__items-{{ section.id }} gutter-bottom">
+            {%- for article in blog.articles limit: post_limit -%}
+              {% unless forloop.first %}<hr>{% endunless %}
+              <div class="featured-blog__item-{{ section.id }} flex{% unless forloop.first %} gutter-top{% endunless %}{% unless forloop.last %} gutter-bottom{% endunless %}">
+                <div class="article__date-{{ section.id }} text-center lh1">
+                  <span class="article__date__day-{{ section.id }} secondary-font">
+                    {{ article.published_at | time_tag: format: 'only_day' }}
+                  </span>
+                  <span class="article__date__month-{{ section.id }} db gutter-ele-top text-uppercase">
+                    {{ article.published_at | time_tag: format: 'month_year' }}
+                  </span>
+                </div>
+                <div class="article__addinfo-{{ section.id }}">
+                  <a href="{{ article.url }}" class="featured-blog__item__title-{{ section.id }} fw-bold" title="{{ article.title | escape }}">{{ article.title }}</a>
+                  <div class="featured-blog__item__excerpt-{{ section.id }} gutter-top gutter-bottom gutter-ele-bottom-mb distance-bottom-ele">
+                    {%- if article.excerpt.size > 0 -%}
+                      {{ article.excerpt }}
+                    {%- else -%}
+                      {{ article.content | strip_html | truncate: 150 }}
+                    {%- endif -%}
+                  </div>
+                  <a href="{{ article.url }}" class="featured-blog__btn-{{ section.id }} text-uppercase fw-bold" title="{{ 'blogs.article.read_more' | t | escape }}">{{ 'blogs.article.read_more' | t }}{%- render 'icon-arrow-right' -%}</a>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+          <div class="big-gutter-top gutter-bottom">
+            <a href="{{ blog.url }}" title="{{ 'blogs.article.view_all' | t | escape }}" class="view-all-btn-{{ section.id }} button button--style1"><span>{{ 'blogs.article.view_all' | t }}</span></a>
+          </div>
+        {%- else -%}
+          {% render 'no-blocks' %}
+        {%- endunless -%}
+      {%- else -%}
+        <div class="featured-blog__items-{{ section.id }} gutter-bottom">
+          {% for i in (1..post_limit) %}
+          {% unless forloop.first %}<hr>{% endunless %}
+          <div class="featured-blog__item-{{ section.id }} flex{% unless forloop.first %} gutter-top{% endunless %}{% unless forloop.last %} gutter-bottom{% endunless %}">
+            <div class="article__date-{{ section.id }} text-center lh1">
+              <span class="article__date__day-{{ section.id }} secondary-font">
+                {{ "now" | time_tag: format: 'only_day' }}
+              </span>
+              <span class="article__date__month-{{ section.id }} db gutter-ele-top text-uppercase">
+                {{ "now" | time_tag: format: 'month_year' }}
+              </span>
+            </div>
+            <div class="article__addinfo-{{ section.id }}">
+              <a href="#" class="featured-blog__item__title-{{ section.id }} fw-bold w100 db gutter-bottom">{{ 'homepage.onboarding.blog_title' | t }}</a>
+              <a href="#" class="featured-blog__btn-{{ section.id }} text-uppercase fw-bold" title="{{ 'blogs.article.read_more' | t | escape }}">{{ 'blogs.article.read_more' | t }}</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="big-gutter-top gutter-bottom">
+          <a href="#" title="{{ 'blogs.article.view_all' | t | escape }}" class="view-all-btn-{{ section.id }} button button--style1"><span>{{ 'blogs.article.view_all' | t }}</span></a>
+        </div>
+      {%- endunless -%}
+    </div>
+    <div class="featured-blog__col-{{ section.id }} featured-blog__image-{{ section.id }} gutter-ele-top-mb">
+      <a href="{% unless blog == blank %}{{ blog.url }}{% else %}#{% endunless %}" class="img-container"{% if section.settings.featured_image != blank %} title="{{ section.settings.featured_image.alt | default: blog.title | escape }}" style="padding-top:{{ 1 | divided_by: section.settings.featured_image.aspect_ratio | times: 100}}%;"{% else %} title="{{ blog.title | escape }}" href="#"{% endif %}>
+        {%- if section.settings.featured_image != blank -%}
+          {%- assign blog_feature_image = section.settings.featured_image -%}
+          {%- assign img_url = blog_feature_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          <img data-aspectratio="{{ blog_feature_image.aspect_ratio }}"
+            data-src="{{ img_url }}"
+            data-sizes="auto" class="w100 img-responsive img-abs lazyload zoom-fade"{% render 'img-one-pixel' %} alt="{{ blog_feature_image.alt | escape }}" data-image-size="1x1"/>
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}    
+        {%- endif -%}
+      </a>
+    </div>     
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{%- liquid 
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+  else
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+  endunless  
+-%}
+{%- style -%}
+.featured-blog__col-{{ section.id }}{width:100%;}
+.featured-blog__title-{{ section.id }}{padding-bottom:30px;justify-content:center;}
+.article__date-{{ section.id }}{width:80px;color:{{ section.settings.date_color }};}
+.article__date__day-{{ section.id }}{font-size:{{ section.settings.day_fs }}px;}
+.article__date__month-{{ section.id }}{color:{{ section.settings.month_year_color }};font-size:{{ section.settings.month_fs }}px;}
+.article__addinfo-{{ section.id }}{width:calc(100% - 80px);padding-{{ left_holder }}:30px;}
+.featured-blog__item__title-{{ section.id }}{color:{{ section.settings.article_title_color }};font-size:{{ section.settings.article_title_fs }}px;}
+.featured-blog__item__excerpt-{{ section.id }}{color:{{ section.settings.article_excerpt_color }};font-size:{{ section.settings.article_excerpt_fs }}px;}
+.featured-blog__btn-{{ section.id }}{color:{{ section.settings.read_btn_color }};font-size:{{ section.settings.read_btn_fs }}px;}
+.featured-blog__btn-{{ section.id }} i{margin-{{ left_holder }}:5px;}
+.view-all-btn-{{ section.id }}{font-size:12px;}
+.view-all-btn-{{ section.id }} i{margin-{{ left_holder }}:15px;}
+{%- unless section.settings.full_width -%}.featured-blog__col-{{ section.id }}{padding-{{ right_holder }}:15px;}{%- endunless -%}
+@media(min-width:768px){
+  .featured-blog__col-{{ section.id }}{width:50%;}
+  {%- unless section.settings.full_width -%}.featured-blog__col-left-{{ section.id }}{padding-{{ right_holder }}:50px;}{%- endunless -%}
+  .featured-blog__image-{{ section.id }}{padding-{{ right_holder }}:0;}
+  .featured-blog__title-{{ section.id }}{justify-content:space-between;align-items:baseline;}
+}
+@media(min-width:992px){
+  .featured-blog__col-left-{{ section.id }}{padding-{{ right_holder }}:100px;}
+  .featured-blog__title-{{ section.id }}{padding-bottom:60px;}
+  .section__title__text-{{ section.id }}{width:auto;}
+}
+{%- endstyle -%}
+{% schema %}
+  {
+    "name": "Blog posts",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/featured-blog)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "featured_image",
+        "label": "Featured image"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Blog posts"
+      },
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "Posts",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "date_color",
+        "label": "Date",
+        "default": "#e0e0e0"
+      },
+      {
+        "type": "color",
+        "id": "month_year_color",
+        "label": "Month & year",
+        "default": "#a5a5a5"
+      },
+      {
+        "type": "color",
+        "id": "article_title_color",
+        "label": "Article title",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "article_excerpt_color",
+        "label": "Article excerpt",
+        "default": "#555555"
+      },
+      {
+        "type": "color",
+        "id": "read_btn_color",
+        "label": "Read more button",
+        "default": "#c7c7c7"
+      },
+      {
+        "type": "header",
+        "content": "Font size"
+      },
+      {
+        "type": "range",
+        "id": "day_fs",
+        "label": "Day",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 70
+      },
+      {
+        "type": "range",
+        "id": "month_fs",
+        "label": "Month & year",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 15
+      },
+      {
+        "type": "range",
+        "id": "article_title_fs",
+        "label": "Article title",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "article_excerpt_fs",
+        "label": "Article excerpt",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "read_btn_fs",
+        "label": "Read more button",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 11
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog posts",
+        "category": "Blog",
+        "settings": {
+          "blog": "News",
+          "post_limit": 3
+        }
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,28 @@
+{%- if column_count > 2 -%}
+  {%- assign column_count_mobile = 2 -%}
+{%- else -%}
+  {%- assign column_count_mobile = 1 -%}  
+{%- endif -%}
+{%- if withinCollection -%}
+  {%- assign product_url = product.url | within: withinCollection -%}
+{%- else -%}
+  {%- assign product_url = product.url -%}
+{%- endif -%}
+<div class="{% unless no_grid_item_class %}grid__item {% endunless %}effect-hover item {% if use_slider %}{% if index > column_count_mobile %} ov-slider-mb{% endif %}{% if index > column_count %} ov-slider-tb{% endif %}{% endif %} pg{% if additional_classes %} {{ additional_classes }}{% endif %}">
+	<div class="flex flex-wrap flex-align-space-between">
+    <div class="col-xs-12 col-sm-4 no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">
+      <a href="#" class="item__image">
+        {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+        {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+      </a>
+    </div>
+    <div class="pcol__item__right col-xs-12 col-sm-8 no-gutter mobile-text-center">
+      <a class="item__name item__name-list--{{ section.id }} no-gutter-top" href="#" title="{{ product.title | escape }}">
+        {{ 'homepage.onboarding.product_title' | t }}
+      </a>
+      <div class="gutter-ele-small-top">
+        {% render 'product-price' %}
+      </div>
+    </div>
+  </div>
+</div>

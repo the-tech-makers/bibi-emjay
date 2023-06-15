@@ -1,0 +1,790 @@
+{%- unless template.suffix == 'filter' -%}
+<div data-section-id="{{ section.id }}" data-section-type="collection-template" id="collection-template" data-url="{{ collection.url | split: '?' | first }}{% if current_tags %}/{{ current_tags | join: '___' | handleize | replace: '___','+' }}{% endif %}">
+  <div class="container{% render 'wide-css-class' %}">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="page-content w100 collection">
+          <div class="collection__top">
+            {% if section.settings.show_collection_image and collection.image != blank %}
+              <div class="collection__image ratio-container js lazyload{% if section.settings.hide_collection_image_mobile %} hidden-xs hidden-sm{% endif %}"
+                   data-bgset="{% render 'bgset', image: collection.image %}"
+                   data-sizes="auto"
+                   data-parent-fit="cover"
+                   style="background-image: url({{ collection.image | img_url: '300x300' }}); height:300px;background-position: 50% 50%;background-repeat: no-repeat;background-size: cover; margin-bottom: 60px;"></div>
+              <noscript>
+                <div class="collection-hero__image{% if section.settings.hide_collection_image_mobile %} hidden-xs hidden-sm{% endif %}" style="background-image: url({{ collection.image | img_url: '2048x600', crop: 'top' }});"></div>
+              </noscript>
+              {% if collection.description != blank %}
+                <div class="rte collection__description w100">
+                  {{ collection.description }}
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="rte collection__description w100">
+                {{ collection.description }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="collection__content">
+            <div class="row">
+              {%- liquid 
+                assign has_sidebar = false
+                unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+                  assign enable_rtl = false
+                  assign left_holder = 'left'
+                  assign right_holder = 'right'
+                else
+                  assign enable_rtl = true
+                  assign left_holder = 'right'
+                  assign right_holder = 'left'
+                endunless
+                if section.settings.use_one_layout
+                  assign layout_name = section.settings.default_layout
+                else
+                  if collection.template_suffix != blank
+                    assign layout_name = collection.template_suffix
+                  else
+                    assign layout_name = section.settings.default_layout   
+                  endif
+                endif  
+              -%}
+              {%- if section.settings.enable_auto_filter -%}
+                {%- assign page_limit = collection.products_count | at_most: 1000 -%}
+                {%- paginate collection.products by page_limit -%}
+                {%- include 'collection-products-filter' with products: collection.products, enable_sidebar: section.settings.tags_enable, enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder -%}
+                {%- endpaginate -%}
+              {%- else -%}
+                {%- capture collection_sidebar -%}{%- include 'collection-sidebar' with enable_sidebar: section.settings.tags_enable, enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder -%}{%- endcapture -%}
+                {%- if template.suffix == '' or template.suffix == blank -%}
+                  {{ collection_sidebar }}
+                {%- endif -%}
+                <div class="col-xs-12{% if layout_name != 'no_sidebar' %} col-md-9 col-lg-10{% endif %} gutter-ele-top-tbs{% if enable_rtl and layout_name == 'right_sidebar' %} f-right{% endif %}">
+                  {%- render 'collection-toolbar', collection: collection, toolbar_enable: section.settings.toolbar_enable , item_size: section.settings.item_size sort_enable: section.settings.sort_enable, has_filter: section.settings.tags_enable, products_count: collection.products_count, layout_name: layout_name -%}
+                  {%- render 'collection-products' with layout_name: layout_name -%}
+                </div>
+                {%- unless template.suffix == '' or template.suffix == blank -%}
+                  {{ collection_sidebar }}
+                {%- endunless -%}
+              {%- endif -%}  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  {%- render 'bottom-mobile-toolbar' with enable_rtl: enable_rtl, left_holder: left_holder, right_holder: right_holder, has_collection_filter: section.settings.tags_enable -%}
+{%- else -%}
+  {%- if section.settings.enable_auto_filter -%}
+    {%- render 'collection-filter-section-auto' with products: collection.products, layout_name: layout_name -%}
+  {%- else -%}
+    {%- render 'collection-filter-section' -%}
+  {%- endif -%}  
+{%- endunless -%}
+{% schema %}
+  {
+    "name": "Collection pages",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/collection-pages)"
+      },
+      {
+        "type": "header",
+        "content": "General settings"
+      },
+      {
+        "type": "range",
+        "id": "limit",
+        "label": "Limit",
+        "min": 4,
+        "max": 50,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collection_image",
+        "label": "Show collection image",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_collection_image_mobile",
+        "label": "Hide collection image in mobile screen",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Layouts"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_one_layout",
+        "label": "Only use one layout for all collections",
+        "default": false
+      },
+      {
+        "type": "radio",
+        "id": "default_layout",
+        "label": "Pick default layout",
+        "options": [
+          {
+            "value": "left_sidebar",
+            "label": "Left sidebar"
+          },
+          {
+            "value": "right_sidebar",
+            "label": "Right sidebar"
+          },
+          {
+            "value": "no_sidebar",
+            "label": "No sidebar"
+          }
+        ],
+        "default": "left_sidebar"
+      },
+      {
+        "type": "header",
+        "content": "Toolbar"
+      },
+      {
+        "type": "checkbox",
+        "id": "toolbar_enable",
+        "label": "Enable toolbar",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "sort_enable",
+        "label": "Enable sorting",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Infinity loading products"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_infinity_loading",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "radio",
+        "id": "infinity_action",
+        "label": "Load products when customer:",
+        "options": [
+          {
+            "value": "scroll",
+            "label": "Scroll to load more button"
+          },
+          {
+            "value": "click",
+            "label": "Click load more button"
+          }
+        ],
+        "default": "scroll"
+      },
+      {
+        "type": "header",
+        "content": "Filter settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "tags_enable",
+        "label": "Enable the filter sidebar",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_auto_filter",
+        "label": "Enable autofilter feature",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "checkboxes_format",
+        "label": "Checkboxes format",
+        "options": [
+          {
+            "value": "square",
+            "label": "Square"
+          },
+          {
+            "value": "circle",
+            "label": "Circle"
+          }
+        ],
+        "default": "circle"
+      },
+      {
+        "type": "header",
+        "content" : "Product item"
+      },
+      {
+        "type": "select",
+        "id": "item_size",
+        "label": "Choose item size",
+        "info": "You can change item size to change the number of products per row",
+        "options": [
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "very-large",
+            "label": "Very Large"
+          },
+          {
+            "value": "list",
+            "label": "List"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "type": "select",
+        "id": "main_thumbnail",
+        "label": "Show main thumbnail by",
+        "options": [
+          {
+            "value": "product_image",
+            "label": "Featured product image"
+          },
+          {
+            "value": "variant_image",
+            "label": "First available variant image"
+          }
+        ],
+        "default": "product_image"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_label",
+        "label": "Show label",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_btn",
+        "label": "Show Add to cart button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_qs_btn",
+        "label": "Show Quick Shop button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_compare_btn",
+        "label": "Show Compare button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_wishlist_btn",
+        "label": "Show wishlist button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_review_stars",
+        "label": "Show review stars",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "use_lazyload",
+        "label": "Use lazy loading image",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_product_options",
+        "label": "Enable Product Options",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_countdown_timer",
+        "label": "Show countdown timer",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show product vendors",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "product_name_size",
+        "label": "Product name's size",
+        "info": "Use this configuration to make product name shorted if your product name is too long.Unit : word(wor)",
+        "min": 3,
+        "max": 30,
+        "default": 5,
+        "step": 1
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Option - Colors format",
+        "type": "filter-item-swatch",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Display filter item values as swatch elements."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Color"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          },
+          {
+            "type": "header",
+            "content": "Color codes"
+          },
+          {
+            "type": "paragraph",
+            "content": "You can add your color codes in Theme Settings > Product Settings > Color Codes"
+          },
+          {
+            "type": "header",
+            "content": "Auto filter"
+          },
+          {
+            "type": "text",
+            "id": "auto_filter_option_name",
+            "label": "Option name",
+            "default": "Color"
+          }
+        ]
+      },
+      {
+        "name": "Option - Checkbox format",
+        "type": "filter-item-checkbox",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Display filter item values as list of checkboxes."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "text",
+            "id": "group_tag",
+            "label": "Keys",
+            "info": "Separate tags with comma. Ignore this field if you turn on the Autofilter feature."
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          },
+          {
+            "type": "header",
+            "content": "Auto filter"
+          },
+          {
+            "type": "text",
+            "id": "auto_filter_option_name",
+            "label": "Option name"
+          }
+        ]
+      },
+      {
+        "name": "Price Range",
+        "type": "filter-item-price",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Display filter item values as list of price ranges."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Price"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "text",
+            "id": "group_tag",
+            "label": "Keys",
+            "info": "Separate tags with comma. Ignore this field if you turn on the Autofilter feature."
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          }
+        ]
+      },
+      {
+        "name": "Categories",
+        "type": "filter-item-category",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Use the Shopify link list to display as a navigation."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Category"
+          },
+          {
+            "type": "radio",
+            "id": "data_source",
+            "label": "Get data from:",
+            "options": [
+              {
+                "value": "link_list",
+                "label": "Shopify Navigation(link list)"
+              },
+              {
+                "value": "collection_tree",
+                "label": "The collection tree from Boostheme Toolkit app"
+              }
+            ],
+            "default": "collection_tree",
+            "info": "View this guide for installing and edit the collection tree in Boostheme Toolkit app."
+          },
+          {
+            "type": "link_list",
+            "id": "category",
+            "label": "Choose a link list"
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          }
+        ]
+      },
+      {
+        "name": "Product Type",
+        "type": "filter-item-product-type",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Show a list of product types. Only work when you enable the \"Autofilter\" feature."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Type"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          }
+        ]
+      },
+      {
+        "name": "Brand ( Vendor )",
+        "type": "filter-item-product-brand",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Show a list of brands. Only work when you enable the \"Autofilter\" feature."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Brand"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          }
+        ]
+      },
+      {
+        "name": "Metafields",
+        "type": "filter-item-metafields",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Show a list of Metafields that corresponding with the specified namespace and key. Only work when you enable the \"Autofilter\" feature."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          },
+          {
+            "type": "header",
+            "content": "Metafields settings"
+          },
+          {
+            "type": "text",
+            "id": "namespace",
+            "label": "Namespace"
+          },
+          {
+            "type": "text",
+            "id": "key",
+            "label": "Key"
+          },
+          {
+            "type": "select",
+            "id": "type",
+            "label": "Type",
+            "options": [
+              {
+                "value": "string",
+                "label": "String"
+              },
+              {
+                "value": "integer",
+                "label": "Integer"
+              },
+              {
+                "value": "json",
+                "label": "Json"
+              }
+            ],
+            "default": "string"
+          }
+        ]
+      },
+      {
+        "name": "Product Ratings",
+        "type": "filter-item-ratings",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Filter products base on their ratings. Only work when you enable the \"Autofilter\" feature. The ratings are queried base on the Review app that is picked in \"Theme settings\" > \"Product settings\" > \"Review app\"."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable",
+            "label": "Enable this filter item",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Label",
+            "default": "Average rating"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_spr_line",
+            "label": "Show separated line",
+            "default": false
+          },
+          {
+            "type": "select",
+            "id": "default_expand",
+            "label": "Expand/Collapse state",
+            "options": [
+              {
+                "value": "expand",
+                "label": "Expand"
+              },
+              {
+                "value": "collapse",
+                "label": "Collapse"
+              }
+            ],
+            "default": "expand"
+          },
+          {
+            "type": "range",
+            "id": "min_rating",
+            "label": "The minimun rating value to show",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 3
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

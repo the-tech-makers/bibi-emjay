@@ -1,0 +1,8 @@
+{%- if section.settings.show_compare_btn or force_display -%}
+{%- assign is_show_compare = true -%}
+{%- else -%}
+{%- assign is_show_compare = false -%}
+{%- endif -%}
+{%- if is_show_compare and settings.enable_compare -%}
+<a {% if showTooltip %} data-toggle="tooltip" data-original-title="{{ 'collections.product_item.compare'|t }}" {% if tooltip_pos != blank %} data-placement="{{ tooltip_pos }}" {% else %} data-placement="top" {% endif %}{% endif %} title="{{ 'collections.product_item.compare'|t|escape }}" data-handle="{{ product.handle }}" href="#" class="w100 button button--cp button--style2 pull-left" data-product-title="{{ product.title | escape }}" style="height:45px;font-size: 17px;line-height: 29px;">{% render 'icon-compare' %}<span>{{ 'collections.product_item.compare'|t }}</span></a>
+{%- endif -%}

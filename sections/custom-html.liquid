@@ -1,0 +1,36 @@
+<div class="container{% if section.settings.wide_display %}-fluid{% endif %}">
+	<div class="row">
+		<div class="col-xs-12">
+			{{ section.settings.custom_html | raw }}
+		</div>
+	</div>
+</div>
+{% schema %}
+  {
+    "name": "Custom HTML",
+    "class": "section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/text/custom-html)"
+      },
+    	{
+        "type": "checkbox",
+        "id": "wide_display",
+        "label": "Enable wide display",
+        "default": false
+      },
+      {
+      	"type": "html",
+      	"id": "custom_html",
+      	"label": "Your custom HTML"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Custom HTML",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}  

@@ -1,0 +1,267 @@
+{% capture blockId %}product_columns_{{ section.id }}{% endcapture %}
+{%- assign use_ajax = true -%}
+{%- if section.settings.use_ajax == false or request.design_mode -%}
+  {%- assign use_ajax = false -%}
+{%- endif -%}
+{%- render 'section-background-start' -%}
+<div id="product-columns_{{ section.id }}" class="product-columns pcol container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if use_ajax %} load-product-columns-ajax{% endif %}" data-section-id="{{ section.id }}" data-section-type="product-columns">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- render 'section-heading' -%}
+      <div class="section__content">
+        {%- if section.blocks.size > 0 -%}
+        {%- assign slide_per_row = section.settings.slider_rows -%}
+        {%- assign main_thumbnail = section.settings.main_thumbnail -%}
+        {%- assign truncate_count = section.settings.product_name_size -%}
+        {%- assign show_review_stars = section.settings.show_review_stars -%}
+        {%- assign col_class_number = 12 | divided_by: section.blocks.size -%}
+        <div class="row">
+          {%- for block in section.blocks -%}
+          <div class="col-xs-12 col-md-{{ col_class_number }}" {{ block.shopify_attributes }}>
+            <div class="pcol__title gutter-bottom gutter-bottom-tbs flex flex-align-ver flex-align-space-between{% unless forloop.first %} pcol__title--padding{% endunless %}">
+              <h3 class="text-uppercase pcol__title__h3 margin0"><span class="ver-sub">{{ block.settings.title }}</span></h3>
+              <div class="slick-arrow-title" id="slick-arrows-{{ section.id }}-{{ block.id }}"></div>
+            </div>
+            {%- assign collection = collections[block.settings.collection] -%}
+            {%- assign limit = block.settings.limit -%}
+            <div class="pcol__items gutter-top gutter-ele-top-tbs use-slider{% if slide_per_row > 1 %} slick-rows{% endif %}{% if use_ajax %} waiting-data{% endif %} external-arrows" data-slider='{"appendArrows":"#slick-arrows-{{ section.id }}-{{ block.id }}","autoplay":false,"infinite":false,"swipe":true,"swipeToSlide":true,"slidesToShow":1,"slidesToScroll":1,"rows":{{ slide_per_row }},"slidesPerRow":1,"responsive":[{"breakpoint": 767,"settings":{"slidesPerRow":1,"slidesToShow":1,"slidesToScroll":1,"adaptiveHeight":true}}]}' id="pcol__items--{{ section.id }}-{{ block.id }}" data-limit="{{ limit }}">
+              {%- unless collection == blank or collection.products.size == 0 -%}
+                {%- if use_ajax == false or template.suffix == 'ajax' -%}
+                  {%- for product in collection.products limit:limit -%}
+                    {%- render 'product-columns-item' with
+                      product: product,
+                      main_thumbnail: main_thumbnail,
+                      truncate_count: truncate_count,
+                      show_review_stars: show_review_stars,
+                      slide_per_row: slide_per_row,
+                      index: forloop.index
+                    -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- else -%}
+                {%- for i in (1..slide_per_row) -%}
+                  <div class="pcol__item item dib w100">
+                    <div class="flex flex-wrap flex-align-space-between">
+                      <div class="pcol__item__left col-xs-4 no-gutter">
+                        <a class="item__image" href="#">
+                          {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                          {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                        </a>
+                      </div>
+                      <div class="pcol__item__right col-xs-7 no-gutter">
+                        <a class="item__name pcol__item__name no-gutter-top" href="#">
+                          {{ 'homepage.onboarding.product_title' | t }}
+                        </a>
+                        {% render 'product-price' %}
+                      </div>
+                    </div>
+                  </div>
+                {%- endfor -%}
+              {%- endunless -%}
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+{
+  "name": "Powerful product columns",
+  "class": "product-columns-section section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/collection-product/powerful-product-columns)"
+    },
+    {
+      "type": "header",
+      "content": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "bkg_enable",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "section_bkg",
+      "label": "Pick a color"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bkg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_gutter",
+      "label": "Background size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "medium"
+        },
+        {
+          "value": "high",
+          "label": "High"
+        }
+      ],
+      "default": "high"
+    },
+    {
+      "type": "radio",
+      "id": "section_bkg_style",
+      "label": "Background image style",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "header",
+      "content": "Section Gutters"
+    },
+    {
+      "type": "checkbox",
+      "id": "top_gutter",
+      "label": "Enable top gutter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bottom_gutter",
+      "label": "Enable bottom gutter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Block product columns"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "label": "Sub heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Wide display",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "use_ajax",
+      "label": "Loading data in ajax",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product Item"
+    },
+    {
+      "type": "select",
+      "id": "main_thumbnail",
+      "label": "Show main thumbnail by",
+      "options": [
+        {
+          "value": "product_image",
+          "label": "Featured product image"
+        },
+        {
+          "value": "variant_image",
+          "label": "First available variant image"
+        }
+      ],
+      "default": "product_image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review_stars",
+      "label": "Show review stars",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "slider_rows",
+      "label": "The number of rows",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "product_name_size",
+      "label": "Product name's size",
+      "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+      "min": 0,
+      "max": 30,
+      "default": 5,
+      "step": 1
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Column",
+      "type": "column",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Settings"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "range",
+          "id": "limit",
+          "label": "Limit",
+          "min": 4,
+          "max": 50,
+          "step": 1,
+          "default": 8
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Powerful product columns",
+      "category": "Collection",
+      "settings": {
+        "full_width": false
+      }
+    }
+  ]
+}
+{% endschema %}

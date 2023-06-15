@@ -1,0 +1,58 @@
+{%- if template.suffix != 'quick_view' -%}
+{%- unless no_container -%}
+<div class="container{% include 'wide-css-class' %}">
+{%- endunless -%}
+  <div class="row">
+{%- endif -%}
+<div class="col-xs-12 col-md-5 no-gutter-left-mb no-gutter-right-mb{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endif %}">
+  {%- include 'product-single-media' -%}
+</div>
+
+<div class="col-xs-12 col-md-7 gutter-ele-top-tbs">
+  <div class="row">
+    <div class="col-xs-12 col-md-7{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endif %}">
+      {%- include 'product-single-vendor' -%}
+      {%- include 'product-single-name' -%}
+      {%- include 'product-single-sku' -%}
+      {%- include 'product-single-sold' -%}
+      {%- include 'product-single-short-desc' -%}
+      {%- capture review_single_html -%}
+        {%- include 'product-review-single' -%}
+      {%- endcapture -%}
+      {%- if review_single_html != blank or sizechart -%}
+      <div class="gutter-ele-top gutter-ele-top-tbs gutter-ele-bottom gutter-ele-bottom-tbs{% if review_single_html != blank and sizechart %} flex flex-align-space-between{% endif %}">
+        {{ review_single_html }}
+        {%- include 'product-single-size-chart' -%}
+      </div>
+      {%- endif -%}
+      {%- include 'product-single-price' -%}
+      <div class="pg__main-options{% if template.suffix == 'quick_view' %} pg__main-options--small{% endif %}">
+        {%- include 'product-single-variants' with product: product -%}
+        {%- include 'product-single-form', align_center_button: true, full_qty_box: true-%}
+      </div>
+      <hr style="margin:10px 0;" class="hidden-md hidden-lg">
+    </div>
+    <div class="col-xs-12 col-md-5">
+      <div class="w100 hidden-xs hidden-sm" style="margin-top: -20px;"></div>
+      {%- render 'product-single-store-availability' with show_bottom_line: true -%}
+      {%- include 'product-single-countdown' -%}
+      {%- include 'product-single-hurry-up' -%}
+      {%- include 'product-single-sub-info' -%}
+      {%- include 'product-single-social-sharing' -%}
+      {%- include 'product-single-payment-badge' -%}
+      {%- include 'product-single-view-details' -%}
+    </div>
+    {%- if template.suffix == 'quick_view' -%}
+      {%- unless section.settings.general_info contains '[description]' -%}
+        <div class="col-xs-12 gutter-ele-top">{{ description }}</div>
+      {%- endunless -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{%- if template.suffix != 'quick_view' -%}
+</div>
+{%- unless no_container -%}
+</div>
+{%- endunless -%}
+{%- endif -%}

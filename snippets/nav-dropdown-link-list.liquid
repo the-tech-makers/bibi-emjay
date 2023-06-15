@@ -1,0 +1,61 @@
+{%- assign link_list = item.settings.link_list -%}
+{%- if link_list and linklists[link_list].links.size > 0 -%}
+{%- assign color_label_link_list = item.settings.color_label -%}
+{%- assign bkg_label_link_list = item.settings.bkg_label -%}
+{%- if item.settings.color_label_extend -%}
+	{%- assign color_label_link_list = color_label -%}
+	{%- assign bkg_label_link_list = bkg_label -%}
+{%- endif -%}
+{%- assign color_link_list = item.settings.color_link_list -%}
+{%- if item.settings.color_link_list_extend or color_link_list == blank -%}
+	{%- assign color_link_list = color_text -%}
+{%- endif -%}
+{%- assign shadow_link_list = '' -%}
+{% assign color_diff = color_link_list | color_difference: general_color %}
+{%- if color_diff > 0 -%}
+	{%- capture shadow_link_list -%}{%- render 'link-list-dropdown-box-shadow' with link_list_shadow_color: color_link_list -%}{%- endcapture-%}
+{%- endif -%}
+{%- assign bkg_link_list = false -%}
+{%- if item.settings.bkg_enable and item.settings.bkg_color != blank -%}
+	{%- assign bkg_link_list = item.settings.bkg_color -%}
+{%- elsif dropdown_bkg_color -%}
+	{%- assign bkg_link_list = dropdown_bkg_color -%}
+{%- endif -%}
+<ul class="link-list link-list--nav text-{{ item.settings.align_link_list }}"{% if item.settings.horizontal_inside_gutter > 0 or color_link_list != blank %} id="link-list-{{ item.id }}"{% endif %}>
+{%- for l in linklists[link_list].links -%}
+	<li class="link-list__item level0 {% if l.links != blank %} link-list__item--parent{% endif %}">
+		{%- if l.links != blank -%}
+		<div class="dib por">
+		{%- endif -%}
+		<a class="link-list__item__link{% if l.active %} active{% endif %} inline-color" href="{{ l.url }}" title="{%- render 'nav-shortcode-ign', str: l.title -%}"{% if color_link_list != blank %} style="color: {{ color_link_list }};"{% endif %}>{%- render 'nav-shortcode', color: color_label_link_list, bkg: bkg_label_link_list, str: l.title -%}</a>
+		{%- if l.links != blank -%}
+		<ul class="link-list__item__dropdown link-list__item__dropdown--nav"{% if bkg_link_list != blank or shadow_link_list != '' %} style="{% if bkg_link_list != blank %}background-color:{{ bkg_link_list }};{% endif %}{% if shadow_link_list != '' %}{{ shadow_link_list }}{% endif %}"{% endif %}>
+			{%- for childlink in l.links -%}
+			<li class="link-list__item level1 {% if childlink.links != blank %} link-list__item--parent{% endif %}">
+				{%- if childlink.links != blank -%}
+				<div class="dib por">
+				{%- endif -%}
+				<a class="link-list__item__link{% if childlink.active %} active{% endif %} inline-color" href="{{ childlink.url }}" title="{{ childlink.title | escape }}"{% if color_link_list != blank %} style="color: {{ color_link_list }};"{% endif %}>{{ childlink.title | escape }}</a>
+				{% if childlink.links != blank %}
+				<ul class="link-list__item__dropdown link-list__item__dropdown--nav"{% if bkg_link_list != blank or shadow_link_list != '' %} style="{% if bkg_link_list != blank %}background-color:{{ bkg_link_list }};{% endif %}{% if shadow_link_list != '' %}{{ shadow_link_list }}{% endif %}"{% endif %}>
+					{%- for grandchildlink in childlink.links -%}
+						<li class="link-list__item level2">
+							<a class="link-list__item__link{% if grandchildlink.active %} active{% endif %} inline-color" href="{{ grandchildlink.url }}" title="{{ grandchildlink.title | escape }}"{% if color_link_list != blank %} style="color: {{ color_link_list }};"{% endif %}>{{ grandchildlink.title | escape }}</a>
+						</li>	
+					{%- endfor -%}
+				</ul>
+				{%- endif -%}
+				{%- if childlink.links != blank -%}
+				</div>
+				{%- endif -%}
+			</li>
+			{%- endfor -%}
+		</ul>
+		{%- endif -%}
+		{%- if l.links != blank -%}
+		</div>
+		{%- endif -%}
+	</li>
+{%- endfor -%}
+</ul>
+{%- endif -%}

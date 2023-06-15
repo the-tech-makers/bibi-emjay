@@ -1,0 +1,32 @@
+{%- if item.settings.product != blank -%}
+  {%- assign product = all_products[item.settings.product] -%}
+  {%- if product != blank -%}
+    {%- assign image_size = item.settings.image_size -%}
+    {%- render 'product-grid-item' with
+      product: product, 
+      use_slider: false, 
+      index: forloop.index, 
+      lazy_index: -1,
+      column_count: 1, 
+      main_thumbnail: item.settings.main_thumbnail, 
+      image_size: image_size, 
+      truncate_count: item.settings.product_name_size,
+      enable_product_options: item.settings.enable_product_options, 
+      show_review_stars: item.settings.show_review_stars,
+      enable_small_images: false,
+      show_wishlist_btn: item.settings.show_wishlist_btn,
+      small_image: '1x',
+      show_label : item.settings.show_label,
+      show_cart_btn: item.settings.show_cart_btn,
+      show_compare_btn: item.settings.show_compare_btn,
+      show_qs_btn: item.settings.show_qs_btn,
+      small_image_slider: false,
+      show_countdown_timer: item.settings.show_countdown_timer,
+      show_vendor: item.settings.show_vendor 
+    -%}
+  {%- else -%}
+    {%- render 'product-grid-item-placeholder' -%}
+  {%- endif -%}
+{%- else -%}
+  {%- render 'product-grid-item-placeholder' -%}  
+{%- endif -%}

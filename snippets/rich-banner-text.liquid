@@ -1,0 +1,124 @@
+{%- assign row_reverse = false -%}
+{%- unless enable_rtl and section.settings.revert_in_rtl -%}
+	{%- assign item_template = block.settings.template -%}
+	{%- if item_template == 'left' -%}
+		{%- assign row_reverse = true -%}
+	{%- endif -%}	
+{%- else -%}
+	{%- assign item_template = block.settings.template | replace: 'left', 'holder' | replace: 'right', 'left' | replace: 'holder', 'right' -%}
+	{%- if item_template == 'right' -%}
+		{%- assign row_reverse = true -%}
+	{%- endif -%}	
+{%- endunless -%}
+<div class="{% include 'rich-banner-item-size' %} banner-item banner-item--{{ block.id }}{% if block.settings.ver_align_text_box %} flex{% if row_reverse %} flex-row-reverse{% endif %}{% endif %}{% if block.settings.hide_on_mobile %} hidden-xs{% endif %}{% if block.settings.hide_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %}{% if section.settings.enable_slider %}{{ slider_class }}{% if current_index_mobile > lazyload_index_mobile %} ov-slider-mb{% endif %}{% if current_index_tb > lazyload_index %} ov-slider-tb{% endif %}{% endif %}{% if block.settings.template == 'inside' %} por{% endif %}" {{ block.shopify_attributes }}>
+	{%- assign image_col_width = 'col-xs-' | append: block.settings.image_box_width_mobile | append: ' col-md-' | append: block.settings.image_box_width_tb | append: ' col-lg-' | append: block.settings.image_box_width -%}
+	{%- capture text_html -%}
+		{%- if block.settings.text_1 != blank or block.settings.text_2 != blank or block.settings.text_3 != blank -%}
+		{%- assign col_text_class = 'col-xs-' | append: block.settings.text_box_width_mobile | append: ' col-md-' | append: block.settings.text_box_width_tb | append: ' col-lg-' | append: block.settings.text_box_width -%}
+		{%- if item_template == 'left' or item_template == 'right' -%}
+			{%- assign col_text_class = col_text_class | append: ' banner-item__text--padding-top-mobile banner-item__text--padding-left-mobile banner-item__text--padding-right-mobile' -%}
+		{%- endif -%}	
+		
+		{%- if block.settings.hide_on_mobile_text_1 and block.settings.hide_on_mobile_text_2 and block.settings.hide_on_mobile_text_3 -%}
+			{%- assign col_text_class = col_text_class | append: ' hidden-xs' -%}
+		{%- endif -%}
+		{%- if block.settings.hide_on_desktop_text_1 and block.settings.hide_on_desktop_text_2 and block.settings.hide_on_desktop_text_3 -%}
+			{%- assign col_text_class = col_text_class | append: ' hidden-sm hidden-md hidden-lg' -%}
+		{%- endif -%}
+		{%- assign style_item_text = '' -%}
+		{%- if block.settings.image != blank and item_template != 'inside' -%}
+			{%- if item_template == 'left' -%}
+				{%- assign style_item_text = style_item_text | append: 'padding-right: 30px;padding-left:0;' -%}
+			{%- elsif item_template == 'right' -%}
+				{%- assign style_item_text = style_item_text | append: 'padding-left: 30px;padding-right:0;' -%}
+			{%- elsif item_template == 'top' -%}
+				{%- assign style_item_text = style_item_text | append: 'padding-bottom: 15px;' -%}
+			{%- elsif item_template == 'bottom' -%}
+				{%- assign style_item_text = style_item_text | append: 'padding-top: 15px;' -%}
+			{%- endif -%}
+		{%- elsif item_template == 'inside' -%}
+			{% comment %}{%- assign style_item_text = style_item_text | append: 'position: absolute;' | append: 'left:' | append: block.settings.text_pos_left | append: '%;top:' | append: block.settings.text_pos_top | append: '%;padding-top:10px;padding-right:10px;' -%}{% endcomment %}
+			{%- include 'rich-banner-inside-position' -%}
+			{%- assign style_item_text = style_item_text | append: style_item_inside -%}
+		{%- endif -%}
+
+		{%- comment -%} Get background configuration {%- endcomment -%}
+		{%- assign bkg_style = '' -%}
+		{%- assign has_bkg_text = false -%}
+		{%- if block.settings.text_bkg_enable -%}
+			{%- if block.settings.text_bkg_color != blank -%}
+				{%- assign has_bkg_text = true -%}
+				{%- assign rgba_alpha = block.settings.text_bkg_opacity | divided_by: 100.00 -%}
+				{%- assign rgba_bkg_color = block.settings.text_bkg_color | color_modify: 'alpha', rgba_alpha -%}
+				{%- if block.settings.text_bkg_layout == 'outside' -%}
+					{%- assign style_item_text = style_item_text | append: 'background-color:' | append: rgba_bkg_color | append: ';' -%}
+				{%- else -%}
+					{%- assign bkg_style = bkg_style | append: 'background-color:' | append: rgba_bkg_color | append: ';' -%}
+				{%- endif -%}
+			{%- endif -%}
+			{%- if block.settings.text_bkg_image != blank -%}
+				{%- assign has_bkg_text = true -%}
+				{%- assign bkg_img_url = block.settings.text_bkg_image | img_url: 'master' -%}
+				{%- if block.settings.text_bkg_layout == 'outside' -%}
+					{%- assign style_item_text = style_item_text | append: 'background-image:url(' | append: bkg_img_url | append: ');' -%}
+				{%- else -%}
+					{%- assign bkg_style = bkg_style | append: 'background-image:url(' | append: bkg_img_url | append: ');' -%}
+				{%- endif -%}
+			{%- endif -%}
+			{%- if has_bkg_text -%}
+				{%- assign bkg_style = bkg_style | append: 'padding: 15px;' -%}
+			{%- endif -%}
+		{%- endif -%}
+		
+		<div class="{% unless item_template == 'left' or item_template == 'right' %}banner-item__text {% endunless%}{{ col_text_class }}{% if item_template == 'bottom' or item_template == 'top' %}{% unless block.settings.bkg_banner and block.settings.bkg_banner_enable %} no-gutter{% endunless %}{% endif %}{% if block.settings.ver_align_text_box %} flex flex-align-ver{% endif %}"{% if style_item_text != '' %} style="{{ style_item_text }}"{% endif %}>
+			{%- if bkg_style != '' or block.settings.ver_align_text_box -%}
+			<div class="banner-item__bkg{% unless item_template == 'inside' %} w100{% endunless %}"{% if bkg_style != '' %} style="{{ bkg_style }}"{% endif %}>
+			{%- endif -%}	
+				{%- include 'rich-banner-text-index-text', index_text: 'text_1' -%}
+				{%- include 'rich-banner-text-index-text', index_text: 'text_2' -%}
+				{%- include 'rich-banner-text-index-text', index_text: 'text_3' -%}
+				{%- include 'rich-banner-text-index-text', index_text: 'text_4' -%}
+			{%- if bkg_style != '' or block.settings.ver_align_text_box -%}	
+			</div>
+			{%- endif -%}
+		</div>{%- endif -%}
+	{%- endcapture -%}
+
+	{%- if block.settings.box_wrap -%}
+		{%- capture final_text_html -%}
+			<div class="container no-gutter por" style="max-width:100%;">{{ text_html }}</div>
+		{%- endcapture -%}
+	{%- else -%}
+		{%- assign final_text_html = text_html -%}
+	{%- endif -%}
+
+	{%- unless item_template == 'only_text' -%}
+		{%- capture image_html -%}
+			{%- assign full_image_on_mobile = false -%}
+			{%- if block.settings.hide_on_mobile_text_1 and block.settings.hide_on_mobile_text_2 and block.settings.hide_on_mobile_text_3 -%}
+				{%- assign full_image_on_mobile = true -%}
+			{%- endif -%}
+			{%- include 'rich-banner-element-image', full_on_mobile : full_image_on_mobile -%}
+		{%- endcapture -%}
+	{%- endunless -%}
+	
+	{%- capture banner_html -%}
+		{%- if item_template == 'top' -%}
+			{{ final_text_html }}
+			{{ image_html }}
+		{%- elsif item_template == 'bottom' -%}
+			{{ image_html }}		
+			{{ final_text_html }}
+		{%- elsif item_template == 'left' or item_template == 'right' -%}
+			{{ image_html }}
+			{{ final_text_html }}	
+		{%- elsif item_template == 'inside'  -%}	
+			{{ image_html }}		
+			{{ final_text_html }}
+		{%- else -%}
+			{{ final_text_html }}	
+		{%- endif -%}
+	{%- endcapture -%}
+
+	{%- include 'rich-banner-display' -%}
+</div>

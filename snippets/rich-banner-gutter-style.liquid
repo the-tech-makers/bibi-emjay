@@ -1,0 +1,9 @@
+{%- unless enable_rtl and section.settings.revert_in_rtl -%}
+	{%- capture gutter_style -%}.banner-item--{{ block.id }} {padding: {{ block.settings.item_gutter_top_mb }}px {{ block.settings.item_gutter_right_mb }}px {{ block.settings.item_gutter_bottom_mb }}px {{ block.settings.item_gutter_left_mb }}px;}{%- endcapture -%}
+	{%- capture gutter_style_dk -%}.banner-item--{{ block.id }}{padding: {{ block.settings.item_gutter_top }}px {{ block.settings.item_gutter_right }}px {{ block.settings.item_gutter_bottom }}px {{ block.settings.item_gutter_left }}px;}{%- endcapture -%}
+{%- else -%}
+	{%- capture gutter_style -%}.banner-item--{{ block.id }} {padding: {{ block.settings.item_gutter_top_mb }}px {{ block.settings.item_gutter_left_mb }}px {{ block.settings.item_gutter_bottom_mb }}px {{ block.settings.item_gutter_right_mb }}px;}{%- endcapture -%}
+	{%- capture gutter_style_dk -%}.banner-item--{{ block.id }}{padding: {{ block.settings.item_gutter_top }}px {{ block.settings.item_gutter_left }}px {{ block.settings.item_gutter_bottom }}px {{ block.settings.item_gutter_right }}px;}{%- endcapture -%}	
+{%- endunless -%}
+{%- assign banner_style_inline = banner_style_inline | append: gutter_style -%}
+{%- assign banner_style_inline_desktop = banner_style_inline_desktop | append: gutter_style_dk -%}

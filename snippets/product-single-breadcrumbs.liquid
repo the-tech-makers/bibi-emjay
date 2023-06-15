@@ -1,0 +1,38 @@
+{%- if template.suffix != 'quick_view' -%}
+{%- assign bIndex = 0 -%}
+<div class="breadcrumbs breadcrumbs--product fs-mb hidden-xs hidden-sm gutter-ele-bottom">
+  <ul class="list--inline breadcrumbs__list text-left" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+      <a href="{{ routes.root_url }}" itemtype="https://schema.org/Thing"
+ itemprop="item">
+        <span itemprop="name">{{ 'general.breadcrumbs.home' | t }}</span>
+      </a>
+      <span class="breadcrumbs__slash dib">/</span>
+      {%- assign bIndex = bIndex | plus: 1 -%}
+      {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+    </li>
+    {% if collection.url %}
+    <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+      <a href="{{ collection.url }}" itemtype="https://schema.org/Thing"
+ itemprop="item">
+        <span itemprop="name">{{ collection.title }}</span>
+      </a>
+      <span class="breadcrumbs__slash dib">/</span>
+      {%- assign bIndex = bIndex | plus: 1 -%}
+      {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+    </li>
+    {% endif %}
+    <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+      <a href="{{ product.url }}" itemtype="https://schema.org/Thing"
+ itemprop="item">
+        <span itemprop="name">{{ product.title }}</span>
+      </a>
+      {%- assign bIndex = bIndex | plus: 1 -%}
+      {%- render 'breadcrumbs-index' with bIndex: bIndex -%}
+    </li>
+  </ul>
+</div>
+{%- endif -%}

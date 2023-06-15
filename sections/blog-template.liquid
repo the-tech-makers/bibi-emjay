@@ -1,0 +1,136 @@
+{%- if section.settings.use_one_layout -%}
+  {%- assign layout = section.settings.layout -%}
+{%- else -%}
+  {%- if template.suffix == 'grid_3cols' -%}
+    {%- assign layout = 'large' -%}
+  {%- elsif template.suffix == 'grid_2cols' -%}
+    {%- assign layout = 'very-large' -%}
+  {%- else -%}
+    {%- assign layout = 'list' -%}    
+  {%- endif -%}  
+{%- endif -%}
+{%- liquid
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign enable_rtl = false
+  else
+    assign enable_rtl = true
+  endunless  
+-%}
+<div data-section-id="{{ section.id }}" data-section-type="blog-template">
+  <div class="container{% render 'wide-css-class' %}">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="page-content w100">
+          {%- if blog.articles.size > 0 -%}
+            <div class="row">
+              <div class="col-xs-12{% if section.settings.enable_sidebar %} col-md-8{% if enable_rtl %} f-right{% endif %}{% endif %}">
+                {% paginate blog.articles by section.settings.limit %}
+                <div class="grid grid--{{ layout }} grid--full-mobile grid--not-empty">
+                    {% for article in blog.articles %}
+                      {% render 'article-grid-item' with
+                      article: article,
+                      layout: layout,
+                      blog_show_author: section.settings.blog_show_author,
+                      blog_show_date: section.settings.blog_show_date,
+                      forloop: forloop,
+                      enable_rtl: enable_rtl
+                       %}
+                    {% endfor %}
+                </div>
+                {%- render 'pagination' with paginate as paginate -%}
+                {% endpaginate %}
+              </div>
+              {%- render 'blog-sidebar', blog: blog, enable_sidebar: section.settings.enable_sidebar, show_filter_tags: section.settings.show_filter_tags, show_recent_posts: section.settings.show_recent_posts, recent_post_limit: section.settings.recent_post_limit -%}
+            </div>
+          {%- else -%}
+            {{ 'blogs.article.no_matches' | t }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Blog pages",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/blog-pages)"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_one_layout",
+        "label": "Use one layout for all blog pages",
+        "default": false,
+        "info": "Tick the checkbox and choose the layout in the below select box to display all blog pages in one layout."
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "options": [
+          {
+            "value": "list",
+            "label": "List"
+          },
+          {
+            "value": "large",
+            "label": "Large Grid"
+          },
+          {
+            "value": "very-large",
+            "label": "Very Large Grid"
+          }
+        ],
+        "default": "list"
+      },
+      {
+        "type": "range",
+        "id": "limit",
+        "label": "The number of posts per page",
+        "min": 8,
+        "max": 50,
+        "default": 12
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Sidebar"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sidebar",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_recent_posts",
+        "label": "Show recent posts",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "recent_post_limit",
+        "label": "The recent post limit",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "show_filter_tags",
+        "label": "Show filter tags",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

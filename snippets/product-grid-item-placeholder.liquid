@@ -1,0 +1,14 @@
+<div class="item{% unless no_grid_item_class %} grid__item{% endunless %}{% if additional_classes %} {{ additional_classes }}{% endif %}"{% if additional_data %} {{ additional_data }}{% endif %}>
+  <div class="item__top">
+    <a class="item__image" href="#">
+    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+      {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+    </a>
+  </div>
+  <div class="pg__bottom">
+    <a class="item__name gutter-ele-bottom" href="#">
+      {{ 'homepage.onboarding.product_title' | t }}
+    </a>
+    {%- render 'product-price' -%}
+  </div>
+</div>

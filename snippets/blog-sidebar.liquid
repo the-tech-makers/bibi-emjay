@@ -1,0 +1,15 @@
+{%- if enable_sidebar -%}
+  <div class="col-xs-12 col-md-4 sidebar">
+    <div class="visible-xs w100" style="margin-top: 20px;"></div>
+    <div class="hidden-xs w100" style="margin-top: -20px;"></div>
+    <div class="grid grid--full">
+      {%- render 'blog-sidebar-search-form', blog: blog -%}
+      {%- if show_filter_tags -%}
+        {%- render 'blog-sidebar-filter-tags', blog: blog -%}
+      {%- endif -%}
+      {%- if show_recent_posts -%}
+        {%- render 'blog-sidebar-recent-posts' with blog: blog, limit: recent_post_limit -%}
+      {%- endif -%}  
+    </div>
+  </div>
+{%- endif -%}

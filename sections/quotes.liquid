@@ -1,0 +1,270 @@
+{%- render 'section-background-start' -%}
+{%- liquid
+  assign is_customize_page = false
+  if section.blocks.size > 0
+    assign first_block = section.blocks | first
+    if first_block.shopify_attributes != blank
+      assign is_customize_page = true
+    endif
+  endif 
+-%}
+<div id="quotes_{{ section.id }}" class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if is_customize_page %} customize-page{% endif %}" data-section-id="{{ section.id }}" data-section-type="quotes">
+  <div class="row flex">
+    {%- assign heading_pos = section.settings.heading_pos -%}
+    {%- if heading_pos == 'left' -%}
+    <div class="col-xs-12 col-sm-4">
+      {%- render 'section-heading' with heading_align: 'left' -%}
+    </div>
+    {%- endif -%}
+    {%- if heading_pos == 'above' -%}
+    <div class="col-xs-12">
+      {%- render 'section-heading' -%}
+    </div>
+    {%- endif -%}
+    <div class="section__content col-xs-12{% if heading_pos != 'above' %} col-sm-8{% endif %}">
+      {% if section.blocks.size > 0 %}
+        <div class="quotes-wrapper">
+          <div class="quotes-slider use-slider grid grid--full" id="Quotes-{{ section.id }}" data-slider='{"slidesToShow": 1,"responsive":[{"breakpoint":767,"settings":{"slidesToShow":1}}]}'>
+            {% for block in section.blocks %}
+              <div class="grid__item item{% if forloop.index > 1 %} ov-slider-tb ov-slider-mb{% endif %}" {{ block.shopify_attributes }}>
+                <div class="por" style="padding: 58px 50px;border:5px dashed #fff;{% if block.settings.bkg != blank %}background-color: {{ block.settings.bkg }};{% endif %}">
+                  <div class="quotes-slider__text text-center"{% if block.settings.color != blank %} style="color: {{ block.settings.color }};"{% endif %}>
+                    {%- if block.settings.show_avatar -%}
+                      <div class="gutter-bottom">
+                        {%- if block.settings.author_avatar != blank -%}
+                          <img class="lazyload center-block img-responsive" data-src="{{ block.settings.author_avatar | img_url: '80x80' }}"{% render 'img-one-pixel' %} alt="{{ block.settings.author_avatar.alt | escape }}" style="width: auto;border-radius: 50%;" width="80" height="80"/>
+                        {%- else -%}
+                        <div style="width:80px;height:80px;">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.quote != blank -%}
+                      <div class="rte-setting quotes-slider__text gutter-bottom">{{ block.settings.quote }}</div>
+                    {%- endif -%}
+                    {%- if block.settings.title != blank -%}
+                      <strong class="quotes-slider__author-name db gutter-ele-bottom">{{ block.settings.title | escape }}</strong>
+                    {%- endif -%}
+                    {%- if block.settings.author_title != blank -%}
+                      <span class="quotes-slider__author-title db">{{ block.settings.author_title }}</span>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if section.blocks.size == 0 %}
+        {% render 'no-blocks' %}
+      {% endif %}
+    </div>
+    {%- if heading_pos == 'right' -%}
+    <div class="col-xs-12 col-sm-4">
+      {%- render 'section-heading' with heading_align: 'right' -%}
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "Testimonials",
+    "class": "index-section",
+    "max_blocks": 9,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/text/testimonials)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Testimonials"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "select",
+        "id": "heading_pos",
+        "label": "Heading position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "above",
+            "label": "Above"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "quote",
+        "name": "Testimonial",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Author",
+            "default": "Author's name"
+          },
+          {
+            "type": "text",
+            "id": "author_title",
+            "label": "Author's title",
+            "default": "Author's title"
+          },
+          {
+            "type": "richtext",
+            "id": "quote",
+            "label": "Text",
+            "default": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_avatar",
+            "label": "Show avatar",
+            "default": true
+          },
+          {
+            "type": "image_picker",
+            "id": "author_avatar",
+            "label": "Author's avatar"
+          },
+          {
+            "type": "color",
+            "id": "bkg",
+            "label": "Background"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Text Color"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Testimonials",
+        "category": "Text",
+        "blocks": [
+          {
+            "type": "quote",
+            "settings": {
+              "title": "David",
+              "author_title": "CEO Founder"
+            }
+          },
+          {
+            "type": "quote",
+            "settings": {
+              "title": "Kane",
+              "author_title": "Developer"
+            }
+          },
+          {
+            "type": "quote",
+            "settings": {
+              "title": "Susan",
+              "author_title": "Tester"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

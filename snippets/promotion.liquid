@@ -1,0 +1,23 @@
+{%- if settings.promo_enable -%}
+<div class="promo{% if settings.promo_bkg_image %} por{% endif %} close" style="display: none;transition:none;-webkit-transition:none;{% if settings.promo_bkg_color != blank and settings.promo_use_bkg_color %}background-color: {{ settings.promo_bkg_color }};{% endif %}">
+	{%- if settings.promo_bkg_image -%}
+		{%- assign img_url = settings.promo_bkg_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+		<img data-aspectratio="{{ settings.promo_bkg_image.aspect_ratio }}"
+	            data-src="{{ img_url }}"
+	            data-sizes="auto" class="w100 h100 center-block img-abs center-abs lazyload op1"{% render 'img-one-pixel' %} alt="{{ settings.promo_bkg_image.alt | escape }}" data-image-size="1x1"/>
+	{%- endif -%}            
+	<div class="container{% if settings.promo_wide %}-fluid{% endif %}">
+		<div class="row">
+			<div class="col-xs-12 flex flex-align-ver flex-align-hoz" style="padding:5px;">
+				{%- if settings.promo_text != blank -%}
+					<a class="promo__text" href="{{ settings.promo_text_url | default: '#' }}"{% if settings.promo_text_target %} target="_blank"{% endif %} style="font-size:14px;{% if settings.promo_text_color %} color:{{ settings.promo_text_color }};{% endif %}">{{ settings.promo_text | raw }}</a>
+				{%- endif -%}
+				{%- if settings.promo_button_enable -%}
+					<a href="{{ settings.promo_button_url | default: '#' }}" class="promo__button button button--style2 hidden-xs"{% if settings.promo_button_target %} target="_blank"{% endif %} style="margin-{% unless enable_rtl %}left{% else %}right{% endunless %}:30px;padding:1px 10px;height: 30px;line-height: 28px;">{{ settings.promo_button_text }}</a>
+				{%- endif -%}
+				<a class="promo__close flex flex-align-ver flex-align-hoz" href="#"{% if settings.promo_text_color %} style="color:{{ settings.promo_text_color }};"{% endif %} title="close promotion">{%- render 'icon-close' -%}</a>
+			</div>
+		</div>
+	</div>
+</div>
+{%- endif -%}

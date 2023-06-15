@@ -1,0 +1,17 @@
+{%- if paginate.next.is_link -%}
+	{%- assign next_url = paginate.next.url -%}
+	{%- if paginate.next.url contains '?' -%}
+		{%- unless paginate.next.url contains 'view=' -%}
+			{%- assign next_url = next_url | append: '&view=ajax' -%}
+		{%- endunless -%}
+	{%- else -%}
+		{%- assign next_url = next_url | append: '?view=ajax' -%}	
+	{%- endif -%}
+	{%- if infinity_action == 'click' -%}
+		{%- render 'product-tabs-more-btn' with href: next_url -%}
+	{%- else -%}
+		<a class="infinite-scroll collection__scroll loading-not-full" href="{{ next_url }}" data-id=".collection__scroll" data-id-save="{% if dataIdSave %}{{ dataIdSave }}{% else %}{{ section.id }}{% endif %}">
+			<i class="loading-ajax"></i>
+		</a>
+	{%- endif -%}
+{%- endif -%}

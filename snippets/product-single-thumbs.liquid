@@ -1,0 +1,30 @@
+{%- assign ov_slider = 5 -%}
+{%- assign small_image_size = '100x' -%}
+{%- assign use_padding_wrap = false -%}
+{%- if thumbs_layout == 'grid' -%}
+	{%- assign use_slider = false -%}
+	{%- assign use_padding_wrap = true -%}
+{%- else -%}
+	{%- assign use_slider = true -%}
+	{%- if thumbs_layout == 'hoz_slider' and product.media.size <= ov_slider -%}
+		{%- assign use_padding_wrap = true -%}
+	{%- endif -%}
+{%- endif -%}
+<div class="w100 flex flex-wrap flex-align-space-between flex-align-ver{% if use_padding_wrap %} product-single__thumbs-wrap{% endif %}{% if section.settings.enable_small_images == false %} hide{% endif %}">
+	{%- if use_slider -%}
+	<button aria-label="button" class="slick-prev button button--style3 slick-arrow--single-thumbs slick-arrow slick-box{% if thumbs_layout == 'ver_slider' %} slick-arrow--single-thumbs-vertical{% endif %}{% if product.media.size <= ov_slider %} hide{% endif %}" style="margin-top:10px;width: 20px;position: relative;border:none;background:none;padding:0;"><span></span></button>
+	{%- endif -%}
+	<div class="pg__thumbs pg__thumbs--single grid pg__thumbs--large{% if use_slider %} pg__thumbs--slider re-calc-index{% if product.media.size > ov_slider %} pg__thumbs--slider-width{% endif %}{% if thumbs_layout == 'ver_slider' %} pg__thumbs--slider-vertical{% endif %}{% endif %}">{%- comment -%}add class pg__thumbs--slider to display thumbs as slider{%- endcomment -%}
+		{%- include 'product-single-thumb' with media: featured_media -%}
+		{%- assign index = 1 -%}
+		{% for media in product.media %}
+			{%- assign index = index | plus: 1 -%}
+			{%- if media != featured_media -%}
+      	{%- include 'product-single-thumb' -%}
+      {%- endif -%}
+    {% endfor %}
+	</div>
+	{%- if use_slider -%}
+	<button aria-label="button" class="slick-next button button--style3 slick-arrow--single-thumbs slick-arrow slick-box{% if thumbs_layout == 'ver_slider' %} slick-arrow--single-thumbs-vertical{% endif %}{% if product.media.size <= ov_slider %} hide{% elsif product.media.size <= ov_slider %} hidden-md hidden-lg{% endif %}" style="margin-top:10px;width: 20px;position: relative;border:none;background:none;padding:0;"><span></span></button>
+	{%- endif -%}
+</div>

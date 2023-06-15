@@ -1,0 +1,511 @@
+/*--------------------Variables----------------------*/
+/*General*/
+$bkg_body: {{ settings.body_bkg_color | default: '#fff' }}; /*body background*/
+$color_general: {{ settings.color_general | default: '#222' }}; /*general color*/
+$color_hover: {{ settings.color_general_hover | default: '#d9121f' }};
+$fm_general: "Roboto", sans-serif;/*font family general*/
+$fs_general: {{ settings.fs_general }}px;/*font size general*/
+
+/*Header*/
+$fs_cart_number: 13px;
+$padding_header_link: 10px;/*padding header link*/
+$padding_header_link_mobile: 5px;/*padding header link on table*/
+$fs_header_link_mobile: {{ settings.fs_header_link_mobile }}px;/*done*/
+$bkg_header_mobile: {{ settings.bkg_header_mobile | default: '#fff' }};
+$color_header_mobile: {{ settings.color_header_mobile | default: '#222' }};
+$border_header: {{ settings.color_header | default: '#000' | color_modify: 'alpha', 0.1 }};/*done*/
+
+/*Font weight*/
+$fw_super_thin: 300;
+$fw_thin: 400;
+$fw_normal: 500;
+$fw_bold: 700;
+
+/*Transition*/
+$transition: ease all 0.5s;
+
+/*Border radius*/
+$b_r: 0;/*border radius*/
+
+/*Section title*/
+$fs_st: {{ settings.fs_st }}px;/*font size section title*/
+$fs_st_mobile: {{ settings.fs_st_mobile }}px;/*font size section title mobile*/
+$color_st: {{ settings.color_st | default: '#000' }};/*color section title*/
+
+/*Sections Sub Title*/
+$fs_sst: {{ settings.fs_sst }}px;/*font size section title*/
+$fs_sst_mobile: {{ settings.fs_sst_mobile }}px;/*font size section title mobile*/
+$color_sst: {{ settings.color_sst | default: '#ccc' }};/*color section title*//*done*/
+
+/*Item*/
+$fs_item: {{ settings.fs_item }}px;/*font size item*/
+$color_item: {{ settings.color_item | default: '#000' }};
+$fs_price: {{ settings.fs_price }}px;
+$fs_compare_price: {{ settings.fs_compare_price }}px;
+$color_price: {{ settings.color_price | default: '#d9121f' }};
+$color_compare_price: {{ settings.color_compare_price | default: '#000' }};
+$gutter-item-buttons: 20px;
+$swatch_size: {{ settings.swatch_size }}px;
+$swatch_border_color: {{ settings.swatch_border_color | default: '#ccc' }};
+$swatch_select_width: 97px;
+
+/*Buttons*/
+/*button style 1*/
+$color_btn_s1: {{ settings.color_btn_s1 | default: '#222' }};
+$border_btn_s1: {{ settings.border_btn_s1 | default: '#ccc' }};
+$bkg_btn_s1: {{ settings.bkg_btn_s1 | default: '#fff' }};
+$color_btn_s1_hover: {{ settings.color_btn_s1_hover | default: '#fff' }};
+$border_btn_s1_hover: {{ settings.border_btn_s1_hover | default: '#d9121f' }};
+$bkg_btn_s1_hover: {{ settings.bkg_btn_s1_hover | default: '#d9121f' }};
+$w_h_btn_s1_circle: 27px;/*width height button style 1 circle*/
+/* button style 2 */
+$color_btn_s2: {{ settings.color_btn_s2 | default: '#fff' }};
+$border_btn_s2: {{ settings.border_btn_s2 | default: '#d9121f' }};
+$bkg_btn_s2: {{ settings.bkg_btn_s2 | default: '#d9121f' }};
+$color_btn_s2_hover: {{ settings.color_btn_s2_hover | default: '#fff' }};
+$border_btn_s2_hover: {{ settings.border_btn_s2_hover | default: '#222' }};
+$bkg_btn_s2_hover: {{ settings.bkg_btn_s2_hover | default: '#222' }};
+/*button style 3*/
+$color_btn_s3: {{ settings.color_btn_s3 | default: '#fff' }};
+$border_btn_s3: {{ settings.border_btn_s3 | default: '#222' }};
+$bkg_btn_s3: {{ settings.bkg_btn_s3 | default: '#222' }};
+$color_btn_s3_hover: {{ settings.color_btn_s3_hover | default: '#222' }};
+$border_btn_s3_hover: {{ settings.border_btn_s3_hover | default: '#222' }};
+$bkg_btn_s3_hover: {{ settings.bkg_btn_s3_hover | default: '#fff' }};
+/* cart button on product page */
+$fs_btn_cart: 17px;
+$fs_btn_cart_mobile: 12px;
+$height_button: 45px;
+$border_btn_cart: {{ settings.border_btn_cart | default: '#169214' }};/*button cart style*/
+$bkg_btn_cart: {{ settings.bkg_btn_cart | default: '#169214' }};
+
+/*Tab title*/
+$fs_tt: {{ settings.fs_tt }}px;/*font size tab title*/
+$fs_tt_mobile: {{ settings.fs_tt_mobile }}px;/*font size tab title mobile*/
+$color_tt: {{ settings.color_tt | default: '#999' }};/*color tab title*/
+$color_tt_hover: {{ settings.color_tt_hover | default: '#fff' }};/*color tab title hover*/
+$tab_color_single: {{ settings.tab_item_color_single }};
+$tab_item_active_color_single: {{ settings.tab_item_active_color_single }};
+$tab_border_item_single: {{ settings.color_general | color_modify: 'alpha', 0.1 }};
+
+/*Navigation*/
+$bkg_nav_item_dropdown: {{ settings.bkg_nav_item_dropdown | default: '#fff' }};/*background dropdown nav item*/
+$padding_link_list: 10px;/*padding left and right for link list*/
+$padding_item_dropdown: 20px; /*padding item dropdown*/
+$padding_link-list-dropdown: 30px; /*padding link list dropdown*/
+$color_link: {{ settings.color_link | default: '#000' }}; /*color link*/
+$bkg_nav_item_hover: transparent;/*background nav item hover*/
+$color_nav_item_hover: {{ settings.color_nav_item_hover | default: '#d9121f' }};/*color nav item hover*/
+$fs_dropdown_title: {{ settings.fs_dropdown_title }}px;/*font size dropdown title*//*done*/
+$fs_dropdown_content: {{ settings.fs_dropdown_content }}px;/*font size dropdown content*//*done*/
+$left_item_label_dropdown: 50px;/*left position item label dropdown*/
+$top_item_label_dropdown: -7px;/*top position item label dropdown*/
+$fs_item_label: 10px;/*font size item label*//*done*/
+$fs_nav_item: {{ settings.fs_dropdown_nav_top }}px;/*font size nav item*//*done*/
+$top_nav_item_label: -14px;/*top position of nav item label*/
+$right_nav_item_label: 0;/*right position of nav item label*/
+$dropdown_triangle: 15px;
+/*Header cart*/
+
+/* Sidebar Canvas */
+$width_sidebar_canvas: 350px;
+$bkg_sidebar_canvas: {{ settings.bkg_sidebar_canvas | default: '#fff' }};
+$padding_sidebar_canvas: 25px;
+
+/*Slick slider*/
+$fs_icon_slick: 25px;
+
+$gutter-top: 30px;/*gutter top*/
+$gutter-bottom: 30px;/*gutter bottom*/
+$gutter-element: 20px;/*gutter - for element*/
+$padding-grid-item: 15px;/*padding grid item*/
+
+/*Product page*/
+$bkg_product_single: {{ settings.bkg_product_single | default: '#d6f3ee' }};
+$fs_product_price_sale_single: {{ settings.fs_product_price_sale_single }}px;
+$fs_product_price_sale_single_mobile: {{ settings.fs_product_price_sale_single_mobile }}px;
+$wh_option_single: 40px;
+$wh_qty: 30px;
+$wh_qty_single: 45px;
+$color_border_qty: {{ settings.color_border_qty | default: '#ccc' }};
+
+/*Footer*/
+$fs_footer_column_title: {{ settings.fs_footer_column_title }}px;/*font size footer column title*/
+$color_footer_column_title: {{ settings.color_footer_column_title | default: '#222' }};/*color footer column title*/
+$fs_footer_column_content: {{ settings.fs_footer_column_content }}px;/*font size footer column content*/
+$color_footer_column_content: {{ settings.color_footer_column_content | default: '#8a8282' }};/*color footer column content*/
+$color_footer_column_content_hover: {{ settings.color_footer_column_content_hover | default: '#222' }}; /*color footer link hover*/
+$height_newsletter: 43px;/*height newsletter*/
+$br_newsletter: 0;/*border radius newsletter*/
+$bkg_newsletter: transparent;/*background input newsletter*/
+$fs_social_icon: 21px;/*font size social icons*/
+
+/*Input field*/
+$border_input: {{ settings.border_input | default: '#a7a1a1' }};/*border color input*/
+$border_input_focus: {{ settings.border_input_focus | default: '#4285f4' }};/*border color input focus*/
+$fs_input_label: 14px;
+$fs_input_label_focus: 12px;
+$height_input_field: 40px;
+
+/*Compare popup*/
+$fs_popup_badge: 25px;
+$color_popup_badge: #2cb752;
+
+/*Pop up cart*/
+$fs_price_cart_response: 16px;
+
+/*Sticky cart*/
+$w_h_swatch_sc: 40px;
+$sticky_action: 43px;
+
+/*Search input*/
+$height_search: 35px;
+$border_search: #ccc;
+
+/*Blog page*/
+$fs_article_title: 18px;
+$fs_article_title_big: 25px;
+$fs_sidebar_title: 20px;
+$fs_date_author: 12px;
+$color_date_author: {{ settings.blog_color_date_author | default: '#999' }};
+$color_article_title: {{ settings.blog_color_article_title | default: '#2a302d' }};
+$fs_article_tag: 13px;
+
+/*Rating*/
+$color_stars: #ca9c3a;
+
+/* Responsive screen */
+$mobile_width: 767px;
+$min_tablet_small_width: 768px;
+$max_tablet_small_width: 991px;
+$min_tablet_large_width: 992px;
+$max_tablet_large_width: 1199px;
+$desktop_width: 1200px;
+
+/*Mixins*/
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if $prefix == webkit {
+      -webkit-#{$property}: $value;
+    } 
+    @else if $prefix == moz {
+      -moz-#{$property}: $value;
+    } 
+    @else if $prefix == ms {
+      -ms-#{$property}: $value;
+    } 
+    @else if $prefix == o {
+      -o-#{$property}: $value;
+    } 
+    @else if $prefix == spec {
+      #{$property}: $value;
+    } 
+    @else  {
+      @warn 'Unrecognized prefix: #{$prefix}';
+    }
+  }
+}
+@mixin opacity($v1, $v2) {
+  opacity: $v1;
+  filter: alpha(opacity=$v2);
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=$v2)";
+}
+@mixin transition($transition) {
+  @include prefix(transition, $transition, ms webkit spec);
+}
+@mixin display-flex() {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-flow: row wrap;
+}
+@mixin border-radius($border-radius) {
+  border-radius: $border-radius; 
+}
+/*justify-content: center|left|right*/
+@mixin justify-content($var) {
+  justify-content: $var;
+}
+
+/*align-items: stretch|center|flex-start|flex-end|baseline|initial|inherit;*/
+@mixin align-items($value: stretch) {
+  $alt-value: $value;
+
+  @if $value == 'flex-start' {
+    $alt-value: start;
+  } @else if $value == 'flex-end' {
+    $alt-value: end;
+  }
+
+  /* sass-lint:disable no-misspelled-properties*/
+  -ms-flex-align: $alt-value;
+  @include prefix(align-items, $value, webkit moz ms o spec);
+}
+@mixin box-shadow($box-shadow){  
+  box-shadow: $box-shadow; 
+}
+
+@mixin transform($transform) {
+  transform: $transform;
+}
+@mixin flex-direction($value) {
+  flex-direction: $value;
+}
+@mixin backface_visibility($value) {
+  @include prefix(backface_visibility, $value, ms webkit);
+}
+@mixin animation($value) {
+  @include prefix(animation, $value, ms webkit spec moz);
+}
+@mixin loading-ajax($width, $height) {
+  content: '';
+  font-size: $width;
+  display: inline-block;
+  width: $width;
+  height: $height;
+  border-radius: 50%;
+  border: 2px solid;
+  border-right-color: transparent;
+}
+@mixin loading-icon($width, $height) {
+  content: '';
+  font-size: 20px;
+  display: block;
+  width: $width;
+  height: $height;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  border-right-color: transparent;
+  -webkit-animation: spin 2s ease-out infinite;
+  animation: spin 2s ease-out infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+@mixin loading-bkg($value) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: $value;
+  z-index: 2;
+}
+
+/*-------------- Home page -------------------*/
+@mixin flex-basis($width: auto) {
+  // sass-lint:disable no-misspelled-properties
+  -ms-flex-preferred-size: $width;
+  @include prefix(flex-basis, $width, webkit moz spec);
+}
+
+@mixin flex-wrap($value: nowrap) {
+  flex-wrap: $value;
+}
+
+@mixin flex-direction($value) {
+ flex-direction: $value;
+}
+
+@mixin align-content($align: center) {
+  @include prefix(align-content, $align, webkit ms spec);
+}
+
+/* Maps section */
+.map-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  @include display-flex();
+  @include align-items(center);
+  @include flex-wrap(wrap);
+  @include flex-direction(row);
+
+  @media (min-width: 750px) {
+    min-height: 500px;
+  }
+}
+
+.map-section--load-error {
+  height: auto;
+}
+
+.map-section__wrapper {
+  height: 100%;
+  flex-shrink: 0;
+  flex-grow: 1;
+  @include flex-basis(100%);
+
+  @include display-flex();
+  @include flex-wrap(wrap);
+  @include flex-direction(row);
+}
+
+.map-section__overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 2;
+}
+
+.map-section__error {
+  position: relative;
+  z-index: 3;
+
+  @media (min-width: 750px) {
+    margin: 0 2rem;
+    top: 50%;
+    @include transform(translateY(-50%));
+  }
+}
+
+.map-section__content-wrapper {
+  position: relative;
+  text-align: center;
+  height: 100%;
+  @include display-flex();
+  @include flex-basis(100%);
+  flex-grow: 0;
+
+  @media (min-width: 750px) {
+    @include flex-basis(50%);
+  }
+
+  @media (min-width: 990px) {
+    @include flex-basis(33%);
+  }
+}
+
+.map-section__content {
+  position: relative;
+  display: inline-block;
+  background-color: #fff;
+  padding: 0 0 10px;
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+  @include display-flex();
+  @include align-items(center);
+  @include flex-wrap(wrap);
+  @include align-content(center);
+
+  // Make sure every children is on one line
+  & > * {
+    width: 100%;
+  }
+
+  @media (min-width: 750px) {
+    background-color: #fff;
+    margin: 40px 0;
+    min-height: 300px;
+
+    .ie9 & {
+      top: 10%;
+    }
+  }
+
+  .map-section--load-error & {
+    position: static;
+    transform: translateY(0);
+  }
+}
+
+.map-section__link {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  @include transform(translateX(-50%));
+}
+
+// Optically center map in visible area with
+// extended height/widths and negative margins
+.map-section__container {
+  max-width: none;
+  width: 100%;
+  height: 55vh;
+  left: 0;
+
+  @media (min-width: 750px) {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    // map is centered on resize, larger widths allow pin to be off-center
+    width: 130%;
+  }
+}
+
+.map_section__directions-btn {
+  [class^="icon"] {
+    height: 1em;
+  }
+
+  * {
+    vertical-align: middle;
+  }
+}
+
+.map-section__background-wrapper {
+  overflow: hidden;
+  position: relative;
+  @include flex-basis(100%);
+
+  @media (min-width: 750px) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ie9 & {
+    width: 100%;
+    height: 500px;
+  }
+
+  .map-section--onboarding & {
+    min-height: 55vh;
+  }
+}
+
+.map-section__image {
+  height: 100%;
+  position:relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+
+  @media (min-width: 750px) {
+    position: absolute;
+  }
+
+  // Only show the background image if map fails to load
+  .map-section--display-map & {
+    display: none !important;
+  }
+
+ .map-section--load-error & {
+    display: block !important;
+  }
+}
+
+// Hide Google maps UI
+.gm-style-cc,
+.gm-style-cc + div {
+  visibility: hidden;
+}

@@ -1,0 +1,12 @@
+{% if settings.show_logo %}
+	{%- if settings.logo != blank or settings.logo_mobile != blank -%}
+	{%- assign logo_mobile_size = settings.header_mobile_logo_size | default: 'master' -%}
+	<a href="{{ routes.root_url }}" class="header-mobile__logo__image dib" title="{{ shop.name | escape }}">
+		<img src="{{ settings.logo_mobile | default: settings.logo | img_url: logo_mobile_size }}" alt="{{ settings.logo_mobile.alt | default: settings.logo.alt | default: shop.name | escape }}" class="img-responsive center-block"{% if settings.logo_mobile %} width="{{ settings.logo_mobile.width }}" height="{{ settings.logo_mobile.height }}"{% elsif settings.logo %} width="{{ settings.logo.width }}" height="{{ settings.logo.height }}"{% endif %} style="width:auto;">
+	</a>
+	{%- else -%}
+		<a class="header-mobile__logo__link" href="{{ routes.root_url }}" title="{{ shop.name | escape }}">{{ shop.name }}</a>
+	{%- endif -%}
+{% else %}
+<a class="header-mobile__logo__link" href="{{ routes.root_url }}" title="{{ shop.name | escape }}">{{ shop.name }}</a>
+{% endif %}

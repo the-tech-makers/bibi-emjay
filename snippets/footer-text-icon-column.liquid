@@ -1,0 +1,24 @@
+{%- if block.settings.title_1 != blank -%}
+<div class="flex flex-align-ver{% if block.settings.title_2 != blank %} gutter-bottom{% endif %}">
+  <i class="{{ block.settings.icon_1 }} footer__text-icon__icon-{{ section.id }}"></i>
+  <div{% if block.settings.icon_1 != blank %} class="footer__text-icon__content-{{ section.id }}"{% endif %}>
+    <span class="w100 db footer__text-icon__title-{{ section.id }} gutter-ele-bottom">{{ block.settings.title_1 }}</span>
+    <span class="w100 db footer__text-icon__subtitle-{{ section.id }}">{{ block.settings.subtitle_1 }}</span>
+  </div>
+</div>
+{%- endif -%}
+{%- if block.settings.title_2 != blank -%}
+<div class="flex flex-align-ver">
+  <i class="{{ block.settings.icon_2 }} footer__text-icon__icon-{{ section.id }}"></i>
+  <div{% if block.settings.icon_2 != blank %} class="footer__text-icon__content-{{ section.id }}"{% endif %}>
+    <span class="w100 db footer__text-icon__title-{{ section.id }} gutter-ele-bottom">{{ block.settings.title_2 }}</span>
+    <span class="w100 db footer__text-icon__subtitle-{{ section.id }}">{{ block.settings.subtitle_2 }}</span>
+  </div>
+</div>
+{%- endif -%}
+{%- style -%}
+.footer__text-icon__icon-{{ section.id }}{font-size:50px;color:{{ block.settings.icon_color }};}
+.footer__text-icon__content-{{ section.id }}{width:calc(100% - 50px);padding-{%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}left{%- else -%}right{%- endunless -%}:25px;}
+.footer__text-icon__title-{{ section.id }}{color:{{ block.settings.text_color }};}
+.footer__text-icon__subtitle-{{ section.id }}{color:{{ block.settings.text_color | color_modify: 'alpha', 0.5 }};}
+{%- endstyle -%}

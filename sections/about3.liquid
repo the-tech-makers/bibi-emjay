@@ -1,0 +1,130 @@
+{%- render 'section-background-start' -%}
+<div class="{% render 'section-gutters-nobkg' %}" id="about_{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="about">
+  <div class="about1 container{% if section.settings.full_width %}-fluid{% endif %}">
+    <div class="row">
+      <div class="section__inner col-xs-12">
+        {%- render 'section-heading-h1' -%}
+        <div class="section__content">
+          <div class="rte{% if section.blocks.size > 0 %} gutter-bottom{% endif %}">
+            {{ page.content }}
+          </div>
+          {%- if section.blocks.size > 0 -%}
+          <div class="w100 h1 text-center gutter-top" style="margin:0;">{{ section.settings.team_member_label }}</div>
+          <div class="grid grid--large gutter-top gutter-ele-top-tbs use-slider" data-slider='{"autoplay":true,"infinite":false,"swipe":true,"swipeToSlide":true,"slidesToShow":4,"slidesToScroll":1,"responsive":[{"breakpoint": 768,"settings":{"slidesToShow":2,"slidesToScroll":2}}]}'>
+            {%- for block in section.blocks -%}
+            <div class="grid__item item{% if forloop.index > 1 %} ov-slider-mb{% endif %}{% if forloop.index > 4 %} ov-slider-tb{% endif %}">
+              {%- assign img_url = block.settings.avatar | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <div class="w100 img-container loading" style="padding-top:{{ 1 | divided_by: block.settings.avatar.aspect_ratio | times: 100}}%;overflow:hidden;">
+                <img data-aspectratio="{{ block.settings.avatar.aspect_ratio }}"
+                  data-src="{{ img_url }}"
+                  data-sizes="auto" class="center-block img-abs center-abs-ele lazyload"{% render 'img-one-pixel' %} alt="{{ block.settings.avatar.alt | escape }}" data-image-size="1x1"/>
+              </div>
+              <div class="gutter-top">
+                <span class="item__name w100" style="padding-top:0;">{{ block.settings.title }}</span>
+                {%- if block.settings.job != blank -%}
+                <span class="article__author gutter-ele-top gutter-ele-top-tbs db">{{ block.settings.job }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+            {%- endfor -%}
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "About Us 3",
+    "class": "section",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/about-us-3)"
+      },
+      {
+        "type": "header",
+        "content": "Background color"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "team_member_label",
+        "label": "Team member label",
+        "default": "Our team"
+      },
+      {
+        "type": "header",
+        "content": "Layout settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "team_member",
+        "name": "Team member",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "avatar",
+            "label": "Avatar"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Name"
+          },
+          {
+            "type": "text",
+            "id": "job",
+            "label": "Title"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "About Us 3",
+        "category": "About Us"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,25 @@
+{%- if section.settings.enable_trusted_payment_badge and template.suffix != 'quick_view' -%}
+ 	{%- unless section.settings.trusted_payment_badge -%} 
+    {% unless shop.enabled_payment_types == empty %}
+      <div class="gutter-ele-top product-single__sub-info">
+        <span class="gutter-ele-small-bottom pg__payment-label dib blur-color text-uppercase">{{ 'general.payment.method' | t }}:</span>
+        <ul class="payment-icons list--inline dib" style="margin-left:15px;">
+          {% for type in shop.enabled_payment_types %}
+            <li class="payment-icon">
+              {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endunless %}
+  {%- else -%}
+    <div class="gutter-ele-top product-single__sub-info">
+      {%- assign img_url = section.settings.trusted_payment_badge | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      <div class="img-container" style="padding-top:{{ 1 | divided_by: section.settings.trusted_payment_badge.aspect_ratio | times: 100}}%;">
+        <img data-aspectratio="{{ section.settings.trusted_payment_badge.aspect_ratio }}"
+          data-src="{{ img_url }}"
+          data-sizes="auto"{% include 'img-one-pixel' %} alt="{{ section.settings.trusted_payment_badge.alt | escape }}" class="img-responsive lazyload img-abs w100 button--rad"/>
+      </div>
+    </div>
+  {%- endunless -%}
+{%- endif -%}

@@ -1,0 +1,76 @@
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}">
+	<div class="row{% if settings.use_sticky %} hide-in-sticky{% endif %} gutter-top">
+		<div class="flex flex-align-ver">
+			<div class="col-xs-5">
+				<div class="header__top flex">
+					{%- if settings.enable_compare -%}
+						<a href="javascript:void(0);" class="header__link header__link--left header__link--compare header__top__ele flex flex-align-ver" title="{{ 'general.accessibility.your_compare' | t | escape }}">
+							<span class="compare-number"></span>
+							{{ 'general.accessibility.your_compare' | t }}
+							{%- render 'icon-compare' -%}
+						</a>
+					{%- endif -%}
+					{%- if settings.enable_wishlist -%}
+						<a href="javascript:void(0);" class="header__link header__link--left header__link--wishlist header__top__ele flex flex-align-ver" title="{{ 'general.accessibility.your_wishlist' | t | escape }}">
+							<span class="wishlist-number"></span>
+							<span>{{ 'general.accessibility.your_wishlist' | t | escape }}</span>
+							{%- render 'icon-wishlist' -%}
+						</a>
+					{%- endif -%}
+					{%- render 'currency-switcher', add_wrap_classes: 'header__top__ele', data_group: 'header__links' -%}
+				</div>
+			</div>
+			<div class="col-xs-2 text-center">
+				{% render 'header__logo' %}
+			</div>
+			<div class="col-xs-5">
+				<div class="header__top flex header__top--right">
+					{%- render 'language-picker', data_group: 'header__links', show_language_icon: false, hide_language_code: false, wrap_class: 'header__top__ele flex flex-align-ver', flex_trigger: true, no_full_height: true, addition_classes: 'header__link header__link--right header__right--ver' -%}
+					{%- if shop.customer_accounts_enabled -%}
+						<div class="bt-dropdown header__top__ele flex flex-align-ver{% if customer %} por{% endif %}" data-group="header__links">
+							{%- if customer -%}
+								<a class="bt-dropdown__trigger header__link header__link--right header__right--ver flex flex-align-ver" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_url }}">
+									{%- render 'icon-account' -%}
+									{{ 'customer.account.title' | t }}
+								</a>
+								<div class="bt-dropdown__content bt-dropdown__content--auto-center" style="white-space:nowrap;min-width:auto;">
+									<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+										{%- unless enable_rtl -%}
+											{% render 'icon-account' %}&nbsp;<span>{{ 'customer.account.title' | t }}</span>
+										{%- else -%}
+											<span>{{ 'customer.account.title' | t }}</span>&nbsp;{% render 'icon-account' %}
+										{%- endunless -%}
+									</a>
+									<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom">
+										{%- unless enable_rtl -%}
+											{%- render 'icon-sign-out' -%}&nbsp;<span>{{ 'layout.customer.log_out' | t }}</span>
+										{%- else -%}
+											<span>{{ 'layout.customer.log_out' | t }}</span>&nbsp;{%- render 'icon-sign-out' -%}
+										{%- endunless -%}
+									</a>
+								</div>
+							{%- else -%}
+								<a class="bt-dropdown__trigger header__link header__link--right header__right--ver flex flex-align-ver" title="{{ 'customer.login.title' | t | escape }}" href="{{ routes.account_login_url }}">
+									{%- render 'icon-account' -%}
+									{{ 'customer.login.title' | t }}
+								</a>
+								<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+									{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+								</div>
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+					{%- render 'header-cart', data_group: 'header__links', cart_dropdown_direction: 'bt-dropdown__content--right bt-dropdown__content--right-fluid', header_custom_class: 'header__top__ele flex flex-align-ver', show_cart_text: true, addition_classes: 'header__right--ver flex flex-align-ver', no_flex: true, no_full_height: true -%}
+					<a href="{{ routes.search_url }}" class="header__search lh1 header__top__ele search-full-trigger" title="{{ 'general.search.placeholder' | t | escape }}">
+						{% render 'icon-search' %}
+					</a>
+				</div>	
+			</div>
+		</div>
+	</div>
+	<div class="row header__wrap{% if settings.use_sticky %} use-sticky--desktop{% endif %}">
+		<div class="col-xs-12">
+			{% section 'navigation' %}
+		</div>
+	</div>
+</div>

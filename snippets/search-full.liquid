@@ -1,0 +1,89 @@
+<div class="search-full w100 gutter-top gutter-bottom" style="display:none;">
+	<div class="container por">
+		<h5 class="text-center gutter-bottom">{{ settings.search_suggest_popup_title }}</h5>
+		<form action="{{ routes.search_url }}" method="get" class="center-block por{% if settings.header_style == 'style8' %} hidden-md hidden-lg{% endif %}" role="search" style="max-width:600px;margin-bottom:30px;">
+		  <input type="hidden" name="type" value="product">
+		  <input class="search-full__input"
+		    type="search"
+		    name="q"
+		    placeholder="{{ 'general.search.placeholder' | t }}"
+		    aria-label="{{ 'general.search.placeholder' | t }}" data-term="">
+		  <input type="hidden" name="options[prefix]" value="last" aria-hidden="true" />  
+		  <button type="submit" class="search-full__submit">
+		  	{%- render 'icon-search', add_class: 'search-full__loading' -%}
+		  </button> 
+		</form>
+		{%- if settings.search_suggest_collection -%}
+			{%- assign suggest_collection = collections[settings.search_suggest_collection] -%}
+			<div class="search-full__suggest-products">
+				<h6 class="h4 gutter-ele-bottom">{{ settings.search_suggest_suggest_title }}</h6>
+				<div class="grid grid--medium">
+					{%- for product in suggest_collection.products limit: settings.search_suggest_collection_limit -%}
+						{%- render 'product-grid-item' with
+		          product: product, 
+		          use_slider: false, 
+		          limit_first: 0, 
+		          index: forloop.index, 
+		          lazy_index: 15,
+		          column_count: 5, 
+		          main_thumbnail: settings.search_suggest_main_thumbnail, 
+		          image_size: '1x', 
+		          truncate_count: settings.search_suggest_product_name_size, enable_product_options: false,
+		          show_review_stars: false,
+		          enable_small_images: false,
+		          show_wishlist_btn: false,
+		          small_image: '1x',
+		          show_label : false,
+		          show_cart_btn: false,
+		          show_wishlist : false,
+		          show_compare_btn: false,
+		          show_qs_btn: false,
+		          show_desc: false
+		         -%}
+					{%- endfor -%}
+				</div>
+				{%- if suggest_collection.products.size > settings.search_suggest_collection_limit -%}
+				<div class="w100 text-center big-gutter-top">
+					<a href="{{ suggest_collection.url }}" class="button button--style1 button--rad" title="{{ 'collections.general.view_all' | t | escape }}"><span class="ver-sub">{{ 'collections.general.view_all' | t }}</span></a>
+				</div>
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+		<ul class="nav nav-tabs flex flex-align-hoz use-touch-mobile no-gutter search-full__tab-list hide text-uppercase">
+	    <li class="nav-tab-item active db">
+	      <a class="data switch db search-full__tab-title" data-toggle="tab" href="#tab_search_product" title="{{ settings.search_suggest_product_title | escape }}" data-type="product">
+	        <span>{{ settings.search_suggest_product_title }}</span>
+	      </a>
+	    </li>
+	    <li class="nav-tab-item db">
+	      <a class="data switch db search-full__tab-title" data-toggle="tab" href="#tab_search_article" title="{{ settings.search_suggest_article_title | escape }}" data-type="article">
+	        <span>{{ settings.search_suggest_article_title }}</span>
+	      </a>
+	    </li>
+	    <li class="nav-tab-item db">
+	      <a class="data switch db search-full__tab-title" data-toggle="tab" href="#tab_search_page" title="{{ settings.search_suggest_page_title | escape }}" data-type="page">
+	        <span>{{ settings.search_suggest_page_title }}</span>
+	      </a>
+	    </li>
+	  </ul>
+		<div class="search-full__content big-gutter-top hide">
+			<div class="nav-tab-content tab-content">
+				<div class="tab-pane fade in search-full__content__tab search-full__content__product active" id="tab_search_product">
+					<div class="search-full__result"></div>
+					<div class="text-center big-gutter-top search-full__content__loading"><i class="loading-ajax"></i></div>
+				</div>
+				<div class="tab-pane fade in search-full__content__tab search-full__content__article" id="tab_search_article">
+					<div class="search-full__result"></div>
+					<div class="text-center big-gutter-top search-full__content__loading"><i class="loading-ajax"></i></div>
+				</div>
+				<div class="tab-pane fade in search-full__content__tab search-full__content__page" id="tab_search_page">
+					<div class="search-full__result"></div>
+					<div class="text-center big-gutter-top search-full__content__loading"><i class="loading-ajax"></i></div>
+				</div>
+			</div>
+		</div>
+		<a href="#" class="search-full__close search-full__close-js" title="{{ 'general.search.close' | t | escape }}">
+			{%- render 'icon-close' -%}
+		</a>
+	</div>
+</div>

@@ -1,0 +1,5 @@
+{%- if show_qs_btn and settings.enable_quickview -%}
+<a href="{{ product_url }}" class="button--qv button pull-left pg__sync-url flex flex-align-ver flex-align-hoz{% if btn_style_classes %} {{ btn_style_classes }}{% endif %}" {% if showTooltip %} data-toggle="tooltip" data-original-title="{{ 'collections.product_item.quick_shop' | t | escape }}"{% if tooltip_pos != blank %} data-placement="{{ tooltip_pos }}"{% else %} data-placement="top"{% endif %}{% endif %} title="{{ 'collections.product_item.quick_shop' | t | escape }}">
+	{%- render 'icon-qs' -%}
+</a>
+{%- endif -%}

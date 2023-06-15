@@ -1,0 +1,25 @@
+{%- capture filter_item_content -%}
+{%- assign compare_option_filter = block.settings.auto_filter_option_name | append: '%5f' | downcase -%}
+{%- assign has_current = false -%}
+{%- for filter_item in filter_options_data_array -%}
+	{%- if filter_item contains compare_option_filter -%}
+		{%- assign filter_item_parts = filter_item | split: '%5f' -%}
+    {%- assign filter_item_name_with_value = filter_item_parts[0] | append: '%5f' | append: filter_item_parts[1] -%}
+    <li class="w100 cf__item__link">
+{%- assign is_current = false -%}
+        {%- if filter_item_name_with_values_array contains filter_item_name_with_value -%}
+        	{%- assign is_current = true -%}
+            {%- assign has_current = true -%}
+        {%- endif -%}
+    	<a href="#" data-value="{{ filter_item_parts[1] | escape }}" class="cf__link cf__link--auto cf__link--option cf__link--color{% if is_current %} current{% endif %} flex flex-align-ver flex-align-space-between">
+    		<div class="cf__link-group">
+	  			<span class="w100 color-load cf__link__box{% if section.settings.checkboxes_format == 'circle' %} cf__link__box-circle{% endif %}" data-color-tag="{{ filter_item_parts[1] | escape | handleize }}"></span>
+					<span class="cf__link--title">{{ filter_item_parts[1] | replace: '-',' ' }}</span>
+				</div>
+				<span class="cf__link--count">{{ filter_item_parts[2] }}</span>
+    	</a>
+    </li>
+	{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- render 'collection-filter-item-display' with block: block, filter_item_content: filter_item_content, is_auto: true, force_no_first: force_no_first, is_first: is_first, use_scroll : true, has_current: has_current -%}

@@ -1,0 +1,22 @@
+{%- capture img_alt -%}{%- include 'alt-img-shortcode-ign', str: media.alt -%}{%- endcapture -%}
+<div class="pg__thumb{% if featured_media and featured_media == media %} active{% endif %}{% if use_slider and index > ov_slider %} ov-slider-tb ov-slider-mb{% endif %}">
+  <a href="{{ media.src | img_url: 'master' }}" class="pg__thumb__link stick-item img-container{% unless media.media_type == 'external_video' %} loading{% endunless %} pg__image" title="{{ img_alt | escape }}" data-image-id="{{ media.id }}" data-width="{{ media.width }}" data-height="{{ media.height }}"{% if settings.thumbnail_ratio == 'auto' %} style="padding-top:{{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100}}%;"{% endif %}>
+        {%- assign img_url = media.preview_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        <img class="img-responsive lazyload img-abs w100{% if settings.thumbnail_ratio == 'auto' %} pg__img--auto-ratio{% endif %}{% if use_slider %} ignore-effect op1{% endif %}{% if media.alt contains '{{video' or media.alt contains '{{youtube' or media.alt contains '{{vimeo' or media.media_type == 'external_video'  %} pg__image-blur{% endif %} pg__img-fit"
+                data-aspectratio="{{ media.aspect_ratio }}"
+            data-src="{{ img_url }}"
+        data-sizes="auto" alt="{{ img_alt | escape }}"{% include 'img-one-pixel' %} data-expand="-10">
+        {%- case media.media_type -%}
+          {%- when 'external_video' -%}
+            {%- render 'icon-play-video' with add_class: 'pg__thumb__link-video' -%}
+          {%- when 'video' -%}
+            {%- render 'icon-play-video' with add_class: 'pg__thumb__link-video' -%}
+          {%- when 'model' -%}
+            {%- render 'icon-3d-badge-full-color' with add_class: 'pg__thumb__link-video' -%}  
+          {%- else -%}
+            {%- if media.alt contains '{{video' or media.alt contains '{{youtube' or media.alt contains '{{vimeo' -%}
+                {%- render 'icon-play-video' with add_class: 'pg__thumb__link-video' -%}
+            {%- endif -%}  
+        {%- endcase -%}
+    </a>
+</div>

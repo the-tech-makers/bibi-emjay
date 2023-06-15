@@ -1,0 +1,42 @@
+{%- assign item_size = section.settings.item_size_article -%}
+
+{%- if item_size == 'small' -%}
+  {%- assign column_count = 5 -%}
+{%- elsif item_size == 'medium' -%}
+  {%- assign column_count = 4 -%}
+{%- elsif item_size == 'large' -%}
+  {%- assign column_count = 3 -%}
+{%- else -%}
+  {%- assign column_count = 2 -%}  
+{%- endif -%}
+{%- assign lazy_index = 999 -%}
+{%- if section.settings.use_lazyload and template.suffix == blank -%}
+  {%- assign lazy_index = column_count | times: 3 -%}
+{%- endif -%}
+<div class="collection__toolbar ct text-center w100 big-gutter-bottom" style="display: inline-block;">
+  <div class="ct__mode">
+    <ul class="list--inline flex flex-align-hoz">
+      <li class="hidden-sm hidden-md hidden-lg ct__mode__grid-mobile{% if item_size == 'very-large' or item_size == 'large' %} active{% endif %}" style="margin-left: 20px;"><a href="#" data-mode="grid--{% if item_size == 'list' %}large{% else %}{{ item_size }}{% endif %}" class="ct__mode__link" title="{{ 'collections.view_mode.grid' | t | escape }}">{%- render 'collection-mode-large-icon' -%}</a></li>
+      <li class="hidden-xs ct__mode__grid-desktop{% if item_size == 'large' %} active{% endif %}" style="margin-right: 7px;"><a href="#" data-mode="grid--large" class="ct__mode__link" title="{{ 'collections.view_mode.grid_large' | t | escape }}">{%- render 'collection-mode-large-icon' -%}</a></li>
+      <li class="hidden-xs ct__mode__grid-desktop{% if item_size == 'very-large' %} active{% endif %}" style="margin-right: 7px;"><a href="#" data-mode="grid--very-large" class="ct__mode__link" title="{{ 'collections.view_mode.grid_very_large' | t | escape }}">{%- render 'collection-mode-very-large-icon' -%}</a></li>
+      <li class="ct__mode__grid-list{% if item_size == 'list' %} active{% endif %}" style="margin-right: 7px;"><a href="#" data-mode="grid--list" class="ct__mode__link" title="{{ 'collections.view_mode.grid_list' | t | escape }}">{%- render 'collection-mode-list-icon' -%}</a></li>
+    </ul>
+  </div>
+</div>
+<div class="collection__products">
+{% paginate search.results by section.settings.limit %}
+<div class="grid grid--{{ item_size }} products grid--products">
+  {% for item in search.results %}
+    {%- render 'article-grid-item' with 
+    article: item,
+    layout: item_size,
+    blog_show_author: section.settings.blog_show_author,
+    blog_show_date: section.settings.blog_show_date,
+    multi_mode: true,
+    add_classes: 'transition',
+    highlight_text: search.terms -%}
+  {% endfor %}
+</div>
+{%- render 'search-result-pagination' with paginate: paginate -%}
+{% endpaginate %}
+</div>

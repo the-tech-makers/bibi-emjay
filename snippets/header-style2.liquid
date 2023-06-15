@@ -1,0 +1,99 @@
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}{% if settings.use_sticky %} hide-in-sticky{% endif %}">
+	<div class="row">
+		<div class="col-xs-12 flex flex-align-space-between flex-align-ver">
+			{%- if settings.header_style2_social_enable -%}
+			<div class="header__links">
+				{%- render 'header-social-links' -%}
+			</div>
+			{%- endif -%}
+			{%- if settings.header_text != blank -%}
+			<div class="header__link-text h100">{{ settings.header_text | raw }}</div>
+			{%- endif -%}
+			<div class="flex flex-align-ver header__links">
+				{%- render 'currency-switcher', addition_classes: 'header__link--top', data_group: 'header__links' -%}
+				{%- if settings.enable_compare -%}
+					<a href="javascript:void(0);" class="header__link header__link--compare header__link--top dib" title="{{ 'general.accessibility.your_compare' | t | escape }}">
+						{{ 'general.accessibility.your_compare' | t }}
+						(<span class="compare-number"></span>)
+					</a>
+				{%- endif -%}
+				{%- if settings.enable_wishlist -%}
+					<a href="javascript:void(0);" class="header__link header__link--top header__link--wishlist" title="{{ 'general.accessibility.your_wishlist' | t | escape }}">
+						{{ 'general.accessibility.your_wishlist' | t | escape }}
+						(<span class="wishlist-number"></span>)
+					</a>
+				{%- endif -%}
+			</div>
+		</div>
+	</div>
+</div>
+<hr{% if settings.use_sticky %} class="hide-in-sticky"{% endif %} style="margin:0;">
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}{% if settings.use_sticky %} hide-in-sticky{% endif %} gutter-top gutter-ele-small-bottom">
+	<div class="row">
+		<div class="flex flex-align-space-between flex-align-ver">
+			<div class="col-xs-5">
+				<ul class="list--inline header__categories">
+					{%- if settings.header_style2_categories -%}
+						{%- assign header_categories = linklists[settings.header_style2_categories] -%}
+						{%- for l in header_categories.links limit: 3 -%}
+						<li>
+							<a class="header__link--middle header__category-link{% if forloop.last %} no-border{% endif %}" href="{{ l.url }}" title="{{ l.title | escape }}">{{ l.title }}</a>
+						</li>
+						{%- endfor -%}
+					{%- endif -%}
+				</ul>
+			</div>
+			<div class="col-xs-2">
+				{% render 'header__logo' %}
+			</div>
+			<div class="col-xs-5">
+				<div class="flex flex-align-ver header__link-icons">
+					{%- render 'language-picker', data_group: 'header__links', show_language_icon: true, hide_language_code: false, wrap_class: 'flex flex-align-ver', addition_classes: 'header__link--icon header__link--middle flex flex-align-ver' -%}
+					{%- if shop.customer_accounts_enabled -%}
+						<div class="bt-dropdown h100 flex flex-align-ver{% if customer %} por{% endif %}" data-group="header__links">
+							{%- if customer -%}
+								<a class="bt-dropdown__trigger header__link--icon header__link--icon header__link--middle flex flex-align-ver" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_url }}">
+									{%- render 'icon-account' -%}
+									<span class="hidden-md">{{ 'customer.account.title' | t }}</span>
+								</a>	
+								<div class="bt-dropdown__content bt-dropdown__content--gutter bt-dropdown__content--auto-center" style="white-space:nowrap;min-width:auto;">
+									<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom header__link--middle">
+										{%- unless enable_rtl -%}
+											{% render 'icon-account' %}&nbsp;<span>{{ 'customer.account.title' | t }}</span>
+										{%- else -%}
+											<span>{{ 'customer.account.title' | t }}</span>&nbsp;{% render 'icon-account' %}
+										{%- endunless -%}
+									</a>
+									<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="db w100 gutter-ele-top gutter-ele-bottom header__link--middle">
+										{%- unless enable_rtl -%}
+											{%- render 'icon-sign-out' -%}&nbsp;<span>{{ 'layout.customer.log_out' | t }}</span>
+										{%- else -%}
+											<span>{{ 'layout.customer.log_out' | t }}</span>&nbsp;{%- render 'icon-sign-out' -%}
+										{%- endunless -%}
+									</a>
+								</div>
+							{%- else -%}
+								<a class="bt-dropdown__trigger header__link--icon header__link--icon header__link--middle flex flex-align-ver" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_login_url }}">
+									{%- render 'icon-sign-in' -%}
+									<span class="hidden-md">{{ 'customer.login.title' | t }}</span>
+								</a>
+								<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+									{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+								</div>
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+					{%- render 'header-cart' with cart_dropdown_direction: 'bt-dropdown__content--right', addition_classes: 'header__link--icon header__link--middle flex flex-align-ver', show_cart_text: true -%}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}">
+	<div class="row header__wrap flex flex-align-ver{% if settings.use_sticky %} use-sticky--desktop{% endif %}">
+		<div class="col-xs-9 position-static{% if enable_rtl %} f-right{% endif %} flex flex-align-ver" style="align-self:normal;">{% section 'navigation' %}</div>
+		<div class="col-xs-3">
+			{%- render 'search-form' -%}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,187 @@
+{%- layout none -%}
+{%- liquid
+	capture terms_org
+    render 'read-url-param' with param_name: 'q'
+  endcapture
+  assign terms_org = terms_org | strip
+  assign terms = terms_org | url_decode | split: ','
+-%}
+{%- comment -%}
+The params list
+0. collection_handle
+1. use_slider : false
+2. lazy_index : 999
+3. column_count : 4
+4. main_thumbnail : "product_image"
+5. image_size : "250x"
+6. truncate_count : 5
+7. enable_product_options : true
+8. show_review_stars : true
+9. enable_small_images : false
+10. show_media_btn : true
+11. small_image : "large"
+12. show_label : true
+13. show_cart_btn : true
+14. show_wishlist : true
+15. show_compare_btn : true
+16. show_qs_btn : true
+17. small_image_slider : false
+18. limit : 16
+19. show_more_btn : false
+20. show_desc : false
+21. show_countdown_timer : true
+22. show_vendor : false
+{%- endcomment -%}
+{%- comment -%} For debug {%- endcomment -%}
+{% comment %}use_slider {{ terms[1] }}<br/>
+lazy_index {{ terms[2] }}<br/>
+column_count {{ terms[3] }}<br/>
+main_thumbnail {{ terms[4] }}<br/>
+image_size {{ terms[5] }}<br/>
+truncate_count {{ terms[6] }}<br/>
+enable_product_options {{ terms[7] }}<br/>
+show_review_stars {{ terms[8] }}<br/>
+enable_small_images {{ terms[9] }}<br/>
+show_media_btn {{ terms[10] }}<br/>
+small_image {{ terms[11] }}<br/>
+show_label {{ terms[12] }}<br/>
+show_cart_btn {{ terms[13] }}<br/>
+show_wishlist {{ terms[14] }}<br/>
+show_compare_btn {{ terms[15] }}<br/>
+show_qs_btn {{ terms[16] }}<br/>
+small_image_slider {{ terms[17] }}<br/>
+limit {{ terms[18] }}<br/>
+show_more_btn {{ terms[19] }}<br/>
+show_desc {{ terms[20] }}<br/>
+show_countdown_timer {{ terms[21] }}<br/>{% endcomment %}
+{%- assign collection = collections[terms[0]] -%}
+{%- if collection != blank -%}
+	{%- include 'convert-string-to-boolean' with val: terms[1] -%}
+	{%- assign use_slider = val -%}
+	{%- assign lazy_index = terms[2] | default: 999 | divided_by : 1 -%}
+	{%- assign column_count = terms[3] | default: 4 | divided_by : 1 -%}
+	{%- assign main_thumbnail = terms[4] | default: "product_image" -%}
+	{%- assign image_size = terms[5] | default: "250x" -%}
+	{%- assign truncate_count = terms[6] | default: 5 | divided_by : 1 -%}
+	{%- include 'convert-string-to-boolean' with val: terms[7] -%}
+	{%- assign enable_product_options = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[8] -%}
+	{%- assign show_review_stars = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[9] -%}
+	{%- assign enable_small_images = false -%}
+	{%- comment -%}{%- include 'convert-string-to-boolean' with val: terms[10] -%}
+	{%- assign show_media_btn = val -%}{%- endcomment -%}
+	{%- assign small_image = "1x" -%}
+	{%- include 'convert-string-to-boolean' with val: terms[12] -%}
+	{%- assign show_label = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[13] -%}
+	{%- assign show_cart_btn = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[14] -%}
+	{%- assign show_wishlist_btn = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[15] -%}
+	{%- assign show_compare_btn = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[16] -%}
+	{%- assign show_qs_btn = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[17] -%}
+	{%- assign small_image_slider = val | default: false -%}
+	{%- assign limit = terms[18] | default: 16 | divided_by : 1 -%}
+	{%- include 'convert-string-to-boolean' with val: terms[19] -%}
+	{%- assign show_more_btn = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[20] -%}
+	{%- assign show_desc = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[21] -%}
+	{%- assign show_countdown_timer = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[22] -%}
+	{%- assign show_vendor = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[23] -%}
+	{%- assign use_infite_scroll = val -%}
+	{%- include 'convert-string-to-boolean' with val: terms[24] -%}
+	{%- assign list_type = val -%}
+	{%- paginate collection.products by limit -%}
+	<div class="response">
+		<div class="products">
+			{%- unless list_type -%}
+				{%- for product in collection.products limit: limit -%}
+					{%- render 'product-grid-item' with
+						product: product,  
+			      use_slider: use_slider, 
+			      index: forloop.index, 
+			      lazy_index: lazy_index,
+			      column_count: column_count, 
+			      main_thumbnail: main_thumbnail, 
+			      image_size: image_size, 
+			      truncate_count: truncate_count,
+			      enable_product_options: enable_product_options, 
+			      show_review_stars: show_review_stars,
+			      enable_small_images: enable_small_images,
+			      small_image: small_image,
+			      show_label : show_label,
+			      show_cart_btn: show_cart_btn,
+			      show_wishlist_btn: show_wishlist_btn,
+			      show_compare_btn: show_compare_btn,
+			      show_qs_btn: show_qs_btn,
+			      small_image_slider: small_image_slider,
+			      show_desc: show_desc,
+			      show_countdown_timer: show_countdown_timer,
+			      show_vendor: show_vendor,
+			      withinCollection: collection -%}
+				{%- endfor -%}
+			{%- else -%}
+				{%- for product in collection.products limit: limit -%}
+					{%- render 'product-list-item' with
+	          product: product, 
+	          use_slider: true, 
+	          index: forloop.index, 
+	          lazy_index: lazy_index,
+	          column_count: column_count, 
+	          main_thumbnail: main_thumbnail, 
+	          truncate_count: section.settings.product_name_size,
+	          enable_product_options: section.settings.enable_product_options, 
+	          show_review_stars: section.settings.show_review_stars,
+	          enable_small_images: false,
+	          show_wishlist_btn: section.settings.show_wishlist_btn,
+	          small_image: '1x',
+	          show_label : section.settings.show_label,
+	          show_cart_btn: section.settings.show_cart_btn,
+	          show_compare_btn: section.settings.show_compare_btn,
+	          show_qs_btn: section.settings.show_qs_btn,
+	          small_image_slider: false,
+	          show_countdown_timer: section.settings.show_countdown_timer,
+	          show_vendor: section.settings.show_vendor,
+	          withinCollection: collection
+	        -%}  
+				{%- endfor -%}		
+			{%- endunless -%}
+		</div>
+		{%- if paginate.next.is_link -%}
+			{%- assign next_url = paginate.next.url | append: '&s=' | append: terms_org -%}
+			{%- if show_more_btn -%}
+				{%- include 'product-tabs-more-btn' with href: next_url -%}
+			{%- elsif use_infite_scroll -%}
+				<a class="infinite-scroll infinite-scroll--{{ collection.id }} loading-not-full" href="{{ next_url }}">
+					<i class="loading-ajax"></i>
+				</a>	
+			{%- endif -%}
+		{%- endif -%}
+	</div>
+	{%- endpaginate -%}
+	{% comment %}use_slider {{ use_slider }}[1]<br/>
+	item_size {{ item_size }}[2]<br/>
+	lazy_index {{ lazy_index }}[3]<br/>
+	column_count {{ column_count }}[4]<br/>
+	main_thumbnail {{ main_thumbnail }}[5]<br/>
+	image_size {{ image_size }}[6]<br/>
+	truncate_count {{ truncate_count }}[7]<br/>
+	enable_product_options {{ enable_product_options }}[8]<br/>
+	show_review_stars {{ show_review_stars }}[9]<br/>
+	enable_small_images {{ enable_small_images }}[10]<br/>
+	show_media_btn {{ show_media_btn }}[11]<br/>
+	small_image {{ small_image }}[12]<br/>
+	show_label {{ show_label }}[13]<br/>
+	show_cart_btn {{ show_cart_btn }}[14]<br/>
+	show_wishlist {{ show_wishlist }}[15]<br/>
+	show_compare_btn {{ show_compare_btn }}[16]<br/>
+	show_qs_btn {{ show_qs_btn }}[17]<br/>
+	{% if small_image_slider == true %}true{% else %}false{% endif %}[18]<br/>
+	{{ limit }}[19]<br/>{% endcomment %}
+{%- endif -%}

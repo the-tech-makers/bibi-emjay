@@ -1,0 +1,91 @@
+{%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+  {%- assign featured_image = product.featured_image -%}
+{%- else -%}
+  {%- assign featured_image = product.first_available_variant.featured_image -%}
+{%- endif -%}
+{%- if column_count > 2 -%}
+  {%- assign column_count_mobile = 2 -%}
+{%- else -%}
+  {%- assign column_count_mobile = 1 -%}  
+{%- endif -%}
+{%- if withinCollection -%}
+  {%- assign product_url = product.url | within: withinCollection -%}
+{%- else -%}
+  {%- assign product_url = product.url -%}
+{%- endif -%}
+<div class="{% unless no_grid_item_class %}grid__item {% endunless %}effect-hover item{% if use_slider %}{% if index > column_count_mobile %} ov-slider-mb{% endif %}{% if index > column_count %} ov-slider-tb{% endif %}{% endif %} pg{% if additional_classes %} {{ additional_classes }}{% endif %} por" data-product-handle="{{ product.handle }}"{% if additional_data %} {{ additional_data }}{% endif %}>
+  <div class="item__top por">
+    <a href="{{ product_url }}" class="item__image pg__image{% if product.images.size > 1 %} item__image--alt-img{% endif %} pg__sync-url img-container loading" title="{{ product.title | escape }}"{% if settings.thumbnail_ratio == 'auto' %} style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;"{% endif %}>
+      {%- unless is_lcp -%}
+        {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        <img data-aspectratio="{{ featured_image.aspect_ratio }}"
+          data-src="{{ img_url }}"
+          data-sizes="auto" class="w100 pg__main-image img-responsive center-block img-abs center-abs lazyload{% unless no_effect %} zoom-fade{% endunless %} pg__img-fit"{% render 'img-one-pixel' %} alt="{{ featured_image.alt | escape }}" data-image-size="1x1"/>
+      {%- else -%}
+        <img src="{{ featured_image | img_url: '180x' }}" srcset="{% render 'img-srcset' with image: featured_image %}" class="w100 pg__main-image img-responsive center-block img-abs center-abs pg__img-fit" alt="{{ featured_image.alt | escape }}"/>      
+      {%- endunless -%}    
+      {%- if product.images.size > 1 -%}
+        {%- assign image = product.images[1] -%}
+        {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        <img data-aspectratio="{{ image.aspect_ratio }}"
+          data-src="{{ img_url }}"
+          data-sizes="auto" class="pg__main-alt-image w100 ignore-effect img-responsive center-block img-abs center-abs lazyload pg__img-fit"{% render 'img-one-pixel' %} alt="{{ image.alt | escape }}" data-image-size="1x1" data-expand="-50"/>
+      {%- endif -%}    
+    </a>
+    {%- render 'product-countdown' with product as product, show_countdown_timer: show_countdown_timer -%}
+    {%- render 'product-labels' with product as product, show_label: show_label -%}
+    <div class="item__actions effect-hover__content">
+      {%- render 'product-qs-btn' with product_url: product_url, show_qs_btn: show_qs_btn, showTooltip: true, btn_style_classes: 'button--style1-reverse button--circle', tooltip_pos: 'left' -%}
+      {%- render 'product-wishlist' with product as product, showTooltip: true, tooltip_pos: 'left', show_wishlist_btn: show_wishlist_btn, hide_wishlist_text: true, btn_style_classes: 'button--style1-reverse button--circle' -%}
+      {%- render 'product-compare-btn' with product as product, showTooltip: true, show_compare_btn: show_compare_btn, hide_compare_text: true, btn_style_classes: 'button--style1-reverse button--circle', tooltip_pos: 'left' -%}
+      {%- if remove_wishlist_btn -%}
+        <a data-handle="{{ product.handle }}" href="#" class="button button--style1-reverse button--circle button-wl--remove button--item-remove flex flex-align-ver flex-align-hoz" title="{{ 'products.product.remove' | t | escape }}" data-toggle="tooltip">{%- render 'icon-trash' -%}</a>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="pg__bottom w100{% if show_desc %} item__bottom{% endif %} por">
+    {%- if show_vendor -%}
+      {%- render 'product-vendor' with product as product -%}
+    {%- endif -%}
+    <a class="item__name pg__sync-url pg__name gutter-ele-bottom" href="{{ product_url }}" title="{{ product.title | escape }}">
+      {%- unless highlight_text -%}
+        {%- if truncate_count > 0 -%}
+          {{ product.title | truncatewords: truncate_count }}
+        {%- else -%}
+          {{ product.title }}
+        {%- endif -%} 
+      {%- else -%}
+        {%- if truncate_count > 0 -%}
+          {{ product.title | truncatewords: truncate_count | highlight: highlight_text }}
+        {%- else -%}
+          {{ product.title | highlight: highlight_text }}
+        {%- endif -%}
+      {%- endunless -%} 
+    </a>
+    {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}
+    <div class="flex flex-align-space-between w100">
+      {%- render 'product-price-varies' with product as product -%}  
+      {%- if show_review_stars -%}
+        {%- render 'product-review' with product as product -%}
+      {%- endif -%}
+    </div>
+      
+    {%- if show_desc -%}
+    <div class="item__description hidden gutter-ele-top w100">
+      {%- unless highlight_text -%}
+        {{ product.description | strip_html | truncatewords: 30 }}
+      {%- else -%}
+        {{ product.description | strip_html | truncatewords: 30 | highlight: highlight_text }}
+      {%- endunless -%}
+    </div>
+    {%- endif -%}
+
+    {%- unless product.has_only_default_variant or enable_product_options == false -%}
+    <div class="pg__options gutter-ele-top w100">
+      {%- render 'product-group-variants' with product as product, enable_product_options: enable_product_options -%}
+    </div>
+    {%- endunless -%}
+
+    {%- render 'product-cart-btn' with product as product, show_options: enable_product_options, hide_text: false, count: true, show_cart_btn: show_cart_btn -%}
+  </div>
+</div>

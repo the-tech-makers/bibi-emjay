@@ -1,0 +1,15 @@
+{%- assign has_content = false -%}
+{%- if block.settings.logo != blank -%}
+{%- assign has_content = true -%}
+{%- assign footer_logo_size = block.settings.logo_size | default: 'master' -%}
+<p><img data-src="{{ block.settings.logo | img_url: footer_logo_size }}"{% render 'img-one-pixel' %} class="lazyload img-responsive footer__img-align-{{ block.id }} dib" alt="{{ block.settings.logo.alt | default: shop.name | escape }}" width="{{ block.settings.logo.width }}" height="{{ block.settings.logo.height }}"/></p>
+{%- endif -%}
+
+{%- if block.settings.enable_text and block.settings.text != blank -%}
+{%- assign has_content = true -%}
+<div class="col-xs-12 no-gutter" style="{% if block.settings.text_color %}color:{{ block.settings.text_color }};{% endif %}font-size:{{ block.settings.text_fs }}px;">
+	{{ block.settings.text | raw }}
+</div>
+{%- endif -%}
+
+{%- render 'footer-social-icons', has_content: has_content, enable_social: block.settings.enable_social -%}

@@ -1,0 +1,17 @@
+{%- unless page_url_str -%}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign page_url_str = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first -%}
+{%- endunless -%}
+{%- assign param_page = '' -%}
+{%- if page_url_str contains "?" -%}
+  {%- assign qry_parts = page_url_str | split:'?' | last | replace:'\/','/' | replace:'%20',' ' | replace:'\u0026','&' | split: '&' -%}
+  {%- for part in qry_parts -%}
+    {%- assign key_and_value = part | split:'=' -%}
+    {%- if key_and_value.size > 1 -%}
+      {% if key_and_value[0] == param_name %}
+        {%- assign param_page = key_and_value[1] -%}
+        {%- break -%}
+      {% endif%}
+    {%- endif -%}
+  {%- endfor -%}{{ param_page | downcase }}
+{%- endif -%}

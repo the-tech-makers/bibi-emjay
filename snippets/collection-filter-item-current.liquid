@@ -1,0 +1,39 @@
+{% if current_tags %}
+  <div class="cf__item w100 cf__item--first flex flex-align-space-between flex-align-ver">
+    <h5 class="cf__item__title cf__item__title--first fw-bold secondary-font">
+      {{ 'collections.general.active_filters' | t }}
+    </h5>
+    <a href="#" class="fw-bold expand-trigger open">
+      {%- render 'icon-collapse' with add_classes: 'cf__item__collapse' -%}
+    </a>
+    <div class="cf__item__content expand-content w100">
+      <ul class="list--inline cf__current-list">
+        {%- for cur_tag in current_tags -%}
+          <li class="cf__item-current">
+            {%- capture item_content -%}
+              <span class="cf__link--current__content">
+                {%- unless cur_tag contains '$' -%}
+                  {{ cur_tag }}
+                {%- else -%}
+                  {%- assign cur_t_str = cur_tag | strip -%}
+                  {%- if cur_t_str contains '-' -%}
+                    {%- assign cur_range = cur_t_str | split: '-' -%}
+                    {%- assign cur_price_min = cur_range[0] | strip | replace: '$','' | times: 100 -%}
+                    {%- assign cur_price_max = cur_range[1] | strip | replace: '$','' | times: 100 -%}
+                    {%- render 'price' with cur_price_min -%}<span class="cf__price__sep">-</span>{%- render 'price' with cur_price_max -%}
+                  {%- else -%}
+                    {%- assign cur_range = cur_t_str | replace: '$','' | split: ' ' -%}
+                    {%- assign cur_price_label = cur_range[0] | strip -%}
+                    {%- assign cur_price_max = cur_range[1] | strip | times: 100 -%}
+                    {{ cur_price_label }}&nbsp;{%- render 'price' with cur_price_max -%}  
+                  {%- endif -%}
+                {%- endunless -%}
+              </span>
+            {%- endcapture -%}
+            {{ item_content | link_to_remove_tag: cur_tag | replace: 'title=', 'class="cf__link--current cf__link por" title=' }}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}

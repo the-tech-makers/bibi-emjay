@@ -1,0 +1,6 @@
+{%- if item.settings.name != blank and item.settings.position_title == pos_title -%}
+{%- assign align_title = item.settings.align_title -%}
+<span class="nav__item__dropdown-title nav__item__dropdown-title--{{ item.settings.position_title }} text-{{ item.settings.align_title }} w100 db text-uppercase"{% if color %} style="color: {{ color  }};"{% endif %}>
+	{{ item.settings.name }}
+</span>
+{%- endif -%}

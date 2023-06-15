@@ -1,0 +1,60 @@
+{%- if template.suffix != 'quick_view' -%}
+{%- unless no_container -%}
+<div class="container{% include 'wide-css-class' %}">
+{%- endunless -%}  
+  <div class="row">
+{%- endif -%}
+<div class="col-xs-12 col-md-6 no-gutter-left-mb no-gutter-right-mb{% if settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %} f-right{% endif %}{% if template.suffix != 'quick_view' %} pos-sticky{% if settings.use_sticky %} pos-sticky--menu{% endif %}{% endif %}">
+  {%- include 'product-single-media' -%}
+</div>
+
+<div class="col-xs-12 col-md-6 gutter-ele-top-tbs">
+  {%- include 'product-single-vendor' -%}
+  {%- include 'product-single-name' -%}
+  {%- include 'product-single-sku' -%}
+  <div class="flex flex-align-ver flex-align-space-between">
+    {%- include 'product-single-sold' -%}
+    {%- include 'product-single-social-sharing' -%}
+  </div>
+  {%- capture review_single_html -%}
+    {%- include 'product-review-single' -%}
+  {%- endcapture -%}
+  {%- if review_single_html != blank or sizechart -%}
+  <div class="gutter-ele-small-top gutter-ele-bottom{% if review_single_html != blank and sizechart %} flex flex-align-space-between{% endif %}">
+    {{ review_single_html }}
+    {%- include 'product-single-size-chart' -%}
+  </div>
+  {%- endif -%}
+  {%- include 'product-single-price' -%}
+  {%- include 'product-single-short-desc' -%}
+  <div class="pg__main-options">
+    {%- unless product.has_only_default_variant -%}
+    {%- include 'product-single-variants' -%}
+    {%- endunless -%}
+    {%- include 'product-single-form', full_qty_box: false -%}
+  </div>
+  {%- render 'product-single-store-availability' with show_top_line: true -%}
+  <hr>
+  {%- include 'product-single-sub-info' -%}
+  {%- include 'product-single-countdown' -%}
+  {%- include 'product-single-hurry-up' -%}
+  {%- include 'product-single-payment-badge' -%}
+  {%- if template.suffix == 'quick_view' -%}
+    {%- unless section.settings.general_info contains '[description]' -%}
+      <div class="gutter-ele-top gutter-ele-bottom">{{ description }}</div>
+    {%- endunless -%}
+  {%- endif -%}
+  {%- include 'product-single-view-details' -%}
+  {%- if template.suffix != 'quick_view' -%}
+  <div class="gutter-top">
+    {%- include 'product-single-tabs-accordion' -%}
+  </div>
+  {%- endif -%}
+</div>
+
+{%- if template.suffix != 'quick_view' -%}
+</div>
+{%- unless no_container -%}
+</div>
+{%- endunless -%}
+{%- endif -%}

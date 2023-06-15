@@ -1,0 +1,86 @@
+{%- liquid 
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+  else
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+  endunless  
+-%}
+<div id="faq-{{ section.id }}" class="container{% if section.settings.full_width %}-fluid{% endif %} faq" data-section-id="{{ section.id }}" data-section-type="faq">
+	<div class="section__content">
+		<h1 class="page-title text-center gutter-ele-bottom-tbs">{{ page.title }}</h1>
+    <div class="page-content w100">
+    	{%- if page.content != blank -%}
+      <div class="rte">
+        {{ page.content }}
+      </div>
+      {%- endif -%}
+      {%- if section.blocks.size > 0 -%}
+      	{%- for block in section.blocks -%}
+      		<div class="panel-group" {{ block.shopify_attributes }}>
+					  <div class="panel{% if forloop.first %} panel-default{% endif %}">
+					    <div class="panel-heading">
+					      <h2 class="panel-title">
+					        <a data-toggle="collapse" href="#collapse{{ forloop.index }}" class="faq__trigger h3{% unless forloop.first %} collapsed{% endunless %}">{{ block.settings.title }}</a>
+					      </h2>
+					    </div>
+					    <div id="collapse{{ forloop.index }}" class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
+					      <div class="panel-body rte">{{ block.settings.content }}</div>
+					    </div>
+					  </div>
+					</div>
+      	{%- endfor -%}
+      {%- endif -%}
+    </div>
+	</div>
+</div>
+{% schema %}
+  {
+    "name": "FAQ",
+    "class": "section",
+    "max_blocks": 60,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/faq)"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden_xs",
+        "label": "Hide on mobile",
+        "default" : true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "faq_item",
+        "name": "Item",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "html",
+            "id": "content",
+            "label": "Content"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "FAQ",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}

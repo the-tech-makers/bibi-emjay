@@ -1,0 +1,15 @@
+{%- if video_type == 'youtube' -%}
+	<div class="video-box video-box--youtube">
+		<iframe width="100%" height="851" data-src="https://www.youtube.com/embed/{{ video_id }}" class="lazyload" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+{%- elsif video_type == 'vimeo' -%}
+	<iframe data-src="https://player.vimeo.com/video/{{ video_id }}" class="lazyload" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+{%- else -%}
+	<div data-video-type="mp4" class="pg__video-wrapper" data-video-style="muted">
+		<video controls playsinline loop muted data-image-count="20" data-video-type="mp4" data-video-style="muted" class="pg__video pg__main__link" style="width:100%;">
+			{%- for source in media.sources -%}
+      	<source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {%- endfor -%}
+		</video>
+	</div>		
+{%- endif -%}

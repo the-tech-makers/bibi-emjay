@@ -1,0 +1,12 @@
+{%- unless text contains '[price]' -%}
+	{{ text }}
+{%- else -%}
+	{%- if priceText != blank -%}
+		{%- assign price = priceText | times: 1000 -%}
+		{%- capture priceHtml -%}<span class="sps__price-{{ section.id }}-{{ block.id }}">{%- render 'price' with price -%}</span>{%- endcapture -%}
+		{{ text | replace: '[price]',priceHtml }}
+		{%- assign hasPriceText = true -%}	
+	{%- else -%}
+		{{ text | replace: '[price]','' }}	
+	{%- endif -%}
+{%- endunless -%}

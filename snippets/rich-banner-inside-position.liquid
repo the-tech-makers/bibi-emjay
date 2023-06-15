@@ -1,0 +1,49 @@
+{%- liquid
+assign style_item_inside = 'position: absolute;'
+unless block.settings.bkg_banner
+	assign style_item_inside = style_item_inside | append: 'padding:0;'
+endunless
+if block.settings.box_wrap
+	assign padding_delta = '0'
+else	
+	assign padding_delta = '15px'
+endif	
+if block.settings.custom_pos
+	unless enable_rtl and section.settings.revert_in_rtl
+		assign style_item_inside = style_item_inside | append: 'left:calc(' | append: block.settings.pos_left | append: '% + delta);top:calc(' | append: block.settings.pos_top | append: '% + delta);'	
+	else
+		assign style_item_inside = style_item_inside | append: 'right:calc(' | append: block.settings.pos_left | append: '% + delta);top:calc(' | append: block.settings.pos_top | append: '% + delta);'
+	endunless	
+else
+	unless enable_rtl and section.settings.revert_in_rtl
+		assign standard_pos = block.settings.standard_pos
+	else
+		assign standard_pos = block.settings.standard_pos | replace: 'left', 'holder' | replace: 'right', 'left' | replace: 'holder', 'right'	
+	endunless
+	case standard_pos
+	  when 'top-left'
+	    assign style_item_inside = style_item_inside | append: 'top:delta;left:delta;'
+	  when 'top-right'
+	  	assign style_item_inside = style_item_inside | append: 'top:delta;right:delta'
+	  when 'bottom-left'
+	  	assign style_item_inside = style_item_inside | append: 'bottom:delta;left:delta;'
+	  when 'bottom-right'
+	  	assign style_item_inside = style_item_inside | append: 'bottom:delta;right:delta;'
+	  else
+	  	assign style_item_inside = style_item_inside | append: 'display: flex;display:-webkit-flex;display: -ms-flex;flex-direction: column;justify-content: center;'
+	    case standard_pos
+	    	when 'top-center'
+	    		assign style_item_inside = style_item_inside | append: 'top:delta;left:0;right:0;margin: 0 auto;'
+	    	when 'center-left'
+	    		assign style_item_inside = style_item_inside | append: 'left:delta;top:0;bottom:0;margin:auto;'
+	    	when 'center-center'
+	    		assign style_item_inside = style_item_inside | append: 'top:0;bottom:0;left:0;right:0;margin:auto;'
+	    	when 'center-right'
+	    		assign style_item_inside = style_item_inside | append: 'top:0;bottom:0;right:delta;margin:auto;'
+	    	else
+	    		assign style_item_inside = style_item_inside | append: 'bottom:delta;left:0;right:0;margin: 0 auto;'				
+	    endcase
+	endcase
+endif
+assign style_item_inside = style_item_inside | replace: 'delta', padding_delta
+-%}

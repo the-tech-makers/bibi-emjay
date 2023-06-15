@@ -1,0 +1,32 @@
+{%- if filter_param_value != '' -%}
+	{%- assign filter_param_array = filter_param_value | split: ',' -%}
+  <div class="cf__current-inline w100 gutter-bottom{% if layout_name != 'no_sidebar' %} hidden-md hidden-lg{% endif %}">
+  	<ul class="list--inline cf__current-list">
+  		{%- for filter_item in filter_param_array -%}
+    		{%- if filter_item != '' -%}
+    			{%- assign filter_item_parts = filter_item | split: '=' -%}
+    				{%- assign filter_item_values = filter_item_parts[1] | split: '+' -%}
+						{%- for filter_item_value in filter_item_values -%}
+							<li class="cf__item-current">
+								<a href="#" data-value="{{ filter_item_value | escape }}" class="cf__link--current cf__link--current-inline-js por current" data-trigger="#cf-current-{{ filter_item_parts[0] | escape | handleize }}-{{ filter_item_value | escape | handleize }}">
+									<span class="cf__link--current__content">
+					    			{%- if filter_item_parts[0] == 'price' -%}
+					    				{%- assign price_parts = filter_item_value | split: '-' -%}
+					    				<span class="cf__price cf__price-from dib">{%- render 'price' with price: price_parts[0] -%}</span>
+					    				<span class="cf__price__sep">-</span>
+					    				<span class="cf__price cf__price-to dib">{%- render 'price' with price: price_parts[1] -%}</span>
+					    			{%- elsif filter_item_parts[0] == 'ratings' -%}
+					    				{%- assign count_rating_stars = filter_item_value | plus: 0 -%}
+					    				{%- render 'rating-stars' with count_rating_stars: count_rating_stars -%}
+					    			{%- else -%}
+					    				{{ filter_item_value | replace: '-', ' ' }}
+					    			{%- endif -%}
+					    		</span>
+			    			</a>
+							</li>
+						{%- endfor -%}
+    		{%- endif -%}
+  		{%- endfor -%}
+  	</ul>
+  </div>
+{%- endif -%}

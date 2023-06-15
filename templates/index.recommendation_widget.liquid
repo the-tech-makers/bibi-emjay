@@ -1,0 +1,9 @@
+{%- layout none -%}
+{%- liquid
+	capture terms
+    render 'read-url-param' with param_name: 'q'
+  endcapture
+  assign terms = terms | strip | url_decode
+-%}
+{%- include 'product-single-fre-bought-content' with fre_handles: terms -%}
+{{ fre_bought_content }}

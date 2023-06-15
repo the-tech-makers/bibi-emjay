@@ -1,0 +1,10 @@
+<div class="header-mobile__top row">
+	<div class="flex flex-align-ver flex-align-space-between header__links--flex w100 gutter-ele-top gutter-ele-bottom">
+		<a class="mobile-nav-bar bt-sidebar-btn header__link" href="#" title="menu-bar" data-target="#sidebar-mobile-nav" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">{% render 'icon-bar' with add_class: 'ver-sub' %}</a>
+		{%- render 'header__links--mobile' -%}
+	</div>
+	<hr style="border-color:{{ settings.color_general | color_modify: 'alpha', 0.1 }};margin-top:0;margin-bottom:10px;" class="hide-in-sticky">
+	<div class="w00 gutter-ele-bottom flex flex-align-hoz hide-in-sticky">
+		{%- render 'header-mobile-logo' -%}
+	</div>
+</div>

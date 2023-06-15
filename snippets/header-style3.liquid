@@ -1,0 +1,54 @@
+<div class="container{% if settings.header_wide_display %}-fluid{% endif %}">
+	<div class="row flex flex-align-ver gutter-top gutter-ele-bottom distance-top-ele{% if settings.use_sticky %} hide-in-sticky{% endif %}">
+		<div class="col-xs-2">
+			{% render 'header__logo' %}
+		</div>
+		<div class="col-xs-10">
+			<div class="header__links header__links--flex flex por{% if settings.use_sticky %} hide-in-sticky{% endif %}" style="justify-content:flex-end;">
+				{%- render 'currency-switcher', data_group: 'header__links', show_currency_icon: false, hide_currency_code: false, currency_work_with_gutter: false, add_wrap_classes: 'header__link-ele' -%}
+				{%- render 'language-picker', data_group: 'header__links', show_language_icon: false, hide_language_code: false, wrap_class: 'flex flex-align-ver header__link-ele', addition_classes: 'header__link' -%}
+				{%- if shop.customer_accounts_enabled -%}
+					{%- if customer -%}
+						<a class="header__link header__link-ele" title="{{ 'layout.customer.account' | t | escape }}" href="{{ routes.account_url }}">
+							{{ 'layout.customer.account' | t }}
+						</a>
+						<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}" class="header__link header__link-ele">
+							{{ 'layout.customer.log_out' | t }}
+						</a>
+					{%- else -%}
+					<div class="bt-dropdown h100 flex flex-align-ver header__link-ele" data-group="header__links">
+						<a class="bt-dropdown__trigger header__link" title="{{ 'customer.account.title' | t | escape }}" href="{{ routes.account_login_url }}">
+							{{ 'customer.login.sign_in' | t }}
+						</a>
+						<div class="bt-dropdown__content bt-dropdown__content--right bt-dropdown__content--right-fluid">
+							{%- render 'login-form-header', id: 'customer_login_header', suffix_id_field: 'Header', left_holder: left_holder, right_holder: right_holder -%}
+						</div>
+					</div>
+					{%- endif -%}	
+				{%- endif -%}
+				<a href="{{ routes.search_url }}" class="header__link header__link-ele flex flex-align-ver search-full-trigger" title="{{ 'general.search.placeholder' | t | escape }}">
+					{% render 'icon-search' %}
+				</a>
+				{%- if settings.enable_compare -%}
+					<a href="javascript:void(0);" class="header__link header__link-ele header__link--compare flex por" title="{{ 'collections.product_item.compare' | t | escape }}">
+						{%- render 'icon-compare' -%}
+						<span class="compare-number abs-number"></span>
+					</a>
+				{%- endif -%}
+				{%- if settings.enable_wishlist -%}
+					<a href="javascript:void(0);" class="por header__link header__link-ele header__link--wishlist flex" title="{{ 'collections.product_item.wishlist' | t | escape }}">
+						{%- render 'icon-wishlist' -%}
+						<span class="wishlist-number abs-number"></span>
+					</a>
+				{%- endif -%}
+				
+				{%- render 'header-cart', data_group: 'header__links', cart_dropdown_direction: 'bt-dropdown__content--right bt-dropdown__content--right-fluid', addition_classes: 'header__link flex', header_custom_class: 'header__link-ele' -%}
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 header__wrap{% if settings.use_sticky %} use-sticky--desktop{% endif %}">
+			{% section 'navigation' %}
+		</div>
+	</div>
+</div>

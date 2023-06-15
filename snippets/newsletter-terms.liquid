@@ -1,0 +1,8 @@
+{%- if settings.news_terms_enable -%}
+{%- assign term_url = settings.news_terms_url | default: '#' -%}
+<div class="checkbox-one-line gutter-top">
+  <input type="checkbox" name="news_term_agree" id="{{ inputId }}" value="1" class="checkbox-one-line__input hide news-terms-input"/>
+  <label for="{{ inputId }}" class="checkbox-one-line__label por use-color-inline">{{ 'general.newsletter_form.terms_label_html' | t: term_url: term_url }}</label>
+</div>
+<div class="alert alert-danger news-terms-error" style="display:none;margin-top:15px;">{{ settings.news_terms_error_msg }}</div>
+{%- endif -%}

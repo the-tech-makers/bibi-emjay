@@ -1,0 +1,99 @@
+<div class="{% include 'rich-banner-item-size' %} banner-item banner-item--{{ block.id }}{% if block.settings.hide_on_mobile %} hidden-xs{% endif %}{% if block.settings.hide_on_desktop %} hidden-sm hidden-md hidden-lg{% endif %}{% if section.settings.enable_slider %}{{ slider_class }}{% if current_index_mobile > lazyload_index_mobile %} ov-slider-mb{% endif %}{% if current_index_tb > lazyload_index %} ov-slider-tb{% endif %}{% endif %}" {{ block.shopify_attributes }}>
+  {%- capture banner_html -%}
+    {%- assign collection = collections[block.settings.collection] -%}
+    {%- assign limit = block.settings.limit -%}
+    {%- assign product_item_size = block.settings.product_item_size -%}
+    {%- assign render_product_list = false -%}
+    {%- if collection == blank or template.suffix == 'ajax' or block.shopify_attributes != blank -%}
+      {%- assign render_product_list = true -%}
+    {%- endif -%}
+    {%- if product_item_size == 'small' -%}
+      {%- assign column_count = 5 -%}
+    {%- elsif product_item_size == 'medium' -%}
+      {%- assign column_count = 4 -%}
+    {%- elsif product_item_size == 'large' -%}
+      {%- assign column_count = 3 -%}
+    {%- else -%}
+      {%- assign column_count = 2 -%}  
+    {%- endif -%}
+    <div class="products grid grid--border grid--{{ product_item_size }}{% if collection != blank %} gutter-bottom gutter-ele-bottom-mb{% endif %}{% unless render_product_list %} load-ajax{% endunless %}" id="products-{{ section.id }}-{{ block.id }}"{% unless render_product_list %} {% render 'product-tabs-ajax-params', collection: collection, section: block, use_more_btn: false, limit: limit, use_slider: false, lazy_index: 0, column_count: column_count, main_thumbnail: block.settings.main_thumbnail, use_infite_scroll: false %}{% endunless %}>
+      {%- if block.settings.title != blank -%}
+        <div class="grid__item rb__products-heading">
+          <{{ block.settings.heading_tag }} class="rb__products-title__text rb__products-title__text--{{ block.id }} dib w100 secondary-font margin0">{{ block.settings.title }}</{{ block.settings.heading_tag }}>
+          {%- if block.settings.subtitle != blank -%}
+            <{{ block.settings.sub_heading_tag }} class="rb__products-subtitle rb__products-subtitle--{{ block.id }} section__sub-title w100 big-gutter-top margin0">{{ block.settings.subtitle }}</{{ block.settings.sub_heading_tag }}>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      {%- if collection != blank -%}
+        {%- if render_product_list -%}
+          {%- for product in collection.products limit: limit -%}
+            {%- include 'product-grid-item' with 
+              use_slider: false, 
+              index: forloop.index, 
+              lazy_index: 0,
+              column_count: column_count, 
+              main_thumbnail: block.settings.main_thumbnail, 
+              truncate_count: block.settings.product_name_size,
+              enable_product_options: block.settings.enable_product_options, 
+              show_review_stars: block.settings.show_review_stars,
+              enable_small_images: false,
+              show_wishlist_btn: block.settings.show_wishlist_btn,
+              small_image: '1x',
+              show_label : block.settings.show_label,
+              show_cart_btn: block.settings.show_cart_btn,
+              show_wishlist : false,
+              show_compare_btn: block.settings.show_compare_btn,
+              show_qs_btn: block.settings.show_qs_btn,
+              small_image_slider: false,
+              show_countdown_timer: block.settings.show_countdown_timer,
+              show_vendor: block.settings.show_vendor,
+              withinCollection: collection
+            -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for product in collection.products limit: limit -%}
+            {%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+              {%- assign featured_image = product.featured_image -%}
+            {%- else -%}
+              {%- assign featured_image = product.first_available_variant.featured_image -%}
+            {%- endif -%}
+            <div class="grid__item">
+              <div style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;" class="loading db w100"></div>
+              <div class="pg__bottom w100">
+                {%- if block.settings.product_name_size > 0 -%}
+                  {{ product.title | truncatewords: block.settings.product_name_size }}
+                {%- else -%}
+                  {{ product.title }}
+                {%- endif -%} 
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- else -%}
+        {% for i in (1..limit) %}
+          {%- include 'product-grid-item-placeholder' -%}
+        {% endfor %}
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+  {%- include 'rich-banner-display' -%}
+</div>
+{%- capture rb_product_list_css -%}
+.rb__products-title__text--{{ block.id }}{color:{{ block.settings.heading_color }};font-size:{{ block.settings.heading_fs }}px;}
+.rb__products-subtitle--{{ block.id }}{color:{{ block.settings.subheading_color }};font-size:{{ block.settings.subheading_fs }}px;}
+{%- endcapture -%}
+{%- assign banner_style_inline = banner_style_inline | append: rb_product_list_css -%}
+{%- if block.settings.heading_fs_tb != block.settings.heading_fs_tb.heading_fs or block.settings.subheading_fs != block.settings.heading_fs_tb.subheading_fs_tb -%}
+  {%- capture rb_product_list_css_dk -%}
+    {%- if block.settings.heading_fs_tb != block.settings.heading_fs_tb.heading_fs -%}
+      .rb__products-title__text--{{ block.id }}{font-size:{{ block.settings.heading_fs_tb }}px;}
+    {%- endif -%}
+    {%- if block.settings.subheading_fs_tb != block.settings.heading_fs_tb.subheading_fs -%}
+      .rb__products-subtitle--{{ block.id }}{font-size:{{ block.settings.subheading_fs_tb }}px;}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign banner_style_inline_desktop = banner_style_inline_desktop | append: rb_product_list_css_dk -%}
+{%- endif -%}
+
+

@@ -1,0 +1,29 @@
+{% form 'customer_login', id: id %}
+  {{ form.errors | default_errors }}
+  <div class="field field--float-label">
+    <label for="CustomerEmail{{ suffix_id_field }}">{{ 'customer.login.email' | t }}</label>
+    <input type="email" name="customer[email]" id="CustomerEmail{{ suffix_id_field }}" class="w100{% if form.errors contains 'email' %} input--error{% endif %}" autocomplete="email" autocorrect="off" autocapitalize="off">
+    <span class="field__focus"></span>
+	</div>
+  {% if form.password_needed %}
+  <div class="field field--float-label">
+    <label for="CustomerPassword{{ suffix_id_field }}">{{ 'customer.login.password' | t }}</label>
+    <input type="password" value="" name="customer[password]" id="CustomerPassword{{ suffix_id_field }}" class="w100{% if form.errors contains 'password' %} input--error{% endif %}" autocomplete="current-password">
+    <span class="field__focus"></span>
+  </div>
+  {% endif %}
+
+  <div class="distance-top-ele gutter-ele-top dib w100">
+  	<input type="submit" class="button button--style1 text-center w100" value="{{ 'customer.login.sign_in' | t | escape }}">
+
+    <p class="gutter-ele-top distance-top-ele text-left">
+      <a href="{{ routes.account_register_url }}" title="{{ 'layout.customer.create_account' | t | escape }}" class="fw-bold" style="font-size:13px;text-decoration: underline;">
+        {{ 'layout.customer.create_account' | t }}
+      </a>
+    </p>
+  	
+  	{%- if form.password_needed -%}
+  		<p class="text-left col-xs-12 no-gutter"><a href="{{ routes.account_login_url }}#recover" title="{{ 'customer.login.forgot_password' | t | escape }}" style="font-size: 13px;text-decoration: underline;font-weight:normal;">{{ 'customer.login.forgot_password' | t }}</a></p>
+    {%- endif -%}
+  </div>
+{% endform %}

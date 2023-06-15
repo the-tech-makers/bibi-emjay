@@ -1,0 +1,9 @@
+{%- for i in (1..count_rating_stars) -%}
+  {%- render 'icon-star-solid' -%}
+{%- endfor -%}
+{%- if count_rating_stars < 5 -%}
+  {%- assign count_rating_stars = count_rating_stars | plus: 1 -%}
+  {%- for i in (count_rating_stars..5) -%}
+    {%- render 'icon-star' -%}
+  {%- endfor -%}
+{%- endif -%}

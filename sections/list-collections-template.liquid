@@ -1,0 +1,283 @@
+<div data-section-id="{{ section.id }}" data-section-type="list-collection-template" id="list-collection-template">
+  <div class="container{% render 'wide-css-class' %}">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="page-content">
+          {% case section.settings.grid %}
+            {% when 2 %}
+              {%- assign grid_item_width = 'col-sm-6' -%}
+            {% when 3 %}
+              {%- assign grid_item_width = 'col-sm-4' -%}
+            {% when 4 %}
+              {%- assign grid_item_width = 'col-sm-3' -%}
+            {% when 5 %}
+              {%- assign grid_item_width = 'col-sm-20' -%}
+            {% when 6 %}
+              {%- assign grid_item_width = 'col-sm-2' -%}  
+          {% endcase %}
+
+          {%- assign custom_title_class = 'collection-grid-item__title--' | append: section.id -%}
+          {%- assign custom_count_class = 'collection-grid-item__products_count--' | append: section.id -%}
+          
+          {%- if section.settings.item_style == 'style1' -%}
+            {%- assign custom_reply_btn_class = 'collection-grid-item__btn--' | append: section.id -%}
+          {%- else -%}
+            {%- assign custom_wrapper_class = 'collection-grid-item__title-wrapper--' | append: section.id -%}
+          {%- endif -%}
+
+          <div class="row">
+            {% if section.settings.display_type == 'all' %}
+              {% case section.settings.sort %}
+                {% when 'products_high' or 'products_low' %}
+                  {%- assign collections = collections | sort: 'all_products_count' -%}
+                {% when 'date' or 'date_reversed' %}
+                  {%- assign collections = collections | sort: 'published_at' -%}
+              {% endcase %}
+
+              {% if collections.size > 1 %}
+                {%- assign grid_item_width_small = 'col-xs-6' -%}
+              {% else %}
+                {%- assign grid_item_width_small = 'col-xs-12' -%}
+              {% endif %}
+              {% if section.settings.sort == 'products_low' or section.settings.sort == 'date' or section.settings.sort == 'alphabetical' %}
+                {% for collection in collections %}
+                  <div class="grid__item {{ grid_item_width_small }} {{ grid_item_width }}">
+                    {%- if section.settings.item_style == 'style1' -%}
+                      {% render 'collection-grid-item', collection: collection, custom_title_class: custom_title_class, custom_count_class: custom_count_class, custom_reply_btn_class: custom_reply_btn_class, show_btn: true %}
+                    {%- else -%}
+                      {% render 'collection-grid-item-2' with collection as collection, custom_wrapper_class: custom_wrapper_class, custom_title_class: custom_title_class, custom_count_class: custom_count_class %}  
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              {% else %}
+                {% for collection in collections reversed %}
+                  <div class="grid__item {{ grid_item_width_small }} {{ grid_item_width }}">
+                    {%- if section.settings.item_style == 'style1' -%}
+                      {% render 'collection-grid-item', collection: collection, custom_title_class: custom_title_class, custom_count_class: custom_count_class, custom_reply_btn_class: custom_reply_btn_class, show_btn: true %}
+                    {%- else -%}
+                      {% render 'collection-grid-item-2' with collection as collection, custom_wrapper_class: custom_wrapper_class, custom_title_class: custom_title_class, custom_count_class: custom_count_class %}  
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              {% endif %}
+              {%- if collections == blank or collections.size == 0 -%}
+                {% render 'no-blocks' %}
+              {%- endif -%}
+            {% else %}
+              {%- if section.blocks.size > 0 -%}
+                {% if section.blocks.size > 1 %}
+                  {%- assign grid_item_width_small = 'col-xs-6' -%}
+                {% else %}
+                  {%- assign grid_item_width_small = 'col-xs-12' -%}
+                {% endif %}
+                {%- assign highlight_class = 'collection-grid-item__title__highlight-' | append: section.id -%}
+                {%- assign highlight_tag = '<span class="' | append: highlight_class | append: '">'-%}
+                {% for block in section.blocks %}
+                  <div class="grid__item {{ grid_item_width_small }} {{ grid_item_width }}">
+                    {%- assign collection = collections[block.settings.collection] -%}
+                    {%- assign custom_title = block.settings.custom_title | replace: '<hl>', highlight_tag | replace: '</hl>','</span>' -%}
+                    {%- if section.settings.item_style == 'style1' -%}
+                      {% render 'collection-grid-item', collection: collection, custom_image: block.settings.custom_image, custom_title: custom_title, custom_title_class: custom_title_class, custom_count_class: custom_count_class, custom_reply_btn_class: custom_reply_btn_class, show_btn: true %}
+                    {%- else -%}
+                      {% render 'collection-grid-item-2' with collection as collection, custom_image: block.settings.custom_image, custom_title: custom_title, custom_wrapper_class: custom_wrapper_class, custom_title_class: custom_title_class, custom_count_class: custom_count_class %}  
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              {%- else -%}
+                {% render 'no-blocks' %}  
+              {%- endif -%}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- style -%}.{{ custom_title_class }}{color:{{ section.settings.color_title }};font-size:{{ section.settings.fs_title }}px;}{%- if section.settings.display_type != 'all' and section.blocks.size > 0 -%}.{{ highlight_class }}{color:{{ section.settings.highlight_color }};font-weight:lighter;}{%- endif -%}.{{ custom_count_class }}{color:{{ section.settings.count_color }};font-size:{{ section.settings.fs_count }}px;}
+{%- if section.settings.item_style == 'style1' -%}
+@media(min-width:1200px){.{{ custom_reply_btn_class }}{color:{{ section.settings.reply_btn_color }};background:{{ section.settings.reply_btn_bkg }};{%- unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code -%}right{%- else -%}left{%- endunless -%}:10%;}.{{ custom_reply_btn_class }}:hover{color:{{ section.settings.reply_btn_bkg }};background:{{ section.settings.reply_btn_color }};} }
+{%- elsif section.settings.enable_bkg and section.settings.bkg_title != blank  -%}
+.{{ custom_wrapper_class }}{background:{{ section.settings.bkg_title | color_modify: 'alpha', 0.7 }};}
+{%- endif -%}
+{%- endstyle -%}
+{% schema %}
+  {
+    "name": "Collections list page",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections."
+      },
+      {
+        "type": "radio",
+        "id": "display_type",
+        "label": "Select collections to show",
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "selected",
+            "label": "Selected"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "sort",
+        "label": "Sort collections by:",
+        "info": "Sorting only applies when 'All' is selected",
+        "default": "alphabetical",
+        "options": [
+          {
+            "value": "products_high",
+            "label": "Product count, high to low"
+          },
+          {
+            "value": "products_low",
+            "label": "Product count, low to high"
+          },
+          {
+            "value": "alphabetical",
+            "label": "Alphabetically, A-Z"
+          },
+          {
+            "value": "alphabetical_reversed",
+            "label": "Alphabetically, Z-A"
+          },
+          {
+            "value": "date",
+            "label": "Date, old to new"
+          },
+          {
+            "value": "date_reversed",
+            "label": "Date, new to old"
+          }
+        ]
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Collections per row",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "radio",
+        "id": "item_style",
+        "label": "Collection item style",
+        "options": [
+          {
+            "value": "style1",
+            "label": "Style 1"
+          },
+          {
+            "value": "style2",
+            "label": "Style 2"
+          }
+        ],
+        "default": "style1"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_title",
+        "label": "Title",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight",
+        "default": "#e15679"
+      },
+      {
+        "type": "color",
+        "id": "count_color",
+        "label": "Number",
+        "default": "#a6a6a6"
+      },
+      {
+        "type": "color",
+        "id": "reply_btn_color",
+        "label": "Reply button",
+        "default": "#fff"
+      },
+       {
+        "type": "color",
+        "id": "reply_btn_bkg",
+        "label": "Reply button background",
+        "default": "#656565"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_bkg",
+        "label": "Enable title background",
+        "default": false,
+        "info": "Only work with collection item style 2."
+      },
+      {
+        "type": "color",
+        "id": "bkg_title",
+        "label": "Title background",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Font size"
+      },
+      {
+        "type": "range",
+        "id": "fs_title",
+        "label": "Collection title",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "fs_count",
+        "label": "Collection count",
+        "min": 5,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          },
+          {
+            "type": "image_picker",
+            "id": "custom_image",
+            "label": "Custom image",
+            "info": "Leave empty to show the collection image or first product image in the collection."
+          },
+          {
+            "type": "text",
+            "id": "custom_title",
+            "label": "Custom title",
+            "info": "Leave empty to show the collection title. Use the \<hl\> tag to wrap your highlight text."
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

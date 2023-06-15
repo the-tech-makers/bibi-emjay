@@ -1,0 +1,112 @@
+{%- assign fre_show = 0 -%}
+{%- if fre_handles != blank and fre_handles != '' -%}
+{%- capture fre_bought_content -%}
+	{%- assign fre_show = 0 -%}
+	{%- assign fre_price = 0 -%}
+	{%- assign fre_compare_price = 0 -%}
+	{%- assign fre_cart_ids = '' -%}
+	{%- assign fre_max_length = settings.cross_sell_limit_product_page -%}
+	{%- for item in cart.items -%}
+		{%- assign fre_cart_ids = fre_cart_ids | append: item.product.id | append: ' ' -%}
+	{%- endfor -%}
+	{%- assign fre_cart_ids = fre_cart_ids | rstrip -%}
+	{%- assign fre_handles_array = fre_handles | escape | split: ',' -%}
+
+	{%- for fre_handle in fre_handles_array -%}
+		{%- if fre_show < fre_max_length -%}
+			{%- assign fre_product = all_products[fre_handle] -%}
+			{%- unless fre_product == blank or fre_cart_ids contains fre_product.id or fre_product.available == false -%}
+				{%- assign fre_current_variant = fre_product.first_available_variant -%}
+				{%- if fre_current_variant.available -%}
+					{%- assign fre_price = fre_price | plus: fre_current_variant.price -%}
+					{%- if fre_current_variant.compare_at_price != blank and fre_current_variant.compare_at_price > fre_current_variant.price -%}
+						{%- assign fre_compare_price = fre_compare_price | plus: fre_current_variant.compare_at_price -%}
+					{%- else -%}
+						{%- assign fre_compare_price = fre_compare_price | plus: fre_current_variant.price -%}	
+					{%- endif -%}
+				{%- endif -%}
+			  {%- assign fre_featured_image = fre_current_variant.featured_image | default: fre_product.featured_image -%}
+			  <div class="col-xs-12 col-sm-6 col-md-3 gutter-ele-bottom">
+				  <div class="row pg pg--freb{% if fre_current_variant.available %} selected{% endif %}{% if fre_show > 0 %} {% unless fre_show > 3 %}{% if fre_show != 1 %}gutter-ele-top-tbs{% else %}gutter-ele-top-mb{% endif %}{% else %}gutter-ele-top{% endunless %}{% endif %} gutter-ele-bottom-tbs" data-product-handle="{{ fre_product.handle }}">
+				  	<div class="col-xs-4">
+				  		<div class="por">
+				  			{%- assign img_url = fre_featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+					      <a href="{{ fre_product.url }}" class="item__image{% if fre_product.images.size > 1 %} item__image--alt-img{% endif %} pg__sync-url img-container loading" title="{{ fre_product.title | escape }}" style="padding-top:{{ 1 | divided_by: fre_featured_image.aspect_ratio | times: 100}}%;">
+					        <img data-aspectratio="{{ fre_featured_image.aspect_ratio }}"
+					            data-src="{{ img_url }}"
+					            data-sizes="auto" class="w100 pg__main-image img-responsive center-block img-abs center-abs lazyload"{% include 'img-one-pixel' %} alt="{{ fre_featured_image.alt | escape }}" data-image-size="1x1"/>
+					      {%- if fre_product.images.size > 1 -%}
+					        {%- assign image = fre_product.images[1] -%}
+					        {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+					        <img data-aspectratio="{{ image.aspect_ratio }}"
+					          data-src="{{ img_url }}"
+					          data-sizes="auto" class="w100 pg__main-alt-image img-responsive center-block img-abs center-abs lazyload ignore-effect"{% include 'img-one-pixel' %} alt="{{ image.alt | escape }}" data-image-size="1x1"/>
+					      {%- endif -%}    
+					      </a>
+					      <button type="button" class="pg__fre-check flex flex-align-hoz flex-align-ver"{% unless fre_current_variant.available %} disabled="disabled"{% endunless %}>{%- include 'icon-check' -%}</button>
+				  		</div>
+					  </div>
+					  <div class="col-xs-8">
+					  	<a class="item__name pg__sync-url pg__name" href="{{ fre_product.url }}" title="{{ fre_product.title | escape }}">
+				        {{ fre_product.title | truncatewords: 5 }}
+				      </a>
+				      {%- capture fre_product_review -%}{%- include 'product-review' with product: fre_product -%}{%- endcapture -%}
+					    {%- if fre_product_review != '' -%}
+				      <div class="gutter-ele-top">
+				      	{{ fre_product_review | raw }}
+				      </div>
+				      {%- endif -%}
+				      <div class="gutter-ele-top">
+					      {%- render 'product-variant-price' with fre_current_variant as variant, fre_product as product  -%}
+					    </div>
+
+					  	{%- unless fre_product.has_only_default_variant -%}
+							<div class="pg__options pg__options--fre gutter-ele-top-tb">
+								{%- render 'product-group-variants' with product: fre_product, enable_product_options: true, color_size: '60x', is_single_view: true, is_show_sub_info: true, is_single_sticky: true, force_dropdown_all: true -%}
+				      </div>
+				      {%- endunless -%}
+				      <select name="id" class="variant-id hide">
+					      {%- for variant in fre_product.variants -%}
+					        <option {% if variant.id == fre_current_variant.id %} selected="selected" {% endif %} value="{{ variant.id }}" data-price="{{ variant.price }}" data-compare-price="{% if variant.compare_at_price and variant.compare_at_price > variant.price %}{{ variant.compare_at_price }}{% else %}{{ variant.price }}{% endif %}" data-available="{{ variant.available }}">
+					          {{ variant.title }}
+					        </option>
+					      {%- endfor -%}
+					    </select>	
+					    
+				      <div class="qty-box qty-box--small flex flex-align-ver flex-align-space-between distance-top-ele">
+						    <a href="#" class="qty-box__ctrl qty-box__ctrl--descrease flex flex-align-hoz flex-align-ver" aria-label="button">
+						      {%- include 'icon-minus' -%}
+						    </a>
+						    <input type="number" name="quantity" value="1" min="1" class="qty-box__input text-center h100 qty-box__input--fre qty-box__input--sync" aria-label="form" style="font-size:18px;">
+						    <a href="#" class="qty-box__ctrl qty-box__ctrl--increase flex flex-align-hoz flex-align-ver" aria-label="button">
+						      {%- include 'icon-plus' -%}
+						    </a>
+						  </div>
+					  </div>
+				  </div>
+					{%- assign fre_show = fre_show | plus: 1 -%}
+				</div>
+			{%- endunless -%}
+		{%- endif -%}
+	{%- endfor -%}
+	
+	<div class="col-xs-12 gutter-top gutter-bottom gutter-ele-top-tbs">
+    <div class="gutter-ele-bottom flex">
+    	<strong class="freb__total h4">{{ 'cart.label.total' | t }}:</strong>
+    	<div class="freb__total-price flex flex-align-ver">
+			  {% if fre_compare_price > fre_price %}
+			  	<s class="product-price__price product-price__price--freb">{%- render 'price' with price: fre_compare_price -%}</s>
+			    <span class="product-price__price product-price__price--freb">
+			      {%- render 'price' with price: fre_price -%}
+			    </span>
+			  {% else %}
+			    <span class="product-price__price product-price__price--freb">{%- render 'price' with price: fre_price -%}</span>
+			  {% endif %}
+			</div>
+    </div>
+		<button type="button" class="freb__add-btn button button--style1 button--single-cart" style="margin:0;">
+			<span>{{ 'products.product.fre_bought_add' | t }}</span>
+		</button>
+	</div>
+{%- endcapture -%}
+{%- endif -%}

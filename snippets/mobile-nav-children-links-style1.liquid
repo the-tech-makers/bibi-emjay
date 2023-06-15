@@ -1,0 +1,6 @@
+{%- for l in links -%}
+	<div class="{% if two_columns %}col-xs-6 {% cycle no_gutter_left_class, no_gutter_right_class %}{% else %}w100{% endif %} gutter-ele-top gutter-ele-bottom">
+		{%- render 'mobile-nav-render-level2' with title: l.title, url: l.url, item_id: item_id, custom_label_classes: custom_label_classes -%}
+		{%- render 'mobile-nav-render-links' with links: l.links, item_id: item_id, custom_label_classes: custom_label_classes, no_place_holder: true -%}
+	</div>
+{%- endfor -%}

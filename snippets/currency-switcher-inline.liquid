@@ -1,0 +1,16 @@
+{%- if settings.show_multiple_currencies -%}
+<div class="currency-switcher currency-switcher--inline cs csi">
+	<ul class="list--inline csi__list">
+		{%- if settings.currency_converter_engine == 'shopify' -%}
+			{%- assign supported_currencies = settings.supported_currencies | split: ' ' -%}
+			{%- for currency in supported_currencies -%}
+			<li class="csi__item"><a data-code="{{ currency | escape }}" href="#" class="cs__code csi__code{% if forloop.last %} csi__code--last{% endif %}">{{ currency }}</a></li>
+			{%- endfor -%}
+		{%- else -%}
+			{%- for currency in shop.enabled_currencies -%}
+				<li class="csi__item"><a data-code="{{ currency.iso_code | escape }}" href="#" class="cs__code csi__code{% if forloop.last %} csi__code--last{% endif %}{% if currency == cart.currency %} active{% endif %}">{{ currency.iso_code }}</a></li>
+			{%- endfor -%}	
+		{%- endif -%}	
+	</ul>
+</div>
+{%- endif -%}

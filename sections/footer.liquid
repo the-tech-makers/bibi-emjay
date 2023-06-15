@@ -1,0 +1,1546 @@
+{%- unless section.settings.gutter_top == 'none' -%}
+  {%- if section.settings.gutter_top == 'all' or template.name != 'index' -%}
+    <div class="w100 big-gutter-top"></div>
+  {%- endif -%}
+{%- endunless -%}
+{%- assign individual_bkg_area = blank -%}
+{%- assign inline_style_mb = '' -%}
+{%- assign inline_style_dk = '' -%}
+<footer class="footer{% if settings.bkg_footer_enable and settings.bkg_footer != blank %} big-gutter-top{% endif %}{% if section.settings.bkg_enable and section.settings.section_bkg != blank %} lazyload lazy-bkg footer--bkg{% endif %}" data-section-type="footer" data-section-id="{{ section.id }}" id="{{ section.id }}"{% if section.settings.bkg_enable and section.settings.section_bkg != blank %} style="background-color:{{ section.settings.section_bkg }};"{% endif %}{% if section.settings.bkg_enable and section.settings.section_bkg_image != blank %} data-bgset="{% render 'bgset' with section.settings.section_bkg_image as image %}" data-sizes="auto"{% endif %}>
+  <div class="footer__inner">  
+    <div class="container{% if section.settings.wide_display %}-fluid{% endif %}">
+      <div class="row flex flex-wrap footer__content">
+        {%- assign closed_container = false -%}
+        {%- assign closed_row = false -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- unless block.type == 'footer-line' -%}
+              <div class="col-sm-{{ block.settings.col_width_desktop }} col-xs-{{ block.settings.col_width_mobile }} footer__column{% if block.settings.text_align != block.settings.text_align_mobile %} footer__column--{{ block.id }}{% endif %} footer__column--{{ block.type }} text-{{ block.settings.text_align | escape }}{% if block.settings.text_align != block.settings.text_align_mobile %} mobile-text-{{ block.settings.text_align_mobile }}{% endif %}{% if block.settings.gutter_top_dk %} gutter-ele-top-tb{% endif %}{% if block.settings.gutter_bottom_dk %} gutter-ele-bottom-tb{% endif %}{% if block.settings.gutter_top_mb %} gutter-ele-top-mb{% endif %}{% if block.settings.gutter_bottom_mb %} gutter-ele-bottom-mb{% endif %}" style="float:none;">
+                {%- if block.settings.title != blank -%}
+                <h4 class="footer__column__title w100">
+                  {{ block.settings.title }}
+                </h4>
+                {%- endif -%}
+                <div class="footer__column__content w100"{% if block.type contains 'facebook' or block.type contains 'twitter' %} style="overflow-x: hidden;"{% endif %}>
+                  {%- case block.type -%}
+                    {%- when 'contact-info' -%}
+                      {%- render 'footer-contact-info-column' with block as block -%}
+                    {%- when 'facebook-box' -%}
+                      {%- render 'footer-facebook-box-column' with block as block -%}
+                    {%- when 'link-list' -%}
+                      {%- render 'footer-link-list-column' with block as block -%}
+                    {%- when 'newsletter' -%}
+                      {%- render 'footer-newsletter-column' with block as block -%}
+                      {%- capture item_inline_style_mb -%}{%- render 'footer-image-align-styles-mb' with block as block -%}{%- endcapture -%}
+                      {%- capture item_inline_style_dk -%}{%- render 'footer-image-align-styles-dk' with block as block -%}{%- endcapture -%}
+                      {%- assign inline_style_mb = inline_style_mb | append: item_inline_style_mb -%}
+                      {%- assign inline_style_dk = inline_style_dk | append: item_inline_style_dk -%}
+                    {%- when 'product-list' -%}
+                      {%- render 'footer-product-list-column' with block as block -%}
+                    {%- when 'text-social' -%}
+                      {%- render 'footer-text-social-column' with block as block -%}
+                      {%- capture item_inline_style_mb -%}{%- render 'footer-image-align-styles-mb' with block as block -%}{%- endcapture -%}
+                      {%- capture item_inline_style_dk -%}{%- render 'footer-image-align-styles-dk' with block as block -%}{%- endcapture -%}
+                      {%- assign inline_style_mb = inline_style_mb | append: item_inline_style_mb -%}
+                      {%- assign inline_style_dk = inline_style_dk | append: item_inline_style_dk -%}  
+                    {%- when 'twitter-box' -%}
+                      {%- render 'footer-twitter-box-column' with block as block -%}
+                    {%- else -%}
+                      {%- render 'footer-text-icon-column' with block as block -%}  
+                  {%- endcase -%}
+                </div>
+              </div>
+            {%- else -%}
+              </div>{%- comment -%}Close the current row{%- endcomment -%}
+              {%- assign closed_row = true -%}
+              {%- if block.settings.full_width and closed_container == false -%}
+                </div>{%- comment -%}Close the current container{%- endcomment -%}
+                </div>{%- comment -%}Close the current footer__inner{%- endcomment -%}
+                {%- assign closed_container = true -%}
+              {%- endif -%}
+              {%- if block.settings.gutter_top_dk > 0 or block.settings.gutter_top_mb > 0 -%}
+                {%- if block.settings.gutter_top_dk > 0 -%}
+                <div style="padding-top:{{ block.settings.gutter_top_dk }}px;" class="hidden-xs"></div>
+                {%- endif -%}
+                {%- if block.settings.gutter_top_mb > 0 -%}
+                  <div class="visible-xs w100" style="padding-top:{{ block.settings.gutter_top_mb }}px;"></div>
+                {%- endif -%}
+              {%- endif -%}
+              {%- unless block.settings.hide_line -%}
+                <hr style="border-color:{{ block.settings.color }};margin:0;">
+              {%- endunless -%}
+              {%- if block.settings.enable_bkg and block.settings.bkg_color != blank -%}
+                {%- assign individual_bkg_area = block.settings.bkg_color -%}
+              {%- else -%}
+                {%- assign individual_bkg_area = blank -%}
+              {%- endif -%}
+              {%- if block.settings.gutter_bottom_dk > 0 or block.settings.gutter_bottom_mb > 0 -%}
+                {%- if block.settings.gutter_bottom_dk > 0 -%}
+                <div style="padding-top:{{ block.settings.gutter_bottom_dk }}px;" class="hidden-xs"></div>
+                {%- endif -%}
+                {%- if block.settings.gutter_bottom_mb > 0 -%}
+                  <div class="visible-xs w100" style="padding-top:{{ block.settings.gutter_bottom_mb }}px;"></div>
+                {%- endif -%}
+              {%- endif -%}
+              {%- unless forloop.last -%}
+                {%- if block.settings.full_width -%}
+                <div class="footer__inner"{% if individual_bkg_area != blank %} style="background:{{ individual_bkg_area }};"{% endif %}>  
+                  <div class="container{% if section.settings.wide_display %}-fluid{% endif %}">{%- comment -%}Open a new container{%- endcomment -%}
+                    {%- assign closed_container = false -%}
+                {%- endif -%}
+                <div class="row flex flex-wrap footer__content">{%- comment -%}Open a new row{%- endcomment -%}
+                  {%- assign closed_row = false -%}
+              {%- endunless -%}    
+            {%- endunless-%}  
+          {%- endfor -%} 
+        {%- endif -%}
+      {%- unless closed_row -%}  
+      </div>
+      {%- endunless -%}
+    {%- unless closed_container -%}
+    </div>  
+    </div>
+    {%- endunless -%}
+</footer>
+{%- if section.settings.copyright != blank or section.settings.footer_link != blank -%}
+<div class="footer-bottom gutter-top gutter-bottom">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 gutter-ele-bottom-tbs">{{ section.settings.copyright }}</div>
+      <div class="col-xs-12 col-sm-6 text-left gutter-ele-top-tbs">
+        {%- if linklists[section.settings.footer_link].links.size > 0 -%}
+          <ul class="footer__linklist footer__linklist--bottom no-gutter--left list--inline" style="margin: 0 -15px;">
+            {% for link in linklists[section.settings.footer_link].links %}
+              <li class="footer__linklist-item gutter-ele-bottom-mb">
+                <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %} title="{{ link.title | escape }}" style="padding:15px;">{{ link.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+{%- if inline_style_mb != '' or inline_style_dk != '' -%}
+{%- style -%}
+{%- if inline_style_mb != '' -%}
+{{ inline_style_mb }}
+{%- endif -%}
+{%- if inline_style_dk != '' -%}
+@media(min-width:768px){ {{ inline_style_dk }} }
+{%- endif -%}
+{%- endstyle -%}
+{%- endif -%}
+{% schema %}
+  {
+    "name": "Footer",
+    "class": "index-section dib w100",
+    "max_blocks": 15,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/footer)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color",
+        "default": "#000"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "header",
+        "content": "Footer bottom"
+      },
+      {
+        "type": "text",
+        "id": "copyright",
+        "label": "Copyright",
+        "default": "Copyright © 2019 Boosthemeteam. All rights reserved."
+      },
+      {
+        "type": "link_list",
+        "id": "footer_link",
+        "label": "Link list"
+      },
+      {
+        "type": "header",
+        "content": "Layout"
+      },
+      {
+        "type": "select",
+        "id": "gutter_top",
+        "label": "Show the gutter top at",
+        "options": [
+          {
+            "value": "all",
+            "label": "All pages"
+          },
+          {
+            "value": "home",
+            "label": "Exclude the home page"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "all"
+      },
+      {
+        "type": "checkbox",
+        "id": "wide_display",
+        "label": "Wide display",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text-social",
+        "name": "Text, Image & Social col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Image Picker",
+            "info": "Show image as logo, payment,..."
+          },
+          {
+            "type": "text",
+            "id": "logo_size",
+            "label": "Image size",
+            "default": "master",
+            "info": "Leave \"master\" to show the original image"
+          },
+          {
+            "type": "header",
+            "content": "Text Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_text",
+            "label": "Enable"
+          },
+          {
+            "type": "html",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text color",
+            "default": "#999999"
+          },
+          {
+            "type": "range",
+            "id": "text_fs",
+            "label": "Font size",
+            "min": 10,
+            "max": 60,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          },
+          {
+            "type": "header",
+            "content": "Social Settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "Add your social links in \"Theme Settings\" > \"Social media\". Change the color, font size, background in \"Theme Settings\" > \"Colors and Font sizes\" > \"Footer\" > \"Social icons\"."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_social",
+            "label": "Enable"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_rss",
+            "label": "Rss",
+            "info": "Rss icon is only displayed on article and blog page"
+          }
+        ]
+      },
+      {
+        "type": "link-list",
+        "name": "Link List col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Link List Settings"
+          },
+          {
+            "type": "link_list",
+            "id": "link_list",
+            "label": "Link List"
+          },
+          {
+            "type": "checkbox",
+            "id": "inline",
+            "label": "Display the linklist inline",
+            "default": false
+          },
+          {
+            "type": "range",
+            "id": "font_size",
+            "label": "Font size",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 12
+          }
+        ]
+      },
+      {
+        "type": "contact-info",
+        "name": "Contact Info col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Contact Info"
+          },
+          {
+            "type": "text",
+            "id": "address",
+            "label": "Address"
+          },
+          {
+            "type": "text",
+            "id": "phone",
+            "label": "Phone"
+          },
+          {
+            "type": "text",
+            "id": "email",
+            "label": "Email"
+          },
+          {
+            "type": "text",
+            "id": "opening_hour",
+            "label": "Opening Hour"
+          }
+        ]
+      },
+      {
+        "type": "text-icon",
+        "name": "Texts & Icons col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Text group 1"
+          },
+          {
+            "type": "text",
+            "id": "icon_1",
+            "label": "Icon",
+            "default": "lnr-icons-03"
+          },
+          {
+            "type": "text",
+            "id": "title_1",
+            "label": "Title",
+            "default": "Customer Support"
+          },
+          {
+            "type": "text",
+            "id": "subtitle_1",
+            "label": "Subtitle",
+            "default": "24/7 Online Helps"
+          },
+          {
+            "type": "header",
+            "content": "Text group 2"
+          },
+          {
+            "type": "text",
+            "id": "icon_2",
+            "label": "Icon",
+            "default": "lnr-gift"
+          },
+          {
+            "type": "text",
+            "id": "title_2",
+            "label": "Title",
+            "default": "Free & Fast Delivery"
+          },
+          {
+            "type": "text",
+            "id": "subtitle_2",
+            "label": "Subtitle",
+            "default": "All Order Over $100"
+          },
+          {
+            "type": "header",
+            "content": "Colors"
+          },
+          {
+            "type": "color",
+            "id": "icon_color",
+            "label": "Icon",
+            "default": "#4e4e4e"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Title",
+            "default": "#fff"
+          }
+        ]
+      },
+      {
+        "type": "facebook-box",
+        "name": "Facebook Box col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Facebook Settings"
+          },
+          {
+            "type": "text",
+            "id": "facebook_app_id",
+            "label": "Facebook App Id"
+          },
+          {
+            "type": "text",
+            "id": "facebook_fanpage_url",
+            "label": "Facebook Fanpage Url",
+            "info": "Ex: https://www.facebook.com/shopify"
+          }
+        ]
+      },
+      {
+        "type": "twitter-box",
+        "name": "Twitter Box col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Twitter Settings"
+          },
+          {
+            "type": "text",
+            "id": "twitter_url",
+            "label": "Twitter Url",
+            "info": "Ex: https://twitter.com/shopify"
+          }
+        ]
+      },
+      {
+        "type": "newsletter",
+        "name": "Blog, newsletter & social",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "checkbox",
+            "id": "display_one_line",
+            "label": "Display the form and the icons in one line.",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Blog Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_blog",
+            "label": "Enable",
+            "default": true
+          },
+          {
+            "type": "blog",
+            "id": "blog",
+            "label": "Pick a blog"
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "label": "Limit",
+            "min": 3,
+            "max": 5,
+            "step": 1,
+            "default": 3
+          },
+          {
+            "type": "header",
+            "content": "Newsletter Form Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_newsletter",
+            "label": "Enable",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "title_newsletter",
+            "label": "Form Title",
+            "default": "Newsletter"
+          },
+          {
+            "type": "header",
+            "content": "Social Settings"
+          },
+          {
+            "type": "paragraph",
+            "content": "Add your social links in \"Theme Settings\" > \"Social media\". Change the color, font size, background in \"Theme Settings\" > \"Colors and Font sizes\" > \"Footer\" > \"Social icons\"."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_social",
+            "label": "Enable"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_rss",
+            "label": "Rss",
+            "info": "Rss icon is only displayed on article and blog page"
+          }
+        ]
+      },
+      {
+        "type": "product-list",
+        "name": "Product list col",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General Settings"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Column Title"
+          },
+          {
+            "type": "select",
+            "id": "text_align",
+            "label": "Text Align in desktop",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "select",
+            "id": "text_align_mobile",
+            "label": "Text Align in mobile",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+          },
+          {
+            "type": "header",
+            "content": "Column Width"
+          },
+          {
+            "type": "paragraph",
+            "content": "The column width is build based on the grid system in Bootstrap. You can refer [this article](https:\/\/getbootstrap.com\/docs\/3.3\/examples\/grid) to get the details."
+          },
+          {
+            "type": "range",
+            "id": "col_width_desktop",
+            "label": "Desktop",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "range",
+            "id": "col_width_mobile",
+            "label": "Mobile",
+            "min": 1,
+            "max": 12,
+            "default": 6,
+            "step": 1,
+            "unit": "col"
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "default": false
+          },
+          {
+            "type": "header",
+            "content": "Products"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Pick a collection"
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "label": "Limit",
+            "min": 3,
+            "max": 5,
+            "step": 1,
+            "default": 3
+          },
+          {
+            "type": "select",
+            "id": "main_thumbnail",
+            "label": "Show main thumbnail by",
+            "options": [
+              {
+                "value": "product_image",
+                "label": "Featured product image"
+              },
+              {
+                "value": "variant_image",
+                "label": "First available variant image"
+              }
+            ],
+            "default": "product_image"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_review_stars",
+            "label": "Show review stars",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "product_name_size",
+            "label": "Product name's size",
+            "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+            "min": 0,
+            "max": 30,
+            "default": 5,
+            "step": 1
+          }
+        ]
+      },
+      {
+        "type": "footer-line",
+        "name": "Footer Line",
+        "settings": [
+          {
+            "type": "header",
+            "content": "General"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Color",
+            "default": "#363636"
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_line",
+            "label": "Hide the line",
+            "default": false,
+            "info": "Tips: hide the line and increase the gutters to create a distance between the rows."
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width",
+            "label": "Full Width",
+            "default": true
+          },
+          {
+            "type": "header",
+            "content": "Desktop gutters"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_dk",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_dk",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Mobile gutters"
+          },
+          {
+            "type": "range",
+            "id": "gutter_top_mb",
+            "label": "Top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "gutter_bottom_mb",
+            "label": "Bottom",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "Background bottom area"
+          },
+          {
+            "type": "paragraph",
+            "content": "Set the individual background color for the areas below of this line. Only apply when the \"Full width\" option width is used."
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_bkg",
+            "label": "Enable",
+            "default": false
+          },
+          {
+            "type": "color",
+            "id": "bkg_color",
+            "label": "Pick a background color"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

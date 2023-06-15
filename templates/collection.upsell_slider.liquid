@@ -1,0 +1,35 @@
+{%- layout none -%}
+{%- assign cart_items_handle = ',' -%}
+<div>
+{%- for item in cart.items -%}
+{%- assign cart_items_handle = cart_items_handle | append: item.product.handle | append: ',' -%}
+{%- endfor -%}
+{%- assign upsell_handles = ',' -%}
+{%- for product in collection.products -%}
+{%- assign handle_compare = ',' | append: product.handle | append: ',' -%}
+{%- unless cart_items_handle contains handle_compare -%}
+<div class="product-item" data-id="{{ product.id }}" data-handle="{{ product.handle }}">
+	{%- include 'product-grid-item' with 
+    use_slider: true, 
+    index: forloop.index, 
+    lazy_index: 999,
+    column_count: 2, 
+    main_thumbnail: settings.main_thumbnail_upsell, 
+    image_size: '375x', 
+    truncate_count: settings.product_name_size_upsell,
+    enable_product_options: settings.enable_product_options_upsell, 
+    show_review_stars: settings.show_review_stars_upsell,
+    enable_small_images: false,
+    show_media_btn: settings.show_media_btn_upsell,
+    small_image: 'small',
+    show_label : settings.show_label_upsell,
+    show_cart_btn: settings.show_cart_btn_upsell,
+    show_wishlist_btn : settings.show_wishlist_btn_upsell,
+    show_compare_btn: settings.show_compare_btn_upsell,
+    show_qs_btn: settings.show_qs_btn_upsell,
+    small_image_slider: false 
+  -%}
+</div>
+{%- endunless -%}
+{%- endfor -%}
+</div>

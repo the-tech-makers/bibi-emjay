@@ -1,0 +1,7 @@
+{% capture "form_classes" -%}
+  product-form product-form-{{ section.id }}{% if section.settings.enable_payment_button and product.has_only_default_variant%} product-form--payment-button-no-variants{% endif %}
+{%- endcapture %}
+
+{%- form 'product', product, class:form_classes, novalidate: 'novalidate' -%}
+  {%- include 'product-single-form-inner', full_qty_box: full_qty_box -%}
+{%- endform -%}

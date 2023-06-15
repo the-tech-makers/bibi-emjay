@@ -1,0 +1,19 @@
+<div class="container{% if settings.bkg_404_page != blank %} lazyload" data-bgset="{{ settings.bkg_404_page | img_url: 'master' }}" style="background-size: contain;background-repeat:no-repeat;background-position: center;{% else %} big-gutter-top{% endif %}">
+	{%- if settings.bkg_404_page != blank -%}
+	<div class="hidden-xs w100" style="padding-top: 160px;"></div>
+	<div class="visible-xs w100" style="padding-top: 50px;"></div>
+	{%- endif -%}
+  <div class="row">
+    <div class="col-xs-12">
+    	<h1 class="page-title text-center gutter-ele-bottom-tbs">{{ 'general.404.title' | t }}</h1>
+      <p class="text-center section__sub-title big-gutter-bottom" style="padding-top:0;font-size:16px;">{{ 'general.404.subtext' | t }}</p>
+      <div class="page-content w100 text-center">
+      	<a href="/" class="button button--style2" title="{{ 'general.404.link' | t | escape }}"><span style="padding-right: 5px;">{{ 'general.404.link' | t }}</span>{% include 'icon-arrow-right' with custom_style: 'vertical-align:text-top;' %}</a>
+      </div>
+    </div>
+  </div>
+  {%- if settings.bkg_404_page != blank -%}
+	<div class="hidden-xs w100" style="padding-bottom: 160px;"></div>
+	<div class="visible-xs w100" style="padding-top: 50px;"></div>
+	{%- endif -%}
+</div>

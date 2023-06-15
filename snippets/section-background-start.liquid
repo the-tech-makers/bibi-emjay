@@ -1,0 +1,6 @@
+{%- if section.settings.bkg_enable -%}
+{%- if section.settings.top_gutter or section.settings.bottom_gutter -%}
+<div class="db{% render 'section-gutters', top_gutter: section.settings.top_gutter, bottom_gutter: section.settings.bottom_gutter %}{% if section.settings.hidden_mobile %} hidden-xs{% endif %}">
+{%- endif -%}
+<div class="db big-gutter-top big-gutter-bottom{% if section.settings.hidden_mobile %} hidden-xs{% endif %}{% if section.settings.section_bkg_image != blank %} lazyload lazy-bkg lazy-bkg--{{ section.settings.section_bkg_style }}{% endif %} ignore-effect op1"{% if section.settings.section_bkg != blank %} style="background-color:{{ section.settings.section_bkg }};"{% endif %}{% if section.settings.section_bkg_image != blank %} data-bgset="{% render 'bgset' with section.settings.section_bkg_image as image %}" data-sizes="auto"{% endif %}>
+{%- endif -%}

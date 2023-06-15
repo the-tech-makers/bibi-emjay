@@ -1,0 +1,117 @@
+{%- if block.settings[index_text] != blank -%}
+	{%- assign index_format = 'format_' | append: index_text -%}
+	{%- assign index_url = 'url_' | append: index_text -%}
+	{%- assign index_button_style = 'button_style_' | append: index_text -%}
+	{%- assign index_button_radius = 'button_radius_' | append: index_text -%}
+	{%- assign index_button_icon = 'button_icon_' | append: index_text -%}
+	{%- assign index_alignment = 'alignment_' | append: index_text -%}
+	{%- assign index_font_size = 'font_size_' | append: index_text -%}
+	{%- assign index_font_style = 'font_style_' | append: index_text -%}
+	{%- assign index_font_weight = 'font_weight_' | append: index_text -%}
+	{%- assign index_letter_spacing = 'letter_spacing_' | append: index_text -%}
+	{%- assign index_color = 'color_' | append: index_text -%}
+	{%- assign index_hidden_mobile = 'hide_on_mobile_' | append: index_text -%}
+	{%- assign index_hidden_desktop = 'hide_on_desktop_' | append: index_text -%}
+	{%- assign index_new_tab = 'new_tab_' | append: index_text -%}
+	{%- assign index_line_height = 'line_height_' | append: index_text -%}
+	{%- assign index_gutter_top = 'gutter_top_' | append: index_text -%}
+	{%- assign index_gutter_bottom = 'gutter_bottom_' | append: index_text -%}
+	{%- assign index_gutter_left = 'gutter_left_' | append: index_text -%}
+	{%- assign index_gutter_right = 'gutter_right_' | append: index_text -%}
+	{%- assign index_extend_style = 'extend_style_' | append: index_text -%}
+	{%- assign index_custom_class = 'custom_class_' | append: index_text -%}
+	{%- assign style_text = 'font-style:' | append: block.settings[index_font_style] | append: ';font-weight:' | append: block.settings[index_font_weight] | append: ';' -%}
+	{%- if block.settings[index_font_size] > 0 -%}
+		{%- assign style_text = style_text | append: 'font-size:' | append: block.settings[index_font_size] | append: 'px;' -%}
+	{%- endif -%}
+	{%- if block.settings[index_extend_style] and block.settings[index_color] != blank -%}
+		{%- assign style_text = style_text | append: 'color:' | append: block.settings[index_color] | append: ';' -%}
+	{%- endif -%}
+	{%- if block.settings[index_line_height] > 0 -%}
+		{%- assign style_text = style_text | append: 'line-height:' | append: block.settings[index_line_height] | append: 'px;' -%}
+	{%- endif -%}
+
+	{%- if block.settings[index_letter_spacing] >= 0 -%}
+		{%- assign style_text = style_text | append: 'letter-spacing:' | append: block.settings[index_letter_spacing] | append: 'px;' -%}
+	{%- endif -%}
+	{%- assign banner_ele_class = 'banner-ele-' | append: block.id | append: '-' | append: index_text -%}
+	
+	{%- capture gutter_css -%}.banner-item__text__sub-{{ block.id }}-{{ index_text }}{padding:{{ block.settings[index_gutter_top] }}px {{ block.settings[index_gutter_right] }}px {{ block.settings[index_gutter_bottom] }}px {{ block.settings[index_gutter_left] }}px;}{%- endcapture -%}
+	{%- if block.settings[index_extend_style] -%}
+		{%- assign banner_style_inline = banner_style_inline | append: gutter_css -%}
+	{%- else -%}
+		{%- assign banner_style_inline_desktop = banner_style_inline_desktop | append: gutter_css -%}	
+	{%- endif -%}	
+
+	<div class="banner-item__text__sub banner-item__text__sub-{{ block.id }}-{{ index_text }}{% if section.settings.enable_slider and block.settings.text_effect_enable %} text-effect text-effect-{{ index_text | replace: 'text_','' }}{% endif %}{% if block.settings.template == 'inside' %} banner-item__text__sub--inside{% endif %} banner-item__{{ index_text | replace: '_','' }}{% if block.settings[index_hidden_mobile] %} hidden-xs{% endif %}{% if block.settings[index_hidden_desktop] %} hidden-sm hidden-md hidden-lg{% endif %} text-{{ block.settings[index_alignment] }}{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}">
+		{%- if block.settings[index_format] == 'button' -%}
+			<a class="button button--banner button--{{ block.settings[index_button_style] }} {{ banner_ele_class }}{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %}"{% if block.settings[index_url] != '#' and block.settings[index_url] != blank %} href="{{ block.settings[index_url] }}"{% if block.settings[index_new_tab] %} target="_blank"{% endif %}{% endif %} aria-label="button"{% if block.settings[index_button_radius] > 0 %} style="border-radius:{{ block.settings[index_button_radius] }}px;"{% endif %} title="{{ block.settings[index_text] | strip_newlines | escape }}">
+				{{ block.settings[index_text] | strip_newlines | raw }}
+				{%- if block.settings[index_button_icon] != blank -%}
+				{%- unless block.settings[index_button_icon] contains 'left' or block.settings[index_button_icon] contains 'right' -%}
+					{%- assign icon_button = block.settings[index_button_icon] -%}
+				{%- elsif block.settings[index_button_icon] contains 'left' -%}
+					{%- assign icon_button = block.settings[index_button_icon] | replace: 'left', left_holder -%}
+				{%- else -%}
+					{%- assign icon_button = block.settings[index_button_icon] | replace: 'right', right_holder -%}		
+				{%- endunless -%}
+				<i class="{{ icon_button | escape }} dib" style="margin-{{ left_holder }}:5px;"></i>
+				{%- endif -%}
+			</a>
+		{%- elsif block.settings[index_format] == 'link' -%}
+			{%- assign style_text = style_text | append: 'display: block;' -%}
+			<a href="{{ block.settings[index_url] | default: '#' }}" title="{{ block.settings[index_text] | strip_newlines | escape }}"{% if block.settings[index_new_tab] %} target="_blank"{% endif %} class="{{ banner_ele_class }}{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %}">{{ block.settings[index_text] | strip_newlines | raw }}</a>
+		{%- elsif block.settings[index_format] == 'text-line' -%}
+			<p class="{{ banner_ele_class }} margin0{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %}">{{ block.settings[index_text] | newline_to_br | raw }}</p>
+		{%- elsif block.settings[index_format] == 'countdown' -%}
+			{%- assign index_countdown_extend = 'countdown_extend_' | append: index_text -%}
+			{%- assign index_countdown_color_text = 'countdown_color_' | append: index_text -%}
+			{%- assign index_countdown_bkg = 'countdown_bkg_' | append: index_text -%}
+			{%- if block.settings[index_countdown_color_text] != blank or block.settings[index_countdown_color_text] != blank -%}
+				{%- capture rb_countdown_css -%}{%- if block.settings[index_countdown_color_text] != blank -%}.{{ banner_ele_class }} .rb__countdown__text{color:{{ block.settings[index_countdown_color_text] }};}{%- endif -%}{%- if block.settings[index_countdown_color_text] != blank -%}.{{ banner_ele_class }}{background:{{ block.settings[index_countdown_bkg] }};}{%- endif -%}{%- endcapture -%}
+				{%- assign banner_style_inline = banner_style_inline | append: rb_countdown_css -%}
+			{%- endif -%}
+			<div class="pg__countdown-js rb__countdown-wrap {{ banner_ele_class }}{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %}{% if block.settings[index_countdown_bkg] != blank %} dib{% endif %}" data-product-id="{{ section.id }}-{{ block.id }}-{{ index_text }}" data-timer="{{ block.settings[index_text] | escape }}" data-tpl-hour=".rb-countdown-hour" data-tpl-day=".rb-countdown-day" data-tpl-week=".rb-countdown-week"{% if block.settings[index_countdown_extend] %} data-extend="{{ block.settings[index_countdown_extend] }}"{% endif %} style="position:static;"></div>
+		{% elsif block.settings[index_format] == 'paragraph' %}
+			<div class="{{ banner_ele_class }}{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %}">{{ block.settings[index_text] | newline_to_br | raw }}</div>
+		{%- else -%}
+			<{{ block.settings[index_format] }} class="{{ banner_ele_class }}{% if block.settings[index_custom_class] != blank %} {{ block.settings[index_custom_class] | escape }}{% endif %} margin0">{{ block.settings[index_text] | strip_newlines | raw }}</{{ block.settings[index_format] }}>
+		{%- endif -%}
+
+		{%- unless block.settings[index_extend_style] -%}
+			{%- assign banner_style_inline_desktop = banner_style_inline_desktop | append: '.' | append: banner_ele_class | append: '{' | append: style_text | append: '}' -%}
+			{%- assign index_font_size = 'font_size_mobile_' | append: index_text -%}
+			{%- assign index_font_style = 'font_style_mobile_' | append: index_text -%}
+			{%- assign index_font_weight = 'font_weight_mobile_' | append: index_text -%}
+			{%- assign index_letter_spacing = 'letter_spacing_mobile_' | append: index_text -%}
+			{%- assign index_line_height = 'line_height_mobile_' | append: index_text -%}
+			{%- assign index_gutter_top = 'gutter_top_mobile_' | append: index_text -%}
+			{%- assign index_gutter_bottom = 'gutter_bottom_mobile_' | append: index_text -%}
+			{%- assign index_gutter_left = 'gutter_left_mobile_' | append: index_text -%}
+			{%- assign index_gutter_right = 'gutter_right_mobile_' | append: index_text -%}
+			{%- capture gutter_css -%}.banner-item__text__sub-{{ block.id }}-{{ index_text }}{padding:{{ block.settings[index_gutter_top] }}px {{ block.settings[index_gutter_right] }}px {{ block.settings[index_gutter_bottom] }}px {{ block.settings[index_gutter_left] }}px;}{%- endcapture -%}
+			{%- assign banner_style_inline = banner_style_inline | append: gutter_css -%}
+			{%- assign style_text = 'font-style:' | append: block.settings[index_font_style] | append: ';font-weight:' | append: block.settings[index_font_weight] | append: ';' -%}
+			{%- if block.settings[index_font_size] > 0 -%}
+				{%- assign style_text = style_text | append: 'font-size:' | append: block.settings[index_font_size] | append: 'px;' -%}
+			{%- endif -%}
+			{%- if block.settings[index_color] != blank -%}
+				{%- assign style_text = style_text | append: 'color:' | append: block.settings[index_color] | append: ';' -%}
+			{%- endif -%}
+			{%- if block.settings[index_line_height] > 0 -%}
+				{%- assign style_text = style_text | append: 'line-height:' | append: block.settings[index_line_height] | append: 'px;' -%}
+			{%- endif -%}
+			{%- if block.settings[index_letter_spacing] >= 0 -%}
+				{%- assign style_text = style_text | append: 'letter-spacing:' | append: block.settings[index_letter_spacing] | append: 'px;' -%}
+			{%- endif -%}	
+			{%- if block.settings[index_format] == 'button' -%}
+				
+			{%- elsif block.settings[index_format] == 'link' -%}
+				{%- assign style_text = style_text | append: 'display: block;' -%}
+			{%- endif -%}
+			{%- assign banner_style_inline = banner_style_inline | append: '.' | append: banner_ele_class | append: '{' | append: style_text | append: '}' -%}
+		{%- else -%}
+			{%- assign banner_style_inline = banner_style_inline | append: '.' | append: banner_ele_class | append: '{' | append: style_text | append: '}' -%}	
+		{%- endunless -%}
+	</div>
+{%- endif -%}

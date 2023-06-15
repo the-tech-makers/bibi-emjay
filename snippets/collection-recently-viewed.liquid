@@ -1,0 +1,12 @@
+{%- if settings.recent_view_enable and settings.recent_view_collection_enable -%}
+  <div class="cf__item w100 cf__item--recent-view flex flex-align-space-between flex-align-ver w100 hide">
+    <h5 class="cf__item__title fw-bold secondary-font" href="#" title="{{ 'collections.general.recent_view' | t | escape }}">
+      {{ 'collections.general.recent_view' | t }}
+    </h5>
+    <a href="#" class="fw-bold expand-trigger open">
+      {%- render 'icon-collapse' with add_classes: 'cf__item__collapse' -%}
+    </a>
+    <div class="cf__item__content expand-content cf__item--recent-view__content pcol__items w100 gutter-ele-top">
+    </div>
+  </div>
+{%- endif -%}

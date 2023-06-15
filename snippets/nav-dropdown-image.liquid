@@ -1,0 +1,18 @@
+{%- assign image = item.settings.image -%}
+{%- if image != blank -%}
+{%- assign image_size = item.settings.image_size | default: 'master' -%}
+
+{%- if item.settings.image_link -%}
+	<a href="{{ item.settings.image_link }}"{% if item.settings.image_new_tab %} target="_blank"{% endif %} title="{{ image.alt | escape }}" class="img-container loading" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;">
+{%- else -%}
+<div class="img-container loading" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;">
+{%- endif -%}
+
+<img data-src="{{ image | img_url: image_size }}" class="lazyload img-responsive img-abs" alt="{{ image.alt | escape }}" width="{{ image.width }}" height="{{ image.height }}"{% render 'img-one-pixel' %}/>
+
+{%- if item.settings.image_link -%}
+</a>
+{%- else -%}
+</div>
+{%- endif -%}
+{%- endif -%}

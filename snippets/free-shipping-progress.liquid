@@ -1,0 +1,10 @@
+{%- if cart.total_price >= free_shipping_goal -%}
+  {%- assign free_shipping_percent = 100 -%}
+{%- else -%}
+  {%- assign free_shipping_percent = cart.total_price | times: 100 | divided_by: free_shipping_goal | round -%} 
+{%- endif -%}
+<div class="progress cart__free-progress" style="height:15px;" data-goal="{{ free_shipping_goal }}">
+  <div class="progress-bar{% if custom_progess_bar_classes %} {{ custom_progess_bar_classes }}{% endif %} cart__free-progress-bar progress-bar-striped active pull-left flex flex-align-ver flex-align-hoz lh1 h100 transition" role="progressbar" aria-valuenow="{{ free_shipping_percent  }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ free_shipping_percent  }}%;font-size: 12px;">
+    <span class="db lh1">{{ free_shipping_percent }}%</span>
+  </div>
+</div>

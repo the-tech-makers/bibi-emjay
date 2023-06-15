@@ -1,0 +1,40 @@
+{%- if shop.customer_accounts_enabled -%}
+	<div class="login-form-mobile">
+		{%- liquid 
+		  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+		    assign left_holder = 'left'
+		    assign right_holder = 'right'
+		    assign enable_rtl = false
+		  else
+		    assign left_holder = 'right'
+		    assign right_holder = 'left'
+		    assign enable_rtl = true
+		  endunless  
+		-%}
+		{%- unless customer -%}
+  		<h4 style="margin:0;">{{ 'customer.login.title' | t }}/{{ 'customer.register.title' | t }}</h4>
+      {%- render 'login-form-header', id: 'customer_login_header_mobile', suffix_id_field: 'HeaderMobile', left_holder: left_holder, right_holder: right_holder -%}
+    {%- else -%}
+	    <div class="flex flex-align-space-between">
+	    	<a href="{{ routes.account_url }}" title="{{ 'customer.account.title' | t | escape }}">
+	    		{%- unless enable_rtl -%}
+						{% render 'icon-account' with add_class: 'ver-sub' %}
+						{{ 'customer.account.title' | t }}
+					{%- else -%}
+						{{ 'customer.account.title' | t }}
+						{% render 'icon-account' with add_class: 'ver-sub' %}
+					{%- endunless -%}
+				</a>
+				<a href="{{ routes.account_logout_url }}" title="{{ 'layout.customer.log_out' | t | escape }}">
+					{%- unless enable_rtl -%}
+						{% render 'icon-sign-out' with add_class: 'ver-sub' %}
+						{{ 'layout.customer.log_out' | t }}
+					{%- else -%}
+						{{ 'layout.customer.log_out' | t }}
+						{% render 'icon-sign-out' with add_class: 'ver-sub' %}
+					{%- endunless -%}	
+				</a>
+	    </div>
+		{%- endunless -%}
+	</div>
+{%- endif -%}

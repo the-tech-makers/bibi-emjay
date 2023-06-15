@@ -1,0 +1,7 @@
+{%- if block.settings.bkg_banner != blank and block.settings.bkg_banner_enable -%}
+    <div style="background-color:{{ block.settings.bkg_banner }};" class="w100 h100 dib">
+        {{ banner_html }}
+    </div>
+{%- else -%}
+    {{ banner_html }}    
+{%- endif -%}

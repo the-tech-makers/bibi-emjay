@@ -1,0 +1,55 @@
+{%- assign start_group = current_page | minus: 2 -%}
+{%- assign end_group = current_page | plus: 2 -%}
+{%- assign total_pages = total | times: 1.00 | divided_by: limit | ceil -%}
+<div class="big-gutter-top text-center pagination">
+	{%- if current_page > 1 -%}
+		<span class="prev">
+			<a href="#" data-value="{{ current_page | minus: 1 }}" class="button button--style2 button--circle cf__link cf__link--page-auto cf__link--auto dib">
+				<i class="lnr-chevron-{{ left_holder }} button__prev-page"></i>
+			</a>
+		</span>
+		{%- if start_group > 1 -%}
+			{%- if current_page == 1 -%}
+				<span class="page button button--style1 button--circle button--current dib">1</span>
+			{%- else -%}	
+	  		<span class="page">
+					<a href="#" class="button button--style2 button--circle cf__link cf__link--page-auto cf__link--auto dib" data-value="{{ 1 }}">1</a>
+				</span>
+			{%- endif -%}	
+		{%- endif -%}
+	{%- endif -%}
+	
+	{%- if start_group > 2 -%}
+		<span class="button button--style2 button--dot button--circle dib">...</span>
+	{%- endif -%}
+	{%- for i in (start_group..end_group) -%}
+		{%- if i > 0 and i <= total_pages -%}
+			{%- if i == current_page -%}
+				<span class="page button button--style1 button--circle button--current dib">{{ i }}</span>
+			{%- else -%}	
+				<span class="page">
+					<a href="#" class="button button--circle button--style2 cf__link cf__link--page-auto cf__link--auto dib" data-value="{{ i }}">{{ i }}</a>
+				</span>
+			{%- endif -%}	
+		{%- endif -%}
+	{%- endfor -%}
+	{%- assign end_group = end_group | plus: 1 -%}
+	{%- if total_pages > end_group -%}
+		<span class="button button--style2 button--dot button--circle dib">...</span>
+	{%- endif -%}
+	{%- assign end_group = end_group | minus: 1 -%}
+	{%- if end_group < total_pages -%}
+		{%- if current_page == total_pages -%}
+			<span class="page button button--style1 button--circle button--current dib">{{ current_page }}</span>
+		{%- else -%}	
+			<span class="page">
+				<a href="#" class="button button--style2 button--circle cf__link cf__link--page-auto cf__link--auto dib" data-value="{{ total_pages }}">{{ total_pages }}</a>
+			</span>
+		{%- endif -%}	
+	{%- endif -%}
+	{%- if current_page < total_pages -%}
+		<span class="page">
+			<a href="#" class="button button--style2 button--circle cf__link cf__link--page-auto cf__link--auto dib" data-value="{{ current_page | plus: 1 }}"><i class="lnr-chevron-{{ right_holder }} button__next-page"></i></a>
+		</span>
+	{%- endif -%}
+</div>

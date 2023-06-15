@@ -1,0 +1,9 @@
+{%- if linklists[block.settings.link_list].links.size > 0 -%}
+  <ul class="footer__linklist no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}{% if block.settings.inline %} list--inline{% endif %}" style="font-size:{{ block.settings.font_size }}px;{% if block.settings.inline %}margin: 0 -15px;{% endif %}">
+    {% for link in linklists[block.settings.link_list].links %}
+      <li class="footer__linklist-item"{% if block.settings.inline %} style="padding:0 15px;"{% endif %}>
+        <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %} title="{{ link.title | escape }}" class="w100 db gutter-ele-small-top gutter-ele-small-bottom gutter-ele-bottom-tbs">{{ link.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{%- endif -%}

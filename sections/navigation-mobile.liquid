@@ -1,0 +1,580 @@
+{%- render 'navigation-mobile' with section: section -%}
+{% schema %}
+{
+  "name": "Powerful Mobile Megamenu",
+  "class": "index-section flex",
+  "max_blocks": 60,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section)"
+    },
+    {
+      "type": "header",
+      "content": "Global color settings"
+    },
+    {
+      "type": "color",
+      "id": "level1_color",
+      "label": "Level 1",
+      "default": "#1c1c1c"
+    },
+    {
+      "type": "color",
+      "id": "level2_color",
+      "label": "Level 2",
+      "default": "#1c1c1c"
+    },
+    {
+      "type": "color",
+      "id": "level3_color",
+      "label": "Level 3",
+      "default": "#1c1c1c"
+    },
+    {
+      "type": "color",
+      "id": "label_text_color",
+      "label": "Label text",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "label_bkg_color",
+      "label": "Label background",
+      "default": "#05ab12"
+    },
+    {
+      "type": "color",
+      "id": "level_3_bkg",
+      "label": "Text overlay background",
+      "default": "#fff",
+      "info": "Apply on text overlay in the \"child item with Image\" items."
+    },
+    {
+      "type": "header",
+      "content": "Global font size settings"
+    },
+    {
+      "type": "range",
+      "id": "level1_fs",
+      "label": "Level 1",
+      "default": 18,
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "level2_fs",
+      "label": "Level 2",
+      "default": 13,
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "level3_fs",
+      "label": "Level 3",
+      "default": 13,
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "label_fs",
+      "label": "Label",
+      "default": 9,
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mm_top_items",
+      "name": "Top items by link list",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This is a \"Top items by link list\" item. You can refer to [this guide](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section#top-items-by-link-list) for more details about it."
+        },
+        {
+          "type": "header",
+          "content": "General settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront.",
+          "default": "Top items by link list"
+        },
+        {
+          "type": "link_list",
+          "id": "link_list",
+          "label": "Pick a Shopify Navigation"
+        },
+        {
+          "type": "select",
+          "id": "children_style",
+          "label": "Children style",
+          "options": [
+            {
+              "value": "style1",
+              "label": "Style1"
+            },
+            {
+              "value": "style2",
+              "label": "Style2"
+            }
+          ],
+          "default": "style1"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "two_columns",
+          "label": "Show the link list in 2 columns",
+          "default": false,
+          "info": "Only apply in the children style 1."
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "checkbox",
+          "id": "extend_colors",
+          "label": "Extend from the global color settings",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "level_1_color",
+          "label": "Level 1",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_2_color",
+          "label": "Level 2",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_3_color",
+          "label": "Level 3",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Label text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Label backgorund color",
+          "default": "#d9121f"
+        }
+      ]
+    },
+    {
+      "type": "mm_parent",
+      "name": "Parent( Level 1 ) item",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This is a \"Parent( Level 1 ) item\" item. You can refer to [this guide](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section#parent-level-1-item) for more details about it."
+        },
+        {
+          "type": "header",
+          "content": "General Settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \" Parent -\" for the parent items to help you organize the items better.",
+          "default": "Parent - Your item name"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Item title",
+          "default": "Type your item title"
+        },
+        {
+          "type": "url",
+          "id": "title_link",
+          "label": "Title URL"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "checkbox",
+          "id": "extend_colors",
+          "label": "Extend from the global color settings",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "level_1_color",
+          "label": "Item title ( Level 1 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Label text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Label backgorund color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom HTML Class"
+        }
+      ]
+    },
+    {
+      "type": "mm_sub_link_list",
+      "name": "Child item - Link list",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This is a \"Child item - Link list\" item. You can refer to [this guide](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section#child-item-link-list) for more details about it."
+        },
+        {
+          "type": "header",
+          "content": "General Settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"---\" for the children items to help you organize the items better.",
+          "default": "--- Your item name"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Item title",
+          "default": "Item title"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Title URL"
+        },
+        {
+          "type": "link_list",
+          "id": "link_list",
+          "label": "Pick a link list"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "radio",
+          "id": "width",
+          "label": "Item's width",
+          "options": [
+            {
+              "value": "6",
+              "label": "Half"
+            },
+            {
+              "value": "12",
+              "label": "Full"
+            }
+          ],
+          "default": "12"
+        },
+        {
+          "type": "checkbox",
+          "id": "two_columns",
+          "label": "Show the link list in 2 columns",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "checkbox",
+          "id": "extend_colors",
+          "label": "Extend from the global color settings",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "level_2_color",
+          "label": "Item title ( Level 2 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_3_color",
+          "label": "Link list ( Level 3 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Label text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Label backgorund color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom HTML Class"
+        }
+      ]
+    },
+    {
+      "type": "mm_sub_image",
+      "name": "Child item - Image",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This is a \"Child item - Image\" item. You can refer to [this guide](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section#child-item-image) for more details about it."
+        },
+        {
+          "type": "header",
+          "content": "General Settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"---\" for the children items to help you organize the items better.",
+          "default": "--- Your item name"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Item title",
+          "default": "Item title"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_text",
+          "label": "The text overlay"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "radio",
+          "id": "width",
+          "label": "Item's width",
+          "options": [
+            {
+              "value": "6",
+              "label": "Half"
+            },
+            {
+              "value": "12",
+              "label": "Full"
+            }
+          ],
+          "default": "12"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "checkbox",
+          "id": "extend_colors",
+          "label": "Extend from the global color settings",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "level_2_color",
+          "label": "Item title ( Level 2 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_3_color",
+          "label": "Text overlay ( Level 3 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_3_bkg",
+          "label": "Text overlay background",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Label text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Label backgorund color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom HTML Class"
+        }
+      ]
+    },
+    {
+      "type": "mm_html",
+      "name": "Child item - Custom HTML",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This is a \"Child item - Image\" item. You can refer to [this guide](https://beloria-docs.boostheme.com/static-sections/powerful-mobile-megamenu-section#child-item-custom-html) for more details about it."
+        },
+        {
+          "type": "header",
+          "content": "General Settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"---\" for the children items to help you organize the items better.",
+          "default": "--- Your item name"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Item title",
+          "default": "Item title"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Title URL"
+        },
+        {
+          "type": "html",
+          "id": "html",
+          "label": "Your text or HTML"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "radio",
+          "id": "width",
+          "label": "Item's width",
+          "options": [
+            {
+              "value": "6",
+              "label": "Half"
+            },
+            {
+              "value": "12",
+              "label": "Full"
+            }
+          ],
+          "default": "12"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "checkbox",
+          "id": "extend_colors",
+          "label": "Extend from the global color settings",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "level_2_color",
+          "label": "Item title ( Level 2 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "level_3_color",
+          "label": "Item text ( Level 3 )",
+          "default": "#000"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Label text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Label backgorund color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom HTML Class"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

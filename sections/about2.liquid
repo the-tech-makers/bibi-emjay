@@ -1,0 +1,118 @@
+{%- render 'section-background-start' -%}
+<div class="{% render 'section-gutters-nobkg' %}">
+  <div class="about1 container{% if section.settings.full_width %}-fluid{% endif %}">
+    <div class="row">
+      <div class="section__inner col-xs-12">
+        {%- render 'section-heading-h1' -%}
+        <div class="section__content">
+          <div class="rte{% if section.blocks.size > 0 %} gutter-bottom{% endif %}">
+            {{ page.content }}
+          </div>
+          {%- if section.blocks.size > 0 -%}
+          <div class="row gutter-top gutter-ele-top-tbs flex">
+            {%- for block in section.blocks -%}
+            <div class="col-xs-12{% unless forloop.first %} gutter-top{% endunless %}{% unless forloop.last %} gutter-bottom{% endunless %} flex" style="margin:0 -20px;">
+              <div class="col-xs-12 col-md-3 gutter-ele-bottom-tbs">
+                <span class="h3" style="line-height:1.5em;margin:0;">{{ block.settings.title }}</span>
+              </div>
+              <div class="col-xs-12 col-md-9 gutter-ele-top-tbs">
+                {%- if block.settings.short_desc != blank -%}
+                  <div class="h5 gutter-ele-bottom gutter-ele-bottom-tbs" style="line-height:1.5em;margin:0;">
+                    {{ block.settings.short_desc }}
+                  </div>
+                {%- endif -%}
+                <div>{{ block.settings.content | raw }}</div>
+              </div>
+            </div>
+            {%- endfor -%}
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "About Us 2",
+    "class": "section",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/about-us-2)"
+      },
+      {
+        "type": "header",
+        "content": "Background color"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Layout settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "add_info",
+        "name": "Additional Info",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "textarea",
+            "id": "short_desc",
+            "label": "Short description"
+          },
+          {
+            "type": "html",
+            "id": "content",
+            "label": "Content"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "About Us 2",
+        "category": "About Us"
+      }
+    ]
+  }
+{% endschema %}

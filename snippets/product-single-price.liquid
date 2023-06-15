@@ -1,0 +1,29 @@
+<div class="product-price-wrap flex flex-align-ver gutter-ele-top gutter-ele-bottom">
+  <div class="product-price product-price--single lh1 flex flex-align-ver{% unless product.price_varies %} product-price{% endunless %}">
+    {% if current_variant.compare_at_price > current_variant.price %}
+      <span class="product-price__price">
+        {%- render 'price' with current_variant.price -%}
+      </span>
+      <s class="product-price__price product-price__sale">{%- render 'price' with current_variant.compare_at_price -%}</s>
+    {% else %}
+      <span class="product-price__price">{%- render 'price' with current_variant.price -%}</span>
+    {% endif %}
+    {%- render 'product-price-unit' with variant: current_variant, is_single: true -%}
+  </div>
+  {%- render 'product-single-discount-text' with product: product, variant: current_variant -%}
+</div>
+
+{%- assign show_shipping_policy = false -%}
+{%- if section.settings.show_shipping_policy_link and shop.shipping_policy.body != blank -%}
+  {%- assign show_shipping_policy = true -%}
+{%- endif -%}
+{%- if shop.taxes_included or show_shipping_policy -%}
+  <div class="product__policies rte gutter-ele-top gutter-ele-top-tbs">
+    {%- if shop.taxes_included -%}
+      {{ 'products.product.include_taxes' | t }}
+    {%- endif -%}
+    {%- if show_shipping_policy -%}
+      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+    {%- endif -%}
+  </div>
+{%- endif -%}{% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}

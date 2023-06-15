@@ -1,0 +1,67 @@
+{%- for node1 in nodes -%}
+	{%- assign cid1 = node1.id | split: '|' | first | times: 1 -%}
+	{%- assign c_handle1 = node1.id | split: '|' | last -%}
+	{%- assign shopify_node1 = collections[c_handle1] -%}
+	{%- if shopify_node1 != blank -%}
+		{%- if collection.id == cid1 -%}
+			{%- assign treeRoot = node1 -%}
+			{%- assign found_tree = true -%}
+		{%- else -%}
+			{%- if node1.children != blank -%}
+				{%- for node2 in node1.children -%}
+					{%- assign cid2 = node2.id | split: '|' | first | times: 1 -%}
+					{%- assign c_handle2 = node2.id | split: '|' | last -%}
+					{%- assign shopify_node2 = collections[c_handle2] -%}
+					{%- if shopify_node2 != blank -%}
+						{%- if collection.id == cid2 -%}
+							{%- assign treeRoot = node2 -%}
+							{%- assign found_tree = true -%}
+						{%- else -%}
+							{%- if node2.children != blank -%}
+								{%- for node3 in node2.children -%}
+									{%- assign cid3 = node3.id | split: '|' | first | times: 1 -%}
+									{%- assign c_handle3 = node3.id | split: '|' | last -%}
+									{%- assign shopify_node3 = collections[c_handle3] -%}
+									{%- if shopify_node3 != blank -%}
+										{%- if collection.id == cid3 -%}
+											{%- assign treeRoot = node3 -%}
+											{%- assign found_tree = true -%}
+										{%- else -%}
+											{%- if node3.children != blank -%}
+												{%- for node4 in node3.children -%}
+													{%- assign cid4 = node4.id | split: '|' | first | times: 1 -%}
+													{%- assign c_handle4 = node4.id | split: '|' | last -%}
+													{%- assign shopify_node4 = collections[c_handle4] -%}
+													{%- if shopify_node4 != blank -%}
+														{%- if collection.id == cid4 -%}
+															{%- assign treeRoot = node4 -%}
+															{%- assign found_tree = true -%}
+														{%- else -%}
+															{%- if node4.children != blank -%}
+																{%- for node5 in node4.children -%}
+																	{%- assign cid5 = node5.id | split: '|' | first | times: 1 -%}
+																	{%- assign c_handle5 = node5.id | split: '|' | last -%}
+																	{%- assign shopify_node5 = collections[c_handle5] -%}
+																	{%- if shopify_node5 != blank -%}
+																		{%- if collection.id == cid5 -%}
+																			{%- assign found_tree = true -%}
+																			{%- assign treeRoot = node5 -%}
+																		{%- endif -%}
+																	{%- endif -%}
+																{%- endfor -%}
+															{%- endif -%}
+														{%- endif -%}
+													{%- endif -%}	
+												{%- endfor -%}
+											{%- endif -%}
+										{%- endif -%}
+									{%- endif -%}	
+								{%- endfor -%}
+							{%- endif -%}
+						{%- endif -%}
+					{%- endif -%}	
+				{%- endfor -%}
+			{%- endif -%}
+		{%- endif -%}
+	{%- endif -%}	
+{%- endfor -%}

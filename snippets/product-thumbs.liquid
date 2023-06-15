@@ -1,0 +1,38 @@
+{%- assign small_image_size = '75x' -%}
+	{%- assign small_width = 75 -%}
+{%- if small_image == 'small' -%}
+	{%- assign small_image_size = '35x' -%}
+	{%- assign small_width = 35 -%}
+{%- endif -%}
+<div class="hidden-xs pg__thumbs grid {% if use_slider %}pg__thumbs--slider{% else %}pg__thumbs--{{ small_image }}{% endif %}">{%- comment -%}add class pg__thumbs--slider to display thumbs as slider{%- endcomment -%}
+	{%- assign group_option_value = '' -%}
+	{%- unless use_slider -%}
+		{%- if settings.enable_product_group_images and settings.group_option_name != blank -%}
+			{%- assign group_option_name_downcase = settings.group_option_name | downcase -%}
+			{%- for option in product.options_with_values -%}
+				{%- assign option_name_downcase = option.name | downcase -%}
+				{%- if option_name_downcase == group_option_name_downcase -%}
+					{%- assign group_option_value = 'group-' | append: option.selected_value | downcase | replace: ' ','-' -%}
+				{%- endif -%}
+			{%- endfor -%}
+		{%- endif -%}
+	{%- endunless -%}
+	{%- for image in product.images -%}
+		{%- unless image.alt contains 'hide-in-list' -%}
+		{%- assign hidden_in_group_class = '' -%}
+		{%- unless use_slider -%}
+			{%- if settings.enable_product_group_images and settings.group_option_name != blank and group_option_value != '' -%}
+				{%- unless image.alt contains 'group-all' or image.alt contains group_option_value -%}
+					{%- assign hidden_in_group_class = 'hide' -%}
+				{%- endunless -%}
+			{%- endif -%}
+		{%- endunless -%}
+		{%- assign small_height = small_width | divided_by: image.aspect_ratio | round -%}
+		<div class="pg__thumb {% if settings.enable_product_group_images and settings.group_option_name != blank %}{% if image.alt contains 'group-' %}{{ image.alt | escape }}{% if hidden_in_group_class != '' %} {{ hidden_in_group_class }}{% endif %}{% else %}group-all{% endif %}{% endif %}{% if featured_image and featured_image.id == image.id %} active{% endif %}">
+			<a href="{{ image.src | img_url: 'master' }}" class="pg__thumb__link" title="{{ image.alt | escape }}" data-image-id="{{ image.id }}" data-width="{{ image.width }}" data-height="{{ image.height }}">
+				<img class="img-responsive lazyload" data-src="{{ image.src | img_url: small_image_size }}" alt="{{ image.alt | escape }}" width="{{ small_width }}" height="{{ small_height }}"{% render 'img-one-pixel' %}>
+      </a>
+		</div>
+		{%- endunless -%}
+	{%- endfor -%}
+</div>

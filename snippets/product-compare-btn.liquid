@@ -1,0 +1,3 @@
+{%- if show_compare_btn and settings.enable_compare -%}
+<a {% if showTooltip %} data-toggle="tooltip" data-original-title="{{ 'collections.product_item.add_to_compare' | t | escape }}" {% if tooltip_pos != blank %} data-placement="{{ tooltip_pos }}" {% else %} data-placement="top" {% endif %}{% endif %} title="{{ 'collections.product_item.add_to_compare'|t|escape }}" data-handle="{{ product.handle }}" href="#" class="button button--cp flex flex-align-ver flex-align-hoz{% if btn_style_classes %} {{ btn_style_classes }}{% endif %}">{% render 'icon-compare' %}{%- unless hide_compare_text -%} {{ 'collections.product_item.compare'|t }}{%- endunless -%}</a>
+{%- endif -%}

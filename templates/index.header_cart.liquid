@@ -1,0 +1,6 @@
+{%- layout none -%}
+<div>
+<span class="cart-number">{{ cart.item_count }}</span>	
+<span class="cart-total">{%- include 'price' with cart.total_price -%}</span>	
+{%- include 'header-cart-content' -%}
+</div>

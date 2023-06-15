@@ -1,0 +1,189 @@
+{%- unless product.has_only_default_variant or enable_product_options == false -%}
+{%- assign color_swatch_size = color_size | default: '58x' -%}
+{%- assign option_size = product.options.size -%}
+{%- unless is_single_view -%}
+	{%- assign first_available_variant = product.first_available_variant -%}
+{%- else -%}
+	{%- assign first_available_variant = product.selected_or_first_available_variant -%}	
+{%- endunless -%}
+{%- assign available_option2_values = ',' -%}
+{%- assign available_option3_values = ',' -%}
+{%- assign collect_color_name = ',' -%}
+{%- assign collect_color_src = '' -%}
+
+{%- comment -%}collect color index{%- endcomment -%}
+{%- assign color_label = 'products.product.color' | t | downcase -%}
+{%- assign size_label = 'products.product.size' | t | downcase -%}
+{%- if settings.cs_swatch_type == 'variant' -%}
+	{%- for option in product.options -%}
+		{%- assign downcase_name = option | downcase -%}
+		{%- if downcase_name contains color_label or downcase_name contains 'colour' or downcase_name contains 'color' -%}
+			{%- assign color_option_index = forloop.index0 -%}
+		{%- endif -%}
+	{%- endfor -%}
+{%- endif -%}	
+
+{%- assign out_stock_group = '' -%}
+{%- for variant in product.variants -%}
+	{%- comment -%}collect variant images for color swatches{%- endcomment -%}
+	{%- if settings.cs_swatch_type == 'variant' and color_option_index != blank -%}
+		{%- assign color_compared = ',' | append: variant.options[color_option_index] | append: ',' -%}
+		{%- unless collect_color_name contains color_compared -%}
+			{%- assign collect_color_name = collect_color_name | append: variant.options[color_option_index] | append: ',' -%}
+			{%- assign color_src = variant.featured_image.src | img_url: color_swatch_size -%}
+			{%- assign collect_color_src = collect_color_src | append: color_src | append: ',' -%}
+		{%- endunless -%}
+	{%- endif -%}
+
+	{%- if option_size > 1 -%}
+		{%- if variant.option1 == first_available_variant.option1 -%}
+			{%- assign value = variant.option2 | append: ',' -%}
+			{%- assign compared_value = ',' | append: value  -%}
+			{%- unless available_option2_values contains compared_value -%}
+				{%- assign available_option2_values = available_option2_values | append: value -%}
+			{%- endunless -%}
+		{%- endif -%}
+		{%- if option_size > 2 and variant.option1 == first_available_variant.option1 and variant.option2 == first_available_variant.option2 -%}
+			{%- assign value = variant.option3 | append: ',' -%}
+			{%- assign compared_value = ',' | append: value  -%}
+			{%- unless available_option3_values contains compared_value -%}
+				{%- assign available_option3_values = available_option3_values | append: value -%}
+			{%- endunless -%}
+		{%- endif -%}
+	{%- endif -%}
+	{%- unless variant.available -%}
+		{%- assign variant_title = variant.options | join: ' / ' -%}
+		{%- assign out_stock_group = out_stock_group | append: variant_title | append: '|||' -%}
+	{%- endunless -%}
+{%- endfor -%}
+{%- assign out_stock_group = out_stock_group | split: '|||' -%}
+{%- assign current_prefix_select = '' -%}
+{%- if option_size == 2 -%}
+	{%- assign current_prefix_select = first_available_variant.option1 -%}
+{%- endif -%}
+{%- if option_size == 3 -%}
+	{%- assign current_prefix_select = current_prefix_select | append: ' / '  | append: first_available_variant.option2 -%}
+{%- endif -%}
+
+{%- if collect_color_src != '' -%}
+	{%- assign color_array =  collect_color_src | split: ',' -%}
+{%- endif -%}
+
+{%- assign group_option_index = -1 -%}
+{%- assign group_option_value = '' -%}
+{%- assign group_option_name_settings_downcase = settings.group_option_name | downcase -%}
+
+{%- for option in product.options_with_values -%}
+{%- assign option_index = forloop.index -%}
+{%- assign option_name_downcase = option.name | downcase -%}
+{%- if settings.enable_product_group_images and group_option_name_settings_downcase == option_name_downcase -%}
+	{%- assign group_option_index = forloop.index0 -%}
+	{%- assign group_option_value = option.selected_value -%}
+{%- endif -%}
+{%- assign is_color = false -%}
+{%- if option_name_downcase contains color_label or option_name_downcase contains 'colour' or option_name_downcase contains 'color' -%}
+	{%- assign is_color = true -%}
+{%- endif -%}
+{%- assign is_dropdown = false -%}
+{%- unless force_dropdown_all -%}
+	{%- if settings.dropdown_options != blank -%}
+		{%- assign dropdown_options_downcase = settings.dropdown_options | downcase -%}
+		{%- if dropdown_options_downcase contains option_name_downcase -%}
+			{%- assign is_dropdown = true -%}
+		{%- endif -%}
+	{%- endif -%}
+{%- else -%}
+	{%- assign is_dropdown = true -%}	
+{%- endunless -%}
+<div class="pg__option {% if is_single_view %}flex flex-align-ver pg__option--single gutter-ele-{% if is_single_sticky %}small-{% endif %}top gutter-ele-top-tbs{% if forloop.last %} gutter-ele-{% if is_single_sticky %}small-{% endif %}bottom gutter-ele-bottom-tbs{% endif %}{% else %}w100{% endif %}{% unless is_dropdown == true %} swatch{% if is_color == true %} swatch--color{% endif %}{% endunless %}{% if settings.enable_product_group_images and group_option_name_settings_downcase == option_name_downcase %} is-group{% endif %}{% if forloop.last %} last{% endif %}" data-index="{{ forloop.index0 }}" data-option-name="{{ option_name_downcase | replace: '"' ,'' | replace: '"', '' }}">
+	{%- if forloop.index == 2 -%}
+  	{%- assign available_option_compared = available_option2_values -%}
+  {%- elsif forloop.index == 3 -%}
+  	{%- assign available_option_compared = available_option3_values -%}	
+  {%- endif -%}
+  {%- assign show_option_label = false -%}
+  {%- if is_single_view -%}
+  	{%- assign show_option_label = true -%}
+  {%- else -%}
+  	{%- unless is_color == true or option_name_downcase contains size_label or option_name_downcase contains 'size' -%}
+  		{%- assign show_option_label = true -%}
+  	{%- else -%}
+  		{%- assign show_option_label = false -%}	
+  	{%- endunless -%}	
+  {%- endif -%}
+  {%- if show_option_label == true -%}
+  	<div class="pg__option__label{% if is_single_sticky %} pg__option__label--sticky{% endif %}">{{ option.name }}</div>
+  {%- endif -%}
+  <div class="{% unless is_dropdown %}pg__option__values {% endunless %}flex{% unless is_single_view %} w100{% endunless %}">
+  	{%- if is_dropdown == false -%}
+	  	{%- for value in option.values -%}
+	  		{%- if option_index == 1 -%}
+	  			{%- assign available = true -%}
+	  		{%- else -%}
+					{%- assign available = false -%}
+	  			{%- assign compared_value = ',' | append: value | append: ',' -%}	 
+					{%- if available_option_compared contains compared_value -%}
+	 					{%- assign available = true -%}
+	  			{%- endif -%}
+	  		{%- endif -%}
+	  		{%- assign title_value = value | replace: '-', ' ' -%}
+	  		{%- if current_prefix_select == '' -%}
+	  			{%- assign option_select_value = value -%}
+	  		{%- else -%}
+	  			{%- assign option_select_value = current_prefix_select | append: ' / ' | append: value -%}
+	  		{%- endif -%}
+	  		{%- unless is_single_view -%}
+	  			<a href="#" title="{{ title_value | escape }}" data-value="{{ value | escape }}" class="pg__option__value swatch__item flex flex-align-hoz flex-align-ver{% if is_color == true %}{% if settings.cs_swatch_type != 'variant' %} swatch__item--color color-load{% else %} swatch__item--image swatch__item--bkg-image lazy-bkg lazy-bkg--cover stick-item{% endif %}{% endif %}{% if option.selected_value == value %} selected{% endif %}{% unless available == true %} hide{% endunless %} text-center{% if is_color == true and settings.cs_swatch_type == 'variant' and color_array != blank %} lazyload fade-in{% endif %}{% if out_stock_group contains option_select_value %} swatch__item--soldout{% endif %}"{% if is_color == true %}{% if settings.cs_swatch_type == 'variant' %}{% if color_array != blank %} data-bgset="{{ color_array[forloop.index0] }}"{% endif %}{% else %} data-color-tag="{{ value | escape | handleize }}"{% endif %}{% endif %}{% if is_color %} data-toggle="tooltip"{% endif %}>
+	  				{%- if is_color == false -%}
+	  					{{ value }}
+  					{%- endif -%}
+	  			</a>
+	  		{%- else -%}
+	  			<a href="#" title="{{ title_value | escape }}" data-value="{{ value | escape }}" class="pg__option__value swatch__item swatch__item--single flex flex-align-hoz flex-align-ver{% if is_single_sticky %} swatch__item--sticky{% endif %}{% if is_color == true %} no-gutter {% if is_single_sticky %} swatch__item--color color-load swatch__item--color-sticky{% else %} stick-item{% endif %}{% else %} stick-item{% endif %}{% if option.selected_value == value %} selected{% endif %}{% unless available == true %} hide{% endunless %} text-center{% if is_color == true and settings.cs_swatch_type == 'variant' and color_array != blank %} stick-item{% unless is_single_sticky %} swatch__item--height-auto{% endunless %}{% endif %}{% if out_stock_group contains option_select_value %} swatch__item--soldout{% endif %}"{% if is_color and is_single_sticky %} data-toggle="tooltip" data-color-tag="{{ value | escape | handleize }}"{% endif %}>
+	  				{%- if is_color -%}
+	  					{%- unless is_single_sticky -%}
+		  					<span class="swatch__item--single-color color-load ignore-color-text db h100 lazy-bkg lazy-bkg--cover swatch__item--bkg-image{% if settings.cs_swatch_type == 'variant' and color_array != blank %} swatch__item--image--single lazyload fade-in{% endif %}"{% if settings.cs_swatch_type == 'variant' and color_array != blank %} data-bgset="{{ color_array[forloop.index0] }}"{% else %} data-color-tag="{{ value | escape | handleize }}"{% endif %}></span>
+		  					<span class="swatch__item--single-color-text">{{ value }}</span>
+	  					{%- elsif settings.cs_swatch_type == 'variant' and color_array != blank -%}
+		  					<span class="swatch__item--single-color db h100 lazyload fade-in lazy-bkg lazy-bkg--cover swatch__item--bkg-image" data-bgset="{{ color_array[forloop.index0] }}"></span>	
+	  					{%- endunless -%}
+	  				{%- else -%}
+	  					<span>{{ value }}</span>	
+	  				{%- endif -%}
+	  			</a>	
+	  		{%- endunless -%}
+	    {%- endfor -%}
+	  {%- else -%}
+		  <div class="select select--option{% unless forloop.first or is_single_view %} distance-top-ele{% endunless %}">
+		  	<select class="pg__option__value"{% if is_single_view %} aria-label="{{ option.name | escape }}"{% endif %}>
+		  		{%- for value in option.values -%}
+		  			{%- if option_index == 1 -%}
+			  			{%- assign html_classes = '' -%}
+			  		{%- else -%}
+							{%- assign html_classes = 'hide' -%}
+			  			{%- assign compared_value = ',' | append: value | append: ',' -%}	 
+							{%- if available_option_compared contains compared_value -%}
+			 					{%- assign html_classes = '' -%}
+			  			{%- endif -%}
+			  		{%- endif -%}
+
+			  		{%- if current_prefix_select == '' -%}
+			  			{%- assign option_select_value = value -%}
+			  		{%- else -%}
+			  			{%- assign option_select_value = current_prefix_select | append: ' / ' | append: value -%}
+			  		{%- endif -%}
+			  		{%- if out_stock_group contains option_select_value -%}
+			  			{%- assign html_classes = html_classes | append: ' soldout' | strip -%}
+			  		{%- endif -%}
+			  		<option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}{% if html_classes != '' %} class="{{ html_classes }}"{% endif %}{% if out_stock_group contains option_select_value or html_classes contains 'hide' %} disabled="disabled"{% endif %}>{{ value }}</option>
+		  		{%- endfor -%}
+		  	</select>  
+		  </div>
+    {%- endif -%}
+  </div>
+</div>
+{%- endfor -%}
+{%- if group_option_index >= 0 -%}
+	<span class="group-data" data-index="{{ group_option_index }}" data-value="{{ group_option_value }}"></span>
+{%- endif -%}
+{%- endunless -%}

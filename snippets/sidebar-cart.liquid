@@ -1,0 +1,13 @@
+{%- if template.name != 'cart' -%}
+<div class="bt-sidebar">
+  <div id="bt-sidebar-cart" class="bt-sidebar__inner">
+  	<div class="bt-sidebar__header flex bt-sidebar__header--{% unless enable_rtl %}right{% else %}left{% endunless %}">
+  		<h4 class="bt-sidebar__title">{{ 'cart.general.title' | t }}</h4>
+  		{%- render 'sidebar-close-btn' -%}
+  	</div>
+    <div class="bt-sidebar__content" id="header-cart-canvas">
+      {%- render 'header-cart-content' -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}

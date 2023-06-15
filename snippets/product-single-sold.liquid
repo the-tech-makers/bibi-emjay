@@ -1,0 +1,14 @@
+{%- if section.settings.sold_enable -%}
+<div class="gutter-ele-top gutter-ele-bottom">
+	{%- assign sold_min = section.settings.sold_min -%}
+	{%- assign sold_max = section.settings.sold_max -%}
+	{%- assign sold_diff = sold_max | minus: sold_min -%}
+	{%- assign sold = "now" | date: "%N" | modulo: sold_diff | plus: sold_min -%}
+	{%- assign hour_min = section.settings.sold_hour_min -%}
+	{%- assign hour_max = section.settings.sold_hour_max -%}
+	{%- assign hour_diff = hour_max | minus: hour_min -%}
+	{%- assign hour = "now" | date: "%N" | modulo: hour_diff | plus: hour_min -%}
+	{%- include 'icon-sold' with addClass: 'pg__sold-icon' -%}
+	<span class="dib pg__sold-text">{{ 'products.product.sold_text_random_html' | t: sold_number: sold, hour_number: hour }}</span>
+</div>
+{%- endif -%}

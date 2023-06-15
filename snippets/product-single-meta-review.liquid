@@ -1,0 +1,58 @@
+{%- if settings.enable_review -%}
+	{%- case settings.review_app -%}
+		{%- when 'product_review' -%}
+			{%- assign meta_spr = product.metafields.spr.reviews -%}
+     	{%- if meta_spr != blank and meta_spr contains 'reviewCount' -%}
+     		{%- assign ratingCount = meta_spr | split: '"reviewCount": "' | last | split: '"' | first -%}
+     		{%- if ratingCount != "0" and ratingCount != blank -%}
+		      ,"aggregateRating": {
+		       "@type": "AggregateRating",
+		       "ratingCount": "{{ ratingCount }}",
+		       "ratingValue": "{{ meta_spr | split: '"ratingValue": "' | last | split: '"' | first }}"
+		      }
+	      {%- endif -%}
+      {%- endif -%}
+    {%- when 'ali_reviews' -%}
+    	{%- if product.metafields.alireviews.seo_rating_review_key_script != blank != blank -%}
+        ,"aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingCount": "{{ product.metafields.alireviews.seo_rating_review_key_script | split: '"reviewCount": "' | last | split: '"' | first }}",
+        "ratingValue": "{{ product.metafields.alireviews.seo_rating_review_key_script | split: '"ratingValue": "' | last | split: '"' | first }}"
+        }
+      {%- endif -%}
+    {%- when 'ryviu' -%}
+    	{%- if product.metafields.ryviu.product_reviews_info != blank -%}
+				{%- assign reviewArray = product.metafields.ryviu.product_reviews_info | split: ';' -%}
+				,"aggregateRating": {
+	        "@type": "AggregateRating",
+	        "ratingCount": "{{ reviewArray[0] }}",
+	        "ratingValue": "{{ reviewArray[1] }}"
+	      }
+			{%- endif -%}
+		{%- when 'yotpo' -%}
+			{%- if product.metafields.yotpo.reviews_count and product.metafields.yotpo.reviews_count != "0" -%}
+				,"aggregateRating": {
+	        "@type": "AggregateRating",
+	        "ratingCount": "{{ product.metafields.yotpo.reviews_count }}",
+	        "ratingValue": "{{ product.metafields.yotpo.reviews_average }}"
+	      }
+			{%- endif -%}
+		{%- when 'loox' -%}
+			{%- if product.metafields.loox.num_reviews -%}
+				,"aggregateRating": {
+		      "@type": "AggregateRating",
+		      "ratingCount": "{{ product.metafields.loox.num_reviews }}",
+		      "ratingValue": "{{ product.metafields.loox.avg_rating }}"
+		    }
+	    {%- endif -%}
+	  {%- when 'stamped' -%}
+	  	{%- assign ratingCount = product.metafields.stamped.reviews_count -%}
+      {%- if ratingCount != "0" and ratingCount != blank -%}
+        ,"aggregateRating": {
+	        "@type": "AggregateRating",
+	        "ratingCount": "{{ ratingCount }}",
+	        "ratingValue": "{{ product.metafields.stamped.reviews_average }}"
+        }
+      {%- endif -%}  	
+	{%- endcase -%}
+{%- endif -%}

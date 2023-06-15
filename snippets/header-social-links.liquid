@@ -1,0 +1,26 @@
+<ul class="list--inline header__social-links h100{% if add_wrap_classes %} {{ add_wrap_classes }}{% endif %}">
+{%- if settings.social_twitter_link != blank -%}
+	<li><a href="{{ settings.social_twitter_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.twitter' | t | escape }}">{%- render 'icon-twitter' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_facebook_link != blank -%}
+	<li><a href="{{ settings.social_facebook_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.facebook' | t | escape }}">{%- render 'icon-facebook' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_pinterest_link != blank -%}
+	<li><a href="{{ settings.social_pinterest_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.pinterest' | t | escape }}">{%- render 'icon-pinterest' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_instagram_link != blank -%}
+	<li><a href="{{ settings.social_instagram_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.instagram' | t | escape }}">{%- render 'icon-instagram' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_tumblr_link != blank -%}
+	<li><a href="{{ settings.social_tumblr_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.tumblr' | t | escape }}">{%- render 'icon-tumblr' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_snapchat_link != blank -%}
+	<li><a href="{{ settings.social_snapchat_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.snapchat' | t | escape }}">{%- render 'icon-snapchat' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_youtube_link != blank -%}
+	<li><a href="{{ settings.social_youtube_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.youtube' | t | escape }}">{%- render 'icon-youtube' -%}</a></li>
+{%- endif -%}
+{%- if settings.social_vimeo_link != blank -%}
+	<li><a href="{{ settings.social_vimeo_link }}" target="_blank" class="header__social-link" title="{{ 'general.social.vimeo' | t | escape }}">{%- render 'icon-vimeo' -%}</a></li>
+{%- endif -%}
+</ul>

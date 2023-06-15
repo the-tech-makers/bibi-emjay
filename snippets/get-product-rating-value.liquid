@@ -1,0 +1,32 @@
+{%- liquid
+	case settings.review_app
+		when 'product_review'
+			assign meta_spr = product.metafields.spr.reviews
+			if meta_spr != blank
+				echo meta_spr | split: '"ratingValue": "' | last | split: '"' | first
+			endif
+		when 'ali_reviews'
+			if product.metafields.alireviews.seo_rating_review_key_script != blank
+				echo product.metafields.alireviews.seo_rating_review_key_script | split: '"ratingValue": "' | last | split: '"' | first
+			endif
+		when 'ryviu'
+			if product.metafields.ryviu.product_reviews_info != blank
+				assign reviewArray = product.metafields.ryviu.product_reviews_info | split: ';'
+				echo reviewArray[1]	
+			endif
+		when 'yotpo'
+			if product.metafields.yotpo.reviews_count and product.metafields.yotpo.reviews_count != "0"
+				echo product.metafields.yotpo.reviews_average
+			endif
+		when 'loox'
+			if product.metafields.loox.avg_rating != blank
+				echo product.metafields.loox.avg_rating
+			endif
+		when 'stamped'
+			if product.metafields.stamped.reviews_average != blank
+				echo product.metafields.stamped.reviews_average
+			endif
+		else
+			echo 0	
+	endcase
+-%}	

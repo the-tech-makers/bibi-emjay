@@ -1,0 +1,61 @@
+<style rel="stylesheet">
+{%- render 'preload-styles.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- render 'preload-search-full.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- if settings.lazyload_effect -%}{%- render 'preload-lazy-load.scss' with left_holder: left_holder, right_holder: right_holder -%}{%- endif -%}
+{%- if template.name == 'index' -%}
+	{%- render 'preload-home-page.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- else -%}
+	{%- render 'preload-breadcrumbs.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endif -%}
+{%- if settings.promo_enable -%}
+{%- unless enable_rtl -%}
+.promo__item:last-child {padding-right: 0;}
+{%- else -%}
+.promo__item:first-child {padding-right: 0;}
+{%- endunless -%}
+{%- render 'preload-promotion.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endif -%}
+  {%- render 'preload-product-single-general.scss' with left_holder: left_holder, right_holder: right_holder, top_holder: top_holder -%}
+{%- if template.name == 'product' -%}
+	{%- render 'preload-product-single-general.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- render 'preload-product-single.scss' with left_holder: left_holder, right_holder: right_holder -%}
+	{%- render 'preload-product-single-fre-bought.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endif -%}
+{%- if template.name == 'collection' or template.name == 'search' or template.name == 'blog' -%}{%- render 'preload-grid-list.scss' with left_holder: left_holder, right_holder: right_holder -%}{%- endif -%}
+{%- if template.name contains 'collection' or template.name == 'search' -%}
+	{%- render 'preload-collection-page.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endif -%}
+{%- if template.name == 'search' -%}
+  {%- render 'preload-search-page.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endif -%}
+{%- if template.name == 'blog' or template.name == 'article' -%}{%- render 'preload-blog-pages.scss' with left_holder: left_holder, right_holder: right_holder -%}{%- endif -%}
+{%- if settings.thumbnail_ratio != 'auto' -%}.pg__image{padding-top:{{ settings.thumbnail_ratio }}%;}.pg__img-fit{-o-object-fit:cover;object-fit:cover;height:100%;}{%- endif -%}
+</style>
+<style rel="stylesheet" media="all and (max-width:767px)">
+  {%- render 'preload-bottom-mobile-toolbar.scss' with left_holder: left_holder, right_holder: right_holder -%}
+</style>
+<style rel="stylesheet" media="all and (min-width:992px)">
+{%- case settings.header_style -%}
+  {%- when 'style1' -%}
+    {%- render 'preload-header-style1.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style2' -%}
+    {%- render 'preload-header-style2.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style3' -%}
+    {%- render 'preload-header-style3.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style4' -%}
+    {%- render 'preload-header-style4.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style5' -%}
+    {%- render 'preload-header-style5.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style6' -%}
+    {%- render 'preload-header-style6.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style7' -%}
+    {%- render 'preload-header-style7.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style8' -%}
+    {%- render 'preload-header-style8.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- when 'style9' -%}
+    {%- render 'preload-header-style9.scss' with left_holder: left_holder, right_holder: right_holder -%}
+  {%- else -%}
+    {%- render 'preload-header-style10.scss' with left_holder: left_holder, right_holder: right_holder -%}
+{%- endcase -%}
+.aligning-menu{overflow-x:hidden;}
+</style>

@@ -1,0 +1,34 @@
+<div class="pcol__item item dib w100{% if index > slide_per_row %} hide-in-loading{% endif %}{% unless forloop.last %} gutter-ele-bottom{% endunless %}">
+  <div class="flex flex-wrap flex-align-space-between">
+    <div class="pcol__item__left col-xs-4 no-gutter--{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}left{% else %}right{% endunless %}">
+      {%- if main_thumbnail == 'product_image' or product.first_available_variant.featured_image == blank -%}
+        {%- assign featured_image = product.featured_image -%}
+      {%- else -%}
+        {%- assign featured_image = product.first_available_variant.featured_image -%}
+      {%- endif -%}
+      {%- assign img_url = featured_image | product_img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+      <a href="{{ product.url | within: collection }}" class="item__image img-container" title="{{ product.title | escape }}" style="padding-top:{{ 1 | divided_by: featured_image.aspect_ratio | times: 100}}%;">
+        <img  data-aspectratio="{{ featured_image.aspect_ratio }}"
+          data-src="{{ img_url }}"
+          data-sizes="auto" class="img-abs img-responsive lazyload" alt="{{ featured_image.alt | default: product.title | escape }}" width="{{ featured_image.width }}" height="{{ featured_image.height }}"{% render 'img-one-pixel' %}/>
+      </a>
+    </div>
+    <div class="pcol__item__right col-xs-8 no-gutter">
+      <a class="item__name no-gutter-top" href="{{ product.url | within: collection }}" title="{{ product.title | escape }}">
+        {%- if truncate_count > 0 -%}
+          {{ product.title | truncatewords: truncate_count }}
+        {%- else -%}
+          {{ product.title }}
+        {%- endif -%}  
+      </a>
+      {%- if show_review_stars -%}
+      <div class="gutter-ele-small-top">
+        {%- render 'product-review' with product: product -%}
+      </div>
+      {%- endif -%}
+      <div class="gutter-ele-small-top">
+        {%- render 'product-price-varies' with product as product -%}
+      </div>
+    </div>
+  </div>
+</div>

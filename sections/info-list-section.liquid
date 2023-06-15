@@ -1,0 +1,252 @@
+{%- liquid 
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign enable_rtl = false
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+  else
+    assign enable_rtl = true
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+  endunless  
+-%}
+{%- render 'section-background-start' -%}
+<div class="container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}{% if section.settings.small_top_gutter %} gutter-top{% endif %}{% if section.settings.small_bottom_gutter %} gutter-bottom{% endif %} info-list" data-section-id="{{ section.id }}" data-section-type="info-list" id="info-list-{{ section.id }}">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      {%- render 'section-heading' with section_heading_custom_class: 'hidden-sm hidden-md hidden-lg' -%}
+      <div class="section__content">
+        <div class="row flex">
+          <div class="col-xs-12 col-sm-6 gutter-ele-bottom-tbs">
+            {%- if section.settings.image != blank -%}
+              {%- assign img_url = section.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+              <div class="img-container" style="padding-top:{{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100}}%;">
+                <img data-aspectratio="{{ section.settings.image.aspect_ratio }}"
+                data-src="{{ img_url }}"
+                data-sizes="auto" class="w100 img-responsive center-block img-abs center-abs lazyload op1" src="{{ section.settings.image | img_url: "56x" }}" alt="{{ section.settings.image.alt | escape }}" data-image-size="1x1"/>
+              </div>
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          <div class="col-xs-12 col-sm-6 gutter-ele-top-tbs">
+            {%- render 'section-heading' with heading_align: 'left', section_heading_custom_class: 'hidden-xs' -%}
+            <div class="info-list__items">
+              {%- if section.blocks.size > 0 -%}
+                {%- for block in section.blocks -%}
+                  <div class="flex flex-align-ver gutter-bottom">
+                    <div class="info-list__number">{{ forloop.index }}</div>
+                    <div class="info-list__item">
+                      <div class="info-list__title">
+                        {%- if block.settings.url != blank -%}
+                          <a href="{{ block.settings.url }}" title="{{ block.settings.title | escape }}">
+                            {{ block.settings.title }}
+                          </a>
+                        {%- else -%}
+                          {{ block.settings.title }}
+                        {%- endif -%}
+                      </div>
+                      <div class="info-list__short-desc">{{ block.settings.short_desc }}</div>
+                    </div>
+                  </div>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for i in (1..4) -%}
+                  <div class="flex flex-align-ver gutter-bottom">
+                    <div class="info-list__number">{{ forloop.index }}</div>
+                    <div class="info-list__item">
+                      <div class="info-list__title">
+                        <a href="#" title="Information">
+                          Information
+                        </a>
+                      </div>
+                      <div class="info-list__short-desc">Short description</div>
+                    </div>
+                  </div>
+                {%- endfor -%}
+              {%- endif -%}
+            </div>
+            {%- if section.settings.show_btn -%}
+            <a href="{{ section.settings.btn_link | default: '#' }}" class="button button--style1 button--rad info-list__button" title="{{ section.settings.btn_label | escape }}" style="position:absolute;bottom:0;left:auto;right:auto;">{{ section.settings.btn_label }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% style %}{%- render 'preload-info-list.scss' with left_holder: left_holder, right_holder: right_holder -%}{% endstyle %}
+{% schema %}
+  {
+    "name": "Information list",
+    "class": "index-section info-list",
+    "max_blocks": 12,
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/banner-and-image/information-list)"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "image_picker",
+        "id": "section_bkg_image",
+        "label": "Background image"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_gutter",
+        "label": "Background size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high"
+      },
+      {
+        "type": "radio",
+        "id": "section_bkg_style",
+        "label": "Background image style",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_top_gutter",
+        "label": "Enable small top gutter",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "small_bottom_gutter",
+        "label": "Enable small bottom gutter",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Information list"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Sub heading"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Pick an image"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_btn",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "btn_label",
+        "label": "Label",
+        "default": "READ MORE"
+      },
+      {
+        "type": "url",
+        "id": "btn_link",
+        "label": "URL"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "info-item",
+        "name": "Information Item",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "textarea",
+            "id": "short_desc",
+            "label": "Short description"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "The link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Information list",
+        "category": "Image",
+        "blocks": [
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,1491 @@
+{%- render 'navigation' with section: section -%}
+{% schema %}
+{
+  "name": "Powerful Megamenu",
+  "class": "index-section hidden-xs flex",
+  "max_blocks": 60,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/static-sections/powerful-megamenu-section)"
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "color",
+      "id": "bkg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "header",
+      "content": "Simple Menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_link_list",
+      "label": "Show a link list as menu",
+      "info": "Tick the checkbox and pick a link list in below field to display a menu as a linked list instead of a mega menu",
+      "default": false
+    },
+    {
+      "type": "link_list",
+      "id": "menu_link_list",
+      "label": "Pick a link list"
+    },
+    {
+      "type": "color",
+      "id": "top_item_link_list_color",
+      "label": "Top item color",
+      "default": "#fff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_item_parent",
+      "name": "Parent Item",
+      "settings": [
+        {
+          "type": "header",
+          "content": "General settings"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you find the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \" Parent -\" for the parent items and \"---\" for the sub-items will help you organize the items better."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Item Link"
+        },
+        {
+          "type": "range",
+          "id": "drop_width",
+          "min": 0,
+          "max": 1200,
+          "step": 100,
+          "unit": "px",
+          "label": "Dropdown Width",
+          "default": 600,
+          "info": "Leave 0 to display auto width."
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon Class",
+          "info": "You can refer [this page](https://boostheme.com/vodoma/icons), copy icon class and paste it into this field."
+        },
+        {
+          "type": "header",
+          "content": "Text color"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_extend",
+          "label": "Use default value",
+          "info": "Get value from \"Theme Settings\" > \"Colors & Font sizes\" > \"Header\" > \"Text color\"",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#fff"
+        },
+        {
+          "type": "header",
+          "content": "Dropdown's background color"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_color_dropdown_extend",
+          "label": "Use default value",
+          "info": "Get value from \"Theme Settings\" > \"Colors & Font sizes\" > \"Header\" > \"Background color\" or \"Background color in the bottom area\"",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "bkg_color_dropdown",
+          "label": "Background Color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Label settings"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Name"
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Backgorund color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "text",
+          "id": "parent_custom_class",
+          "label": "Custom class"
+        }
+      ]
+    },
+    {
+      "type": "menu_subitem_link_list",
+      "name": "Subitem - link list",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you look the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"Parent -\" for the parent items and \"---\" for the sub items will help you organize the items easier."
+        },
+        {
+          "type": "header",
+          "content": "Title Settings"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "align_title",
+          "label": "Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "position_title",
+          "label": "Position",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_dropdown_title_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_dropdown_title",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Link List Settings"
+        },
+        {
+          "type": "link_list",
+          "id": "link_list",
+          "label": "Shopify Navigation"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_link_list_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_link_list",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "select",
+          "id": "col_width",
+          "label": "Column Width",
+          "options": [
+            {
+              "value": "1",
+              "label": "8.33% ( 1/12 cols )"
+            },
+            {
+              "value": "2",
+              "label": "16.66% ( 2/12 cols )"
+            },
+            {
+              "value": "3",
+              "label": "25% ( 3/12 cols )"
+            },
+            {
+              "value": "4",
+              "label": "33.33% ( 4/12 cols )"
+            },
+            {
+              "value": "5",
+              "label": "41.66% ( 5/12 cols )"
+            },
+            {
+              "value": "6",
+              "label": "50% ( 6/12 cols )"
+            },
+            {
+              "value": "7",
+              "label": "58.33% ( 7/12 cols )"
+            },
+            {
+              "value": "8",
+              "label": "66.66% ( 8/12 cols )"
+            },
+            {
+              "value": "9",
+              "label": "75% ( 9/12 cols )"
+            },
+            {
+              "value": "10",
+              "label": "83.33% ( 10/12 cols )"
+            },
+            {
+              "value": "11",
+              "label": "91.66% ( 11/12 cols )"
+            },
+            {
+              "value": "12",
+              "label": "100% ( 12/12 cols )"
+            }
+          ],
+          "default": "3"
+        },
+        {
+          "type": "select",
+          "id": "align_link_list",
+          "label": "Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "range",
+          "id": "horizontal_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "vertical_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "paragraph",
+          "content" : "Disable Gutter on"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_left",
+          "label": "Left",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_right",
+          "label": "Right",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_all",
+          "label": "All",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Own Background Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_enable",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "bkg_color",
+          "label": "Background Color"
+        },
+        {
+          "type": "image_picker",
+          "id": "bkg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "select",
+          "id": "bkg_layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "inside",
+              "label": "Inside"
+            },
+            {
+              "value": "outside",
+              "label": "Outside"
+            }
+          ],
+          "default": "inside"
+        },
+        {
+          "type": "select",
+          "id": "bkg_position",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left top",
+              "label": "Left Top"
+            },
+            {
+              "value": "left center",
+              "label": "Left Center"
+            },
+            {
+              "value": "left bottom",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "right top",
+              "label": "Right Top"
+            },
+            {
+              "value": "right center",
+              "label": "Left Center"
+            },
+            {
+              "value": "right bottom",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "center top",
+              "label": "Center Top"
+            },
+            {
+              "value": "center center",
+              "label": "Center Center"
+            },
+            {
+              "value": "center bottom",
+              "label": "Center Bottom"
+            }
+          ],
+          "default": "right bottom"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_no_repeat",
+          "label": "No Repeat",
+          "default": true
+        },
+        {
+          "type": "paragraph",
+          "content": "External Background. Enter your backgroud url"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_external_bkg",
+          "label": "Use External Background"
+        },
+        {
+          "type": "text",
+          "id": "external_bkg_url",
+          "label": "External Background Url"
+        },
+        {
+          "type": "header",
+          "content": "Label settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_label_extend",
+          "label": "Extend from parent item's text color",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_label",
+          "label": "Text color",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "bkg_label",
+          "label": "Background color",
+          "default": "#d9121f"
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom Class"
+        }
+      ]
+    },
+    {
+      "type": "menu_subitem_product",
+      "name": "Subitem - product",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you look the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"Parent -\" for the parent items and \"---\" for the sub items will help you organize the items easier."
+        },
+        {
+          "type": "header",
+          "content": "Title Settings"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "align_title",
+          "label": "Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "position_title",
+          "label": "Position",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_dropdown_title_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_dropdown_title",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Product Settings"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Pick a product"
+        },
+        {
+          "type": "select",
+          "id": "main_thumbnail",
+          "label": "Show main thumbnail by",
+          "options": [
+            {
+              "value": "product_image",
+              "label": "Featured product image"
+            },
+            {
+              "value": "variant_image",
+              "label": "First available variant image"
+            }
+          ],
+          "default": "product_image"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_label",
+          "label": "Show label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_cart_btn",
+          "label": "Show Add to cart button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_qs_btn",
+          "label": "Show Quick Shop button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_compare_btn",
+          "label": "Show Compare button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_wishlist_btn",
+          "label": "Show wishlist button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_review_stars",
+          "label": "Show review stars",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_product_options",
+          "label": "Enable Product Options",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_countdown_timer",
+          "label": "Show countdown timer",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show product vendors",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "product_name_size",
+          "label": "Product name's size",
+          "info": "Use this configuration to make product name is shorter if your product name is too long. Leave zero if you want to dislpay full product name. Unit: word(wor)",
+          "min": 0,
+          "max": 30,
+          "default": 5,
+          "step": 1
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "select",
+          "id": "col_width",
+          "label": "Column Width",
+          "options": [
+            {
+              "value": "1",
+              "label": "8.33% ( 1/12 cols )"
+            },
+            {
+              "value": "2",
+              "label": "16.66% ( 2/12 cols )"
+            },
+            {
+              "value": "3",
+              "label": "25% ( 3/12 cols )"
+            },
+            {
+              "value": "4",
+              "label": "33.33% ( 4/12 cols )"
+            },
+            {
+              "value": "5",
+              "label": "41.66% ( 5/12 cols )"
+            },
+            {
+              "value": "6",
+              "label": "50% ( 6/12 cols )"
+            },
+            {
+              "value": "7",
+              "label": "58.33% ( 7/12 cols )"
+            },
+            {
+              "value": "8",
+              "label": "66.66% ( 8/12 cols )"
+            },
+            {
+              "value": "9",
+              "label": "75% ( 9/12 cols )"
+            },
+            {
+              "value": "10",
+              "label": "83.33% ( 10/12 cols )"
+            },
+            {
+              "value": "11",
+              "label": "91.66% ( 11/12 cols )"
+            },
+            {
+              "value": "12",
+              "label": "100% ( 12/12 cols )"
+            }
+          ],
+          "default": "3"
+        },
+        {
+          "type": "range",
+          "id": "horizontal_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "vertical_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "paragraph",
+          "content" : "Disable Gutter on"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_left",
+          "label": "Left",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_right",
+          "label": "Right",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_all",
+          "label": "All",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Own Background Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_enable",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "bkg_color",
+          "label": "Background Color"
+        },
+        {
+          "type": "image_picker",
+          "id": "bkg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "select",
+          "id": "bkg_layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "inside",
+              "label": "Inside"
+            },
+            {
+              "value": "outside",
+              "label": "Outside"
+            }
+          ],
+          "default": "inside"
+        },
+        {
+          "type": "select",
+          "id": "bkg_position",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left top",
+              "label": "Left Top"
+            },
+            {
+              "value": "left center",
+              "label": "Left Center"
+            },
+            {
+              "value": "left bottom",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "right top",
+              "label": "Right Top"
+            },
+            {
+              "value": "right center",
+              "label": "Left Center"
+            },
+            {
+              "value": "right bottom",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "center top",
+              "label": "Center Top"
+            },
+            {
+              "value": "center center",
+              "label": "Center Center"
+            },
+            {
+              "value": "center bottom",
+              "label": "Center Bottom"
+            }
+          ],
+          "default": "right bottom"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_no_repeat",
+          "label": "No Repeat",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom Class"
+        }
+      ]
+    },
+    {
+      "type": "menu_subitem_image",
+      "name": "Subitem - image",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you look the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"Parent -\" for the parent items and \"---\" for the sub items will help you organize the items easier."
+        },
+        {
+          "type": "header",
+          "content": "Title Settings"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "align_title",
+          "label": "Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "position_title",
+          "label": "Position",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_dropdown_title_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_dropdown_title",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Image Settings"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Pick an image"
+        },
+        {
+          "type": "text",
+          "id": "image_size",
+          "label": "Image size",
+          "default": "300x",
+          "info": "Leave \"master\" or empty to display the original image."
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "The link for image"
+        },
+        {
+          "type": "checkbox",
+          "id": "image_new_tab",
+          "label": "Open the image in a new tab",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "select",
+          "id": "col_width",
+          "label": "Column Width",
+          "options": [
+            {
+              "value": "1",
+              "label": "8.33% ( 1/12 cols )"
+            },
+            {
+              "value": "2",
+              "label": "16.66% ( 2/12 cols )"
+            },
+            {
+              "value": "3",
+              "label": "25% ( 3/12 cols )"
+            },
+            {
+              "value": "4",
+              "label": "33.33% ( 4/12 cols )"
+            },
+            {
+              "value": "5",
+              "label": "41.66% ( 5/12 cols )"
+            },
+            {
+              "value": "6",
+              "label": "50% ( 6/12 cols )"
+            },
+            {
+              "value": "7",
+              "label": "58.33% ( 7/12 cols )"
+            },
+            {
+              "value": "8",
+              "label": "66.66% ( 8/12 cols )"
+            },
+            {
+              "value": "9",
+              "label": "75% ( 9/12 cols )"
+            },
+            {
+              "value": "10",
+              "label": "83.33% ( 10/12 cols )"
+            },
+            {
+              "value": "11",
+              "label": "91.66% ( 11/12 cols )"
+            },
+            {
+              "value": "12",
+              "label": "100% ( 12/12 cols )"
+            }
+          ],
+          "default": "3"
+        },
+        {
+          "type": "range",
+          "id": "horizontal_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "vertical_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "paragraph",
+          "content" : "Disable Gutter on"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_left",
+          "label": "Left",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_right",
+          "label": "Right",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_all",
+          "label": "All",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Own Background Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_enable",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "bkg_color",
+          "label": "Background Color"
+        },
+        {
+          "type": "image_picker",
+          "id": "bkg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "select",
+          "id": "bkg_layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "inside",
+              "label": "Inside"
+            },
+            {
+              "value": "outside",
+              "label": "Outside"
+            }
+          ],
+          "default": "inside"
+        },
+        {
+          "type": "select",
+          "id": "bkg_position",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left top",
+              "label": "Left Top"
+            },
+            {
+              "value": "left center",
+              "label": "Left Center"
+            },
+            {
+              "value": "left bottom",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "right top",
+              "label": "Right Top"
+            },
+            {
+              "value": "right center",
+              "label": "Left Center"
+            },
+            {
+              "value": "right bottom",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "center top",
+              "label": "Center Top"
+            },
+            {
+              "value": "center center",
+              "label": "Center Center"
+            },
+            {
+              "value": "center bottom",
+              "label": "Center Bottom"
+            }
+          ],
+          "default": "right bottom"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_no_repeat",
+          "label": "No Repeat",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom Class"
+        }
+      ]
+    },
+    {
+      "type": "menu_subitem_html",
+      "name": "Subitem - Html",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you look the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"Parent -\" for the parent items and \"---\" for the sub items will help you organize the items easier."
+        },
+        {
+          "type": "header",
+          "content": "Title Settings"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "align_title",
+          "label": "Align",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "position_title",
+          "label": "Position",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_dropdown_title_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_dropdown_title",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Content Settings"
+        },
+        {
+          "type": "html",
+          "id": "html",
+          "label": "Add your html"
+        },
+        {
+          "type": "checkbox",
+          "id": "color_html_extend",
+          "label": "Extend text color from parent",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "color_html",
+          "label": "Text color",
+          "default": "#000"
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "select",
+          "id": "col_width",
+          "label": "Column Width",
+          "options": [
+            {
+              "value": "1",
+              "label": "8.33% ( 1/12 cols )"
+            },
+            {
+              "value": "2",
+              "label": "16.66% ( 2/12 cols )"
+            },
+            {
+              "value": "3",
+              "label": "25% ( 3/12 cols )"
+            },
+            {
+              "value": "4",
+              "label": "33.33% ( 4/12 cols )"
+            },
+            {
+              "value": "5",
+              "label": "41.66% ( 5/12 cols )"
+            },
+            {
+              "value": "6",
+              "label": "50% ( 6/12 cols )"
+            },
+            {
+              "value": "7",
+              "label": "58.33% ( 7/12 cols )"
+            },
+            {
+              "value": "8",
+              "label": "66.66% ( 8/12 cols )"
+            },
+            {
+              "value": "9",
+              "label": "75% ( 9/12 cols )"
+            },
+            {
+              "value": "10",
+              "label": "83.33% ( 10/12 cols )"
+            },
+            {
+              "value": "11",
+              "label": "91.66% ( 11/12 cols )"
+            },
+            {
+              "value": "12",
+              "label": "100% ( 12/12 cols )"
+            }
+          ],
+          "default": "3"
+        },
+        {
+          "type": "range",
+          "id": "horizontal_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "vertical_inside_gutter",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical Inside Gutter",
+          "default": 0
+        },
+        {
+          "type": "paragraph",
+          "content" : "Disable outside gutter on"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_left",
+          "label": "Left",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_right",
+          "label": "Right",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_all",
+          "label": "All",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Own Background Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_enable",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "bkg_color",
+          "label": "Background Color"
+        },
+        {
+          "type": "image_picker",
+          "id": "bkg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "select",
+          "id": "bkg_layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "inside",
+              "label": "Inside"
+            },
+            {
+              "value": "outside",
+              "label": "Outside"
+            }
+          ],
+          "default": "inside"
+        },
+        {
+          "type": "select",
+          "id": "bkg_position",
+          "label": "Position",
+          "options": [
+            {
+              "value": "left top",
+              "label": "Left Top"
+            },
+            {
+              "value": "left center",
+              "label": "Left Center"
+            },
+            {
+              "value": "left bottom",
+              "label": "Left Bottom"
+            },
+            {
+              "value": "right top",
+              "label": "Right Top"
+            },
+            {
+              "value": "right center",
+              "label": "Left Center"
+            },
+            {
+              "value": "right bottom",
+              "label": "Right Bottom"
+            },
+            {
+              "value": "center top",
+              "label": "Center Top"
+            },
+            {
+              "value": "center center",
+              "label": "Center Center"
+            },
+            {
+              "value": "center bottom",
+              "label": "Center Bottom"
+            }
+          ],
+          "default": "right bottom"
+        },
+        {
+          "type": "checkbox",
+          "id": "bkg_no_repeat",
+          "label": "No Repeat",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "For Developer"
+        },
+        {
+          "type": "text",
+          "id": "custom_class",
+          "label": "Custom Class"
+        }
+      ]
+    },
+    {
+      "type": "menu_subitem_clearfix",
+      "name": "Separate row line",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu Name",
+          "info": "This field is only used to help you look the items in Theme Settings easily. It will not be shown at the storefront. Tips: use the prefix \"Parent -\" for the parent items and \"---\" for the sub items will help you organize the items easier."
+        },
+        {
+          "type": "header",
+          "content": "Layout Settings"
+        },
+        {
+          "type": "range",
+          "id": "height",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Line Height",
+          "default": 20
+        },
+        {
+          "type": "paragraph",
+          "content" : "Disable outside gutter on"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_left",
+          "label": "Left",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_right",
+          "label": "Right",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "no_gutter_all",
+          "label": "All",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Own Background Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_bkg",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "bkg_color",
+          "label": "Background Color"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,85 @@
+<div class="collection__filter cf" id="cf_filter_desktop">
+  <div class="cf__content">
+    {%- if section.blocks.size > 0 -%}
+      {%- liquid 
+      unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+        assign enable_rtl = false
+      else
+        assign enable_rtl = true
+      endunless
+      assign has_auto_current = false
+      if current_tags
+        assign has_auto_current = true
+      endif  
+    -%}
+      {%- render 'collection-filter-item-current' -%}
+      {%- for block in section.blocks -%}
+        {%- assign filter_item_type = 'collection-' | append: block.type -%}
+        {%- if block.type == 'filter-item-category' or block.type == 'filter-item-swatch' -%}
+          {%- case block.type -%}
+            {%- when 'filter-item-category' -%}
+              {%- include 'collection-filter-item-category' with block as block, is_first: forloop.first, enable_rtl: enable_rtl, force_no_first: has_auto_current -%}
+            {%- when 'filter-item-swatch' -%}
+              {%- render 'collection-filter-item-swatch' with block as block, is_first: forloop.first, force_no_first: has_auto_current  -%}
+          {%- endcase -%}
+        {%- else -%}
+          {%- assign array_tag = block.settings.group_tag | replace: '  ', '' | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+          {%- if array_tag.size > 0 and block.settings.enable -%}
+            {%- assign has_current = false -%}
+            {%- capture tag_list -%}
+              {%- for t in array_tag -%}
+                {%- assign tag = t | strip | downcase -%}
+                {%- assign clowTagD = t | downcase -%}
+                {%- assign clowTag = t | strip | downcase -%}
+                {%- assign ctagU = t | strip | upcase -%}
+                {%- assign ctagUF = clowTag | strip | capitalize -%}
+                {%- assign ctagCa = clowTag | strip | camelcase -%}
+                {%- if collection.all_tags contains t or collection.all_tags contains tag or collection.all_tags contains clowTagD or collection.all_tags contains clowTag or collection.all_tags contains ctagU or collection.all_tags contains ctagUF or collection.all_tags contains ctagCa -%}
+                  {%- if block.type == 'filter-item-checkbox' or block.type == 'filter-item-price' -%}
+                    {%- if current_tags contains t -%}
+                      {%- assign active_tag = t -%}
+                    {%- elsif current_tags contains tag -%}
+                      {%- assign active_tag = tag -%}
+                    {%- elsif current_tags contains clowTagD -%}
+                      {%- assign active_tag = clowTagD -%}
+                    {%- elsif current_tags contains clowTag -%}
+                      {%- assign active_tag = clowTag -%}
+                    {%- elsif current_tags contains ctagU -%}
+                      {%- assign active_tag = ctagU -%}
+                    {%- elsif current_tags contains ctagUF -%}
+                      {%- assign active_tag = ctagUF -%}
+                    {%- elsif current_tags contains ctagCa -%}
+                      {%- assign active_tag = ctagCa -%}
+                    {%- else -%}
+                      {%- assign active_tag = '' -%}
+                    {%- endif -%}
+                    {%- if block.type == 'filter-item-price' -%}
+                      {%- assign price_tag = tag | replace: '$','' | prepend: '$' -%}
+                      {%- if current_tags contains price_tag -%}
+                        {%- assign active_tag = price_tag -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                    {%- if active_tag != '' -%}
+                      {%- assign has_current = true -%}
+                    {%- endif -%}
+                    {%- case block.type -%}
+                      {%- when 'filter-item-checkbox' -%}
+                        {%- render 'collection-filter-item-checkbox' with block as block, t: t, tag: tag, active_tag: active_tag -%}
+                      {%- when 'filter-item-price' -%}
+                        {%- render 'collection-filter-item-price' with block as block, t: t, tag: tag, active_tag: active_tag -%}
+                    {%- endcase -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            
+            {%- render 'collection-filter-item-display' with block: block, filter_item_content: tag_list, use_scroll: true, force_no_first: has_auto_current, has_current: has_current -%}
+          {%- endif -%}
+        {%- endif -%}  
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</div>
+{%- if layout_name != 'no_sidebar' -%}
+  {%- render 'collection-recently-viewed' -%}
+{%- endif -%}

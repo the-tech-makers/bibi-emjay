@@ -1,0 +1,22 @@
+{%- layout none -%}
+{%- liquid
+	capture terms
+    render 'read-url-param' with param_name: 'q'
+  endcapture
+  assign terms = terms | strip
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+    assign enable_rtl = false
+  else
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+    assign enable_rtl = true
+  endunless  
+-%}
+{%- capture snippet_html -%}{%- include terms with left_holder: left_holder, right_holder: right_holder, enable_rtl: enable_rtl -%}{%- endcapture -%}
+{%- unless snippet_html contains 'Liquid error' -%}
+{{ snippet_html }}
+{%- else -%}
+<div><span class="snippet-error">Error</span></div>
+{%- endunless -%}

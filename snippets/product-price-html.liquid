@@ -1,0 +1,15 @@
+<div class="product-price">
+  {% if compare_at_price > price %}
+    <span class="product-price__price">
+      {%- render 'price', price: price -%}
+    </span>
+    <s class="product-price__price product-price__sale">{%- render 'price', price: compare_at_price -%}</s>
+  {% else %}
+    <span class="product-price__price">{%- render 'price', price: price -%}</span>
+  {% endif %}
+
+  {% unless available %}
+    <span class="product-price__sold-out">{{ 'products.product.sold_out' | t }}</span>
+  {% endunless %}
+  {%- render 'product-price-unit' with variant: variant -%}
+</div>

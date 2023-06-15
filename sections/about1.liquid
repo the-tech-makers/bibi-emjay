@@ -1,0 +1,187 @@
+{%- render 'section-background-start' -%}
+<div class="about1 container{% if section.settings.full_width %}-fluid{% endif %}{% render 'section-gutters-nobkg' %}">
+  <div class="row">
+    <div class="section__inner col-xs-12">
+      <div class="section__content flex w100">
+        {%- assign col_image_size = section.settings.image_size | times: 1 -%}
+        {%- if section.settings.image != blank -%}
+        <div class="col-xs-12 col-md-{{ col_image_size }} gutter-ele-bottom-tbs{% if col_image_size == 12 %} gutter-ele-bottom{% endif %}{% if section.settings.image_pos == 'right' %} pull-right{% endif %}">
+          {%- assign img_url = section.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          <div class="w100 img-container loading" style="padding-top:{{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100}}%;">
+            <img data-aspectratio="{{ section.settings.image.aspect_ratio }}"
+              data-src="{{ img_url }}"
+              data-sizes="auto" class="w100 img-responsive center-block img-abs center-abs lazyload"{% render 'img-one-pixel' %} alt="{{ section.settings.image.alt | escape }}" data-image-size="1x1"/>
+          </div>
+        </div>
+        {%- endif -%}
+        <div class="col-xs-12{% if section.settings.image != blank %} gutter-ele-top-tbs{% if col_image_size != 12 %} col-md-{{ 12 | minus: col_image_size }}{% else %} gutter-ele-top{% endif %}{% endif %}">
+          {%- render 'section-heading-h1' -%}
+          <div class="rte">
+            {{ page.content }}
+          </div>
+          {%- if section.settings.enable_social -%}
+            <div class="gutter-ele-top gutter-ele-top-tbs">
+              <ul class="list--inline" style="padding-top: 20px;margin: 0 -10px;">
+                {%- if section.settings.twitter != blank -%}
+                <li style="padding: 0 10px;"><a href="{{ section.settings.twitter | escape }}" target="_blank" title="{{ 'general.social.twitter' | t | escape }}">{%- render 'icon-twitter' -%}</a></li>
+                {%- endif -%}
+                {%- if section.settings.facebook != blank -%}
+                <li style="padding: 0 10px;"><a href="{{ section.settings.facebook | escape }}" target="_blank" title="{{ 'general.social.facebook' | t | escape }}">{%- render 'icon-facebook' -%}</a></li>
+                {%- endif -%}
+                {%- if section.settings.instagram != blank -%}
+                <li style="padding: 0 10px;"><a href="{{ section.settings.instagram | escape }}" target="_blank" title="{{ 'general.social.instagram' | t | escape }}">{%- render 'icon-instagram' -%}</a></li>
+                {%- endif -%}
+                {%- if section.settings.pinterest != blank -%}
+                <li style="padding: 0 10px;"><a href="{{ section.settings.pinterest | escape }}" target="_blank" title="{{ 'general.social.pinterest' | t | escape }}">{%- render 'icon-pinterest' -%}</a></li>
+                {%- endif -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- render 'section-background-end' -%}
+{% schema %}
+  {
+    "name": "About Us 1",
+    "class": "section",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "[View the guide for this section](https://vodoma-docs.boostheme.com/dynamic-sections/marketing-and-others/about-us-1)"
+      },
+      {
+        "type": "header",
+        "content": "Background color"
+      },
+      {
+        "type": "checkbox",
+        "id": "bkg_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "section_bkg",
+        "label": "Pick a color"
+      },
+      {
+        "type": "header",
+        "content": "Section Gutters"
+      },
+      {
+        "type": "checkbox",
+        "id": "top_gutter",
+        "label": "Enable top gutter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "bottom_gutter",
+        "label": "Enable bottom gutter",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "options": [
+          {
+            "value": "2",
+            "label": "Small"
+          },
+          {
+            "value": "3",
+            "label": "Medium"
+          },
+          {
+            "value": "4",
+            "label": "Large"
+          },
+          {
+            "value": "6",
+            "label": "Very Large"
+          },
+          {
+            "value": "12",
+            "label": "Full Width"
+          }
+        ],
+        "default": "6"
+      },
+      {
+        "type": "radio",
+        "id": "image_pos",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "header",
+        "content": "Social channels"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_social",
+        "label": "Enable",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "twitter",
+        "label": "Twitter url"
+      },
+      {
+        "type": "text",
+        "id": "facebook",
+        "label": "Facebook url"
+      },
+      {
+        "type": "text",
+        "id": "instagram",
+        "label": "Instagram url"
+      },
+      {
+        "type": "text",
+        "id": "pinterest",
+        "label": "Pinterest url"
+      },
+      {
+        "type": "header",
+        "content": "Layout settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Full Width",
+        "default": false
+      }
+    ],
+    "presets": [
+      {
+        "name": "About Us 1",
+        "category": "About Us"
+      }
+    ]
+  }
+{% endschema %}

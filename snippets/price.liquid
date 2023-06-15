@@ -1,0 +1,1 @@
+<span class="money">{%- if settings.currency_format == 'money_format' -%}{{ price | money  }}{%- else -%}{{ price | money_with_currency  }}{%- endif -%}</span>

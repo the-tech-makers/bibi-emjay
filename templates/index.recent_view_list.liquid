@@ -1,0 +1,24 @@
+{%- layout none -%}
+{%- liquid
+  capture terms
+    render 'read-url-param' with param_name: 'q'
+  endcapture
+  assign terms = terms | strip | url_decode | split: ','
+-%}
+{%- assign index = 0 -%}
+{%- for handle in terms -%}
+  {%- if index < settings.recent_view_collection_limit -%}
+  	{%- assign product = all_products[handle] -%}
+  	{%- if handle != '' and product != blank -%}
+    	{%- render 'product-columns-item' with
+        product: product,
+        main_thumbnail: 'product_image',
+        truncate_count: 5,
+        show_review_stars: true,
+        slide_per_row: 100,
+        index: index
+      -%}
+      {%- assign index = index | plus: 1 -%}
+  	{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

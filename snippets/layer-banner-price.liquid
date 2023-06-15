@@ -1,0 +1,41 @@
+{%- assign starting_price = block.settings.starting_price -%}
+{%- assign starting_product = all_products[block.settings.product] -%}
+{%- if starting_price != blank -%}
+	{%- assign starting_price = starting_price | times: 100 -%}
+{%- else if starting_product != blank -%}
+	{%- assign starting_price = starting_product.price_min -%}
+{%- endif -%}
+{%- if starting_price == blank -%}
+	{%- assign starting_price = 9900 -%}	
+{%- endif -%}
+{%- assign style_layer = '' -%}
+{%- include 'layer-banner-position' -%}
+{%- assign style_layer = style_layer | append: style_layer_position -%}
+{%- assign col_text_class = 'col-xs-' | append: block.settings.text_box_width_mobile | append: ' col-sm-' | append: block.settings.text_box_width -%}
+{%- if block.settings.hide_on_mobile -%}
+	{%- assign col_text_class = col_text_class | append: ' hidden-xs' -%}
+{%- endif -%}
+{%- if block.settings.hide_on_desktop -%}
+	{%- assign col_text_class = col_text_class | append: ' hidden-sm hidden-md hidden-lg' -%}
+{%- endif -%}
+{%- assign col_text_class = col_text_class | append: ' text-' | append: block.settings.alignment | append: ' mobile-text-' | append: block.settings.alignment_mobile -%}
+<div class="banner-item__starting-price {{ col_text_class }} bsp{% if block.settings.appear_effect != 'none' and section.settings.enable_slider %} text-effect {{ block.settings.appear_effect }}{% endif %}{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}"{% if style_layer != '' %} style="{{ style_layer }}"{% endif %} {{ block.shopify_attributes }}>
+	<div class="row">
+		{%- if block.settings.starting_text != blank -%}
+		<div class="col-xs-12 col-sm-6 bsp__text gutter-ele-small-bottom text-{{ block.settings.alignment }} mobile-text-{{ block.settings.alignment_mobile }}{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}" style="color:{{ block.settings.starting_text_color }};">{{ block.settings.starting_text }}</div>
+		<div class="clearfix"></div>
+		{%- endif -%}
+		<div class="bsp__price col-xs-12 col-sm-6 text-{{ block.settings.alignment }} mobile-text-{{ block.settings.alignment_mobile }}{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}" style="color:{{ block.settings.starting_price_color }};">
+			{%- include 'price' with starting_price -%}
+		</div>
+		{%- if block.settings.button_text != blank -%}
+			<div class="col-xs-12 col-sm-6 text-{{ block.settings.alignment }} mobile-text-{{ block.settings.alignment_mobile }} bsp__button-wrap{% if enable_rtl and section.settings.revert_in_rtl == false %} ignore-rtl{% endif %}">
+				{%- assign starting_url = block.settings.url -%}
+				{%- if starting_url == blank and starting_product != blank -%}
+					{%- assign starting_url = starting_product.url -%}
+				{%- endif -%}
+				<a class="bsp__button button button--{{ block.settings.button_style }}" href="{{ starting_url }}" title="{{ block.settings.button_text | escape }}">{{ block.settings.button_text }}</a>
+			</div>
+		{%- endif -%}
+	</div>
+</div>

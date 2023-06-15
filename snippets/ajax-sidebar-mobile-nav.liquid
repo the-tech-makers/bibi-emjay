@@ -1,0 +1,34 @@
+<ul class="mobile-nav link-list" style="padding: {% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}0 0 0 15px{% else %}0 15px 0 0{% endunless %};margin:-10px 0;">
+	{%- assign link_list = settings.mobile_nav -%}
+	{%- for l in linklists[link_list].links -%}
+		<li class="link-list__item mobile-nav--li flex flex-align-ver mobile-nav__item mobile-nav__item--level0{% if l.links != blank %} link-list__item--parent-mobile{% endif %}">
+			<a class="dib link-list__item__link link-list__item__link--mobile-nav link-list__item__link--mobile-header w100 link-list__item__link--level0{% if l.active %} active do-active{% endif %} text-uppercase" href="{{ l.url }}" title="{%- render 'nav-shortcode-ign', str: l.title -%}">{%- render 'nav-shortcode', color: settings.header_mobile_color_label, bkg: settings.header_mobile_bkg_label, str: l.title -%}</a>
+			{% if l.links != blank %}
+				<a href="#" class="mobile-nav__arrow mobile-nav__arrow--level0 mobile-nav__arrow--header lnr-plus" title="{{ 'layout.navigation.arrow' | t | escape }}"></a>
+			{% endif %}
+			{%- if l.links != blank -%}
+			<ul class="link-list__item__dropdown link-list__item__dropdown--mobile-nav w100" style="display:none;">
+				{%- for childlink in l.links -%}
+				<li class="link-list__item mobile-nav--li flex flex-align-ver mobile-nav__item mobile-nav__item--level1 {% if childlink.links != blank %} link-list__item--parent-mobile{% endif %}">
+					<a class="dib link-list__item__link link-list__item__link--mobile-nav link-list__item__link--mobile-header w100 link-list__item__link--level1{% if childlink.active %} active do-active{% endif %}" href="{{ childlink.url }}" title="{%- render 'nav-shortcode-ign', str: childlink.title -%}">
+						{%- render 'nav-shortcode', color: settings.header_mobile_color_label, bkg: settings.header_mobile_bkg_label, str: childlink.title -%}
+					</a>
+					{% if childlink.links != blank %}
+						<a href="#" class="mobile-nav__arrow mobile-nav__arrow--level1 mobile-nav__arrow--header lnr-plus" title="{{ 'layout.navigation.arrow' | t | escape }}"></a>
+					{% endif %}
+					{% if childlink.links != blank %}
+					<ul class="link-list__item__dropdown link-list__item__dropdown--mobile-nav w100" style="display:none;">
+						{%- for grandchildlink in childlink.links -%}
+							<li class="link-list__item mobile-nav--li flex flex-align-ver mobile-nav__item mobile-nav__item--level2">
+								<a class="dib link-list__item__link link-list__item__link--mobile-nav link-list__item__link--mobile-header w100 link-list__item__link--level2{% if grandchildlink.active %} active do-active{% endif %}" href="{{ grandchildlink.url }}" title="{{ grandchildlink.title | escape }}">{{ grandchildlink.title | escape }}</a>
+							</li>	
+						{%- endfor -%}
+					</ul>
+					{%- endif -%}
+				</li>
+				{%- endfor -%}
+			</ul>
+			{%- endif -%}
+		</li>
+	{%- endfor -%}
+</ul>

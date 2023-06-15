@@ -1,0 +1,5 @@
+{%- if settings.news_popup_enable and settings.news_platform != 'shopify' -%}
+	{%- render 'popup-newsletter' -%}
+{%- endif -%}
+{%- render 'popup-video' -%}
+{%- render 'popup-quickview' -%}

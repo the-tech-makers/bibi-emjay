@@ -1,0 +1,21 @@
+<ul class="mobile-nav__level3-list no-gutter w100">
+	{%- if links != blank -%}
+		{%- for link in links -%}
+			<li class="gutter-ele-small-top gutter-ele-small-bottom">
+				<a href="{{ link.url }}" title="{%- render 'nav-shortcode-ign', str: link.title -%}" class="mobile-nav__level3 mobile-nav__level3--{{ item_id }} dib por">
+					{%- render 'mobile-nav-label' with str: link.title, item_id: item_id, custom_label_classes: custom_label_classes -%}
+				</a>
+			</li>
+		{%- endfor -%}
+	{%- else -%}
+		{%- unless no_place_holder -%}
+			{%- for i in (1..5) -%}
+				<li class="gutter-ele-small-top gutter-ele-small-bottom">
+					<a href="#" title="Sample link {{ i }}" class="mobile-nav__level3 mobile-nav__level3--{{ item_id }} dib por">
+						Sample link {{ i }}
+					</a>
+				</li>
+			{%- endfor -%}
+		{%- endunless -%}	
+	{%- endif -%}
+</ul>

@@ -1,0 +1,91 @@
+{%- if enable_social -%}
+	{%- assign social_icons = false -%}
+	{%- if
+	  settings.social_twitter_link != blank
+	  or settings.social_facebook_link != blank
+	  or settings.social_pinterest_link != blank
+	  or settings.social_instagram_link != blank
+	  or settings.social_tumblr_link != blank
+	  or settings.social_snapchat_link != blank
+	  or settings.social_youtube_link != blank
+	  or settings.social_vimeo_link != blank
+	-%}
+	  {%- assign social_icons = true -%}
+	{%- endif -%}
+	{%- if template.name == 'article' or template.name == 'blog' -%}
+		{%- if block.settings.enable_rss -%}
+			{%- assign social_icons = true -%}
+		{%- endif -%}
+	{%- endif -%}
+	{%- if social_icons -%}
+  	<div class="col-xs-12 no-gutter footer__social-icons">
+  		<ul class="list--inline social-icons no-gutter--left"{% unless has_content %} style="margin-top:0;"{% endunless %}>
+        {% if settings.social_facebook_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_facebook_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Facebook' }}">
+              {% render 'icon-facebook' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_twitter_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_twitter_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Twitter' }}">
+              {% render 'icon-twitter' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_pinterest_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_pinterest_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Pinterest' }}">
+              {% render 'icon-pinterest' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_instagram_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_instagram_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Instagram' }}">
+              {% render 'icon-instagram' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_tumblr_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_tumblr_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Tumblr' }}">
+              {% render 'icon-tumblr' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_snapchat_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_snapchat_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Snapchat' }}">
+              {% render 'icon-snapchat' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_youtube_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_youtube_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'YouTube' }}">
+              {% render 'icon-youtube' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if settings.social_vimeo_link != blank %}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ settings.social_vimeo_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Vimeo' }}">
+              {% render 'icon-vimeo' %}
+            </a>
+          </li>
+        {% endif %}
+        {% if template.name == 'blog' or template.name == 'article' %}
+        	{%- if block.settings.enable_rss -%}
+          <li>
+            <a class="social-icons__link{% if custom_link_class %} {{ custom_link_class }}{% endif %}" href="{{ shop.url }}{{ blog.url }}.atom">
+              {% render 'icon-rss' %}
+            </a>
+          </li>
+          {%- endif -%}
+        {% endif %}
+      </ul>
+  	</div>
+  {%- endif -%}
+{%- endif -%}

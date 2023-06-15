@@ -1,0 +1,27 @@
+{%- if str contains '{{' -%}
+{%- assign words = str | split: ' ' -%}
+{%- assign starting_sc = false -%}
+{%- assign final_text = '' -%}
+{%- for word in words -%}
+	{%- if word == '{{image' or word == '{{label' or word == '{{icon' -%}
+		{%- assign starting_sc = true -%}
+	{%- endif -%}
+	{%- if word contains '}}' -%}
+		{%- assign starting_sc = 'end' -%}
+	{%- endif -%}
+	{%- if starting_sc == false -%}
+		{%- assign final_text  = final_text | append: word | strip_newlines -%}
+		{%- if forloop.last == false  -%}
+		{%- assign final_text  = final_text | append: ' ' -%}
+		{%- endif -%}
+	{%- else -%}
+		{%- if starting_sc == 'end' -%}
+			{%- assign starting_sc = false -%}
+			{%- assign remain_texts = word | split: '}}' -%}
+			{%- if remain_texts.size > 1 -%}
+				{%- assign final_text  = final_text | append: remain_texts[1] | strip -%}
+			{%- endif -%}
+		{%- endif -%}
+	{%- endif -%}
+{%- endfor -%}
+{{ final_text | strip | strip_newlines | escape }}{%- else -%}{{ str }}{%- endif -%}

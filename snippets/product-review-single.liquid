@@ -1,0 +1,33 @@
+{%- if settings.enable_review and section.settings.show_review_stars -%}
+<div class="pg__review-stars{% if template.suffix != 'quick_view' %} pg__review-stars--trigger{% endif %}">
+	{%- case settings.review_app -%}
+	  {%- when 'product_review' -%}
+	  	<span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+	  {%- when 'ali_reviews' -%}
+	    <div product-id="{{ product.id }}" class="alr-display-review-badge"></div>
+	  {%- when 'ryviu' -%}
+	    <div class="review-widget">
+				<ryviu-widget-total
+				    reviews_data="{{product.metafields.ryviu.product_reviews_info  | escape  }}" 
+				    product_id="{{product.id}}" handle="{{product.handle}}">
+				</ryviu-widget-total>
+			</div>
+	  {%- when 'yotpo' -%}
+	  	<div class="yotpo bottomLine"
+			    data-appkey="{{ settings.yotpo_app_key | escape }}"
+			    data-domain="{{shop.permanent_domain | escape }}"
+			    data-product-id="{{ product.id }}"
+			    data-product-models="{{ product.id }}"
+			    data-name="{{ product.title | escape }}"
+			    data-url="{{ shop.url }}{{ product.url }}"
+			    data-image-url="{{ product.featured_image | product_img_url: 'large' |replace: '?', '%3F' | replace: '&','%26'}}"
+			    data-description="{{ product.description | escape }}"
+			    data-bread-crumbs="{% for tag in product.tags %}{{ tag | escape }};{% endfor %}">
+			</div>
+		{%- when 'loox' -%}
+			<div class="loox-rating" data-fetch data-id="{{ product.id }}"></div>		  
+	  {%- else -%}
+	    {%- comment -%}Add your custom code{%- endcomment -%}
+	{%- endcase -%}
+</div>
+{%- endif -%}

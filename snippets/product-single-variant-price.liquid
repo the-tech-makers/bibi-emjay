@@ -1,0 +1,10 @@
+<div class="product-price product-price--single gutter-ele-top gutter-ele-bottom">
+	{% if variant.compare_at_price > variant.price %}
+    <span class="product-price__price">
+      {%- render 'price' with price: variant.price -%}
+    </span>
+    <s class="product-price__price product-price__sale">{%- render 'price' with price: variant.compare_at_price -%}</s>
+  {% else %}
+    <span class="product-price__price">{%- render 'price' with price: variant.price -%}</span>
+  {% endif %}
+</div>

@@ -1,0 +1,6 @@
+{%- if section.settings.show_share_buttons -%}
+<div class="gutter-ele-top gutter-ele-bottom product-single__sub-info">
+	<span class="dib blur-color text-uppercase">{{ 'general.social.share_on' | t }}</span>
+	{%- include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product -%}
+</div>
+{%- endif -%}

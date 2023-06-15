@@ -1,0 +1,43 @@
+{%- unless template.name == 'cart' -%}
+	{%- assign header_cart_layout_desktop = settings.header_cart_layout_desktop -%}
+{%- else -%}
+	{%- assign header_cart_layout_desktop = 'only_link' -%}
+{%- endunless -%}	
+{%- if header_cart_layout_desktop != 'no_display' -%}
+	{%- capture header_cart_link_html -%}
+	<a href="{{ routes.cart_url }}" class="por dib header__cart-link{% if header_cart_layout_desktop != 'only_link' %} header__cart-trigger-desktop{% endif %}{% if header_cart_layout_desktop == 'dropdown' %} bt-dropdown__trigger db{% elsif header_cart_layout_desktop == 'sidebar' %} bt-sidebar-btn{% endif %}{% if addition_classes %} {{ addition_classes }}{% endif %}{% if header_custom_class and header_cart_layout_desktop != 'dropdown' %} {{ header_custom_class }}{% endif %}"{% if header_cart_layout_desktop == 'sidebar' %} data-target="#bt-sidebar-cart" data-placement="{% unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code %}right{% else %}left{% endunless %}"{% endif %} title="{{ 'layout.cart.title' | t | escape }}">
+		{%- if header_cart_layout_desktop == 'dropdown' -%}
+			{%- render 'icon-cart-header', add_class: 'dib hc__icon' -%}
+		{%- else -%}
+			{%- render 'icon-cart-header', add_class: 'hc__icon' -%}
+		{%- endif -%}
+		{%- unless cart_combine_text_number -%}
+			{%- if show_cart_text -%}<span class="header__cart-text text-uppercase">{{ 'layout.cart.title' | t }}</span>{%- endif -%}	
+			<span class="cart-number abs-number cart-number--header">{{ cart.item_count }}</span>
+		{%- else -%}
+			<span class="header__cart-text">
+				{%- unless combine_text_total -%}
+					{{ 'layout.cart.title' | t }}(<span class="cart-number cart-number--header">{{ cart.item_count }}</span>)
+				{%- else -%}
+				&nbsp;
+				<span class="header__cart__total cart-total">
+					{%- render 'price' with cart.total_price -%}
+				</span>	
+				{%- endunless -%}
+			</span>
+		{%- endunless -%}
+	</a>
+	{%- endcapture -%}
+	{%- if header_cart_layout_desktop == 'dropdown' -%}
+	<div class="bt-dropdown{% unless no_full_height %} h100{% endunless %}{% unless no_flex %} flex flex-align-ver{% endunless %}{% if header_custom_class %} {{ header_custom_class }}{% endif %}"{% if data_group %} data-group="{{ data_group | escape }}"{% endif %}>
+		{{ header_cart_link_html }}
+		<div class="bt-dropdown__content{% if cart_dropdown_direction %} {{ cart_dropdown_direction | escape }}{% endif %} load-header-cart">
+		</div>
+	</div>
+	{%- else -%}
+	{{ header_cart_link_html }}
+	{%- endif -%}
+{%- endif -%}
+{%- if header_cart_layout_desktop != 'dropdown' and header_cart_layout_desktop != 'sidebar' and settings.add_cart_action == 'open_cart' -%}
+	<a href="#" class="hide bt-sidebar-btn header__cart-trigger-desktop{% if addition_classes %} {{ addition_classes }}{% endif %}" data-target="#bt-sidebar-cart" data-placement="right" title="{{ 'layout.cart.title' | t | escape }}">&nbsp;</a>
+{%- endif -%}

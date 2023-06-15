@@ -1,0 +1,39 @@
+{%- capture img_alt -%}{%- include 'alt-img-shortcode-ign', str: media.alt -%}{%- endcapture -%}
+<div class="pg__main{% if featured_media and featured_media.id == media.id %} active{% endif %}{% unless no_gutter %}{% if use_slider %}{% if lazyload %} hide-in-loading{% endif %}{% else %}{% if lazyload %} gutter-top{% endif %} gutter-ele-bottom{% endif %}{% endunless %}{% if custom_class %} {{ custom_class }}{% endif %}">
+	{%- case media.media_type -%}
+    {%- when 'external_video' -%}
+    	{%- assign ratio = 1 | divided_by: media.aspect_ratio | times: 100 -%}
+      {%- if use_slider -%}
+				{%- include 'product-single-main-video' with video_type: media.host, video_id: media.external_id, video_ratio: ratio, media: media -%}
+			{%- else -%}
+				{%- include 'product-single-main-video-iframe' with video_type: media.host, video_id: media.external_id, media: media -%}	
+			{%- endif -%}
+    {%- when 'video' -%}
+      {%- if use_slider -%}
+				{%- include 'product-single-main-video' with video_type: media.media_type, video_url: media.sources[0].url, media: media -%}
+			{%- else -%}
+				{%- include 'product-single-main-video-iframe' with video_type: media.media_type, media: media -%}	
+			{%- endif -%}
+    {%- when 'model' -%}
+    	<div style="padding-top: 100%" data-image-id="{{ media.id }}" data-product-media-type-model class="pg__main__link pg__main__link--model ignore-lightbox por">
+        {{ media | model_viewer_tag: image_size: '720x720', reveal: 'interaction', toggleable: true, data-model-id: media.id }}
+      </div>
+    {%- else -%}
+     	{%- unless media.alt contains '{{video' or media.alt contains '{{youtube' or media.alt contains '{{vimeo' -%}
+				<a href="{{ media.src | img_url: 'master' }}" class="pg__main__link img-container" title="{{ img_alt | escape }}" data-image-id="{{ media.id }}" style="padding-top:{{ 1 | divided_by: media.aspect_ratio | times: 100}}%;" data-width="{{ media.width }}" data-height="{{ media.height }}">
+					{%- unless lazyload -%}
+						<img class="w100 img-responsive{% if section.settings.enable_zoom %} cloudzoom{% endif %} img-abs" src="{{ media.src | img_url: '180x' }}" srcset="{% render 'img-srcset' with image: media.src %}" alt="{{ img_alt | escape }}" data-cloudzoom="image:'{{ media | img_url: '300x' }}', zoomImage: '{{ media | img_url: 'master' }}'">
+					{%- else -%}
+						{%- assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+			   		<img class="w100 img-responsive{% if section.settings.enable_zoom %} cloudzoom{% endif %} img-abs lazyload{% if featured_media and featured_media.id == media.id and use_slider %} op1 ignore-effect{% endif %}" data-src="{{ img_url }}" data-aspectratio="{{ media.aspect_ratio }}" data-sizes="auto" alt="{{ img_alt | escape }}" data-cloudzoom="image:'{{ media | img_url: '300x' }}', zoomImage: '{{ media | img_url: 'master' }}'"{% render 'img-one-pixel' %}>
+			   	{%- endunless -%}
+			  </a>
+			{%- else -%}
+				{%- if use_slider -%}
+					{%- include 'alt-img-shortcode' -%}
+				{%- else -%}
+					{%- include 'alt-img-shortcode-iframe' -%}	
+				{%- endif -%}
+			{%- endunless -%}
+  {%- endcase -%} 
+</div>

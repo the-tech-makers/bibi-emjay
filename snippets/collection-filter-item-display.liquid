@@ -1,0 +1,22 @@
+{%- if filter_item_content != '' -%}
+<div class="cf__item flex flex-align-space-between flex-align-ver w100{% if block.type == 'filter-item-swatch' %} cf__item--color{% endif %}{% if is_first and force_no_first == false %} cf__item--first{% endif %}">
+    <h5 class="cf__item__title{% if is_first and force_no_first == false %} cf__item__title--first{% endif %} fw-bold secondary-font">
+      {{ block.settings.title }}
+    </h5>
+    <a href="#" class="fw-bold expand-trigger{% if block.settings.default_expand == 'expand' or has_current %} open{% endif %}">
+      {%- render 'icon-collapse' with add_classes: 'cf__item__collapse' -%}
+    </a>
+    <div class="w100 cf__item__content expand-content{% if use_scroll %} cf__item__content--scroll custom-scrollbar{% endif %}{% if is_auto %} cf__item__content--auto{% endif %}"{% unless block.settings.default_expand == 'expand' or has_current %} style="display:none;"{% endunless %}{% if is_auto %} data-option-name="{{ option_name | default: block.settings.auto_filter_option_name | escape | downcase }}"{% endif %}>
+      {%- unless no_list_mode -%}
+        <ul>
+        {{ filter_item_content }}
+        </ul>
+      {%- else -%}
+        {{ filter_item_content }}
+      {%- endunless -%}
+    </div>
+</div>
+{%- if block.settings.show_spr_line -%}
+  <hr>
+{%- endif -%}
+{%- endif -%}

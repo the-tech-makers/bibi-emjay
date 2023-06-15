@@ -1,0 +1,65 @@
+{%- if settings.cross_sell_product_page -%}
+  {%- if settings.cross_sell_product_page_display == 'widget' -%}
+    {%- include 'product-single-fre-bought' with fre_handles: product.metafields.btt.fre_bought -%}
+  {%- else -%}
+    {%- capture fre_bought_content -%}
+      {%- assign fre_show = 0 -%}
+      {%- assign fre_cart_ids = '' -%}
+      {%- assign fre_max_length = settings.cross_sell_limit_product_page -%}
+      {%- for item in cart.items -%}
+        {%- assign fre_cart_ids = fre_cart_ids | append: item.product.id | append: ' ' -%}
+      {%- endfor -%}
+      {%- assign fre_cart_ids = fre_cart_ids | rstrip -%}
+      {%- assign fre_handles = product.metafields.btt.fre_bought | split: ',' -%}
+      {%- for fre_handle in fre_handles -%}
+        {%- if fre_show < fre_max_length -%}
+          {%- assign fre_product = all_products[fre_handle] -%}
+          {%- unless fre_product == blank or fre_cart_ids contains fre_product.id -%}
+            {%- assign fre_show = fre_show | plus: 1 -%}
+            {%- include 'product-grid-item' with
+              product: fre_product, 
+              use_slider: true, 
+              index: fre_show, 
+              lazy_index: 999,
+              column_count: 4, 
+              main_thumbnail: settings.cross_sell_main_thumbnail, 
+              image_size: '375x', 
+              truncate_count: settings.cross_sell_product_name_size,
+              enable_product_options: settings.cross_sell_enable_product_options, 
+              show_review_stars: settings.cross_sell_show_review_stars,
+              enable_small_images: false,
+              show_wishlist_btn: settings.cross_sell_show_wishlist_btn,
+              small_image: '1x',
+              show_label : settings.cross_sell_show_label,
+              show_cart_btn: settings.cross_sell_show_cart_btn,
+              show_wishlist : false,
+              show_compare_btn: settings.cross_sell_show_compare_btn,
+              show_qs_btn: settings.cross_sell_show_qs_btn,
+              small_image_slider: false
+            -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    <div class="container{% render 'wide-css-class' %}">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="cross-sell-ele load-crossell{% if fre_show > 0 %} loaded{% endif %} touch-mobile{% unless layout_name contains 'layout4' %} gutter-top{% else %} big-gutter-top gutter-ele-top-tbs{% endunless %} big-gutter-bottom" data-handle="{{ product.handle | escape }}" data-slider="1" data-product-id="{{ product.id }}" data-limit="{{ settings.cross_sell_limit_product_page | default: 10 }}" data-view="recommendation">
+            <h3 class="cross-sell-title text-uppercase gutter-bottom gutter-ele-bottom-tbs" style="margin:0;">
+              <span class="section__title__text gutter-ele-bottom dib">{{ 'products.product.cross_sell_block_title' | t }}</span>
+            </h3>
+            <div class="cross-sell-list grid grid--medium slick-shadow" data-slider='{"slidesToShow": 4, "responsive": [{"breakpoint": 767,"settings":{"slidesToShow":2}}]}'>
+              {%- if fre_show > 0 -%}
+              {{ fre_bought_content }}
+              {%- else -%}
+              <div class="loading-not-full" style="margin-top:50px;">
+                <i class="loading-ajax"></i>
+              </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

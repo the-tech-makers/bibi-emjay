@@ -1,0 +1,161 @@
+{%- liquid 
+  unless settings.enable_rtl and settings.rtl_language_codes contains request.locale.iso_code
+    assign enable_rtl = false
+    assign left_holder = 'left'
+    assign right_holder = 'right'
+  else
+    assign enable_rtl = true
+    assign left_holder = 'right'
+    assign right_holder = 'left'
+  endunless
+  assign opened_parent_tag = false
+  assign no_gutter_left_class = 'no-gutter--' | append: left_holder  
+  assign no_gutter_right_class = 'no-gutter--' | append: right_holder
+  assign use_ajax_loading = true
+  if template.suffix == 'ajax'
+  	assign use_ajax_loading = false
+  elsif section.blocks.size > 0
+	  assign first_block = section.blocks[0]
+	  if first_block != blank and first_block.shopify_attributes != blank
+	  	assign use_ajax_loading = false
+	  endif
+	else
+		assign use_ajax_loading = false     	
+  endif
+-%}
+<nav class="mobile-nav w100{% if use_ajax_loading %} use-ajax-loading{% endif %}" data-section-id="{{ section.id }}" data-section-type="navigation-mobile">
+{%- if section.blocks.size > 0 -%}
+	<ul class="mobile-nav__list" style="margin:-10px 0;padding:0 15px;">
+		{%- for item in section.blocks -%}
+			{%- assign custom_label_classes = 'mobile-nav__item__label fw-bold text-uppercase lh1 mobile-nav__item__label--' | append: item.id -%}
+			{%- if item.type == 'mm_top_items' -%}
+				{%- if opened_parent_tag -%}
+						</div>
+					</li>
+					{%- assign opened_parent_tag = false -%}
+				{%- endif -%}
+				{%- assign links = linklists[item.settings.link_list] -%}
+				{%- if links -%}
+					{%- for l in links.links -%}
+						<li class="mobile-nav__item mobile-nav__item--level1"{% if forloop.first %} {{ item.shopify_attributes }}{% endif %}>
+							{%- assign has_children = false -%}
+							{%- if l.links != blank -%}
+								{%- assign has_children = true -%}
+							{%- endif -%}
+							{%- render 'mobile-nav-top-item-link' with title: l.title, url: l.url, sep_label: false, has_children: has_children, item_id: item.id, custom_label_classes: custom_label_classes -%}
+							{%- unless use_ajax_loading -%}	
+								{%- if has_children -%}
+									<div class="mobile-nav__children mobile-nav__children--mega flex w100 gutter-ele-bottom" style="display:none;">
+										{%- case item.settings.children_style -%}
+											{%- when 'style1' -%}
+												{%- render 'mobile-nav-children-links-style1' with links: l.links, two_columns: item.settings.two_columns, no_gutter_left_class: no_gutter_left_class, no_gutter_right_class: no_gutter_right_class, item_id: item.id, custom_label_classes: custom_label_classes -%}
+											{%- else -%}
+												{%- render 'mobile-nav-children-links-style2' with links: l.links, item_id: item.id, custom_label_classes: custom_label_classes, no_gutter_left_class: no_gutter_left_class, no_gutter_right_class: no_gutter_right_class -%}
+										{%- endcase -%}
+									</div>
+								{%- endif -%}
+							{%- endunless -%}	
+						</li>
+					{%- endfor -%}
+				{%- endif -%}
+			{%- elsif item.type == 'mm_parent' -%}
+				{%- if opened_parent_tag -%}
+						</div>
+					</li>
+				{%- endif -%}
+				<li class="mobile-nav__item mobile-nav__item--parent mobile-nav__item--level1{% if item.settings.custom_class != blank %} {{ item.settings.custom_class | escape }}{% endif %}" {{ item.shopify_attributes }}>
+					{%- assign opened_parent_tag = true -%}
+					{%- render 'mobile-nav-top-item-link' with title: item.settings.name, url: item.settings.title_link, has_children: true, item_id: item.id, custom_label_classes: custom_label_classes -%}
+					<div class="mobile-nav__children mobile-nav__children--mega row gutter-ele-bottom flex flex-wrap" style="display:none;">
+			{%- else -%}
+				{%- if opened_parent_tag == false and item.shopify_attributes != blank -%}
+				<div class="alert alert-warning distance-top-ele">
+					This is a child item. So please put a parent item before it to display the navigation correctly.
+				</div>
+				{%- endif -%}
+				{%- unless use_ajax_loading -%}
+				<div class="mobile-nav__children__block col-xs-{{ item.settings.width }} flex gutter-ele-top gutter-ele-bottom{% if item.settings.custom_class != blank %} {{ item.settings.custom_class | escape }}{% endif %}" {{ item.shopify_attributes }}>
+					{%- render 'mobile-nav-render-level2' with title: item.settings.name, url: item.settings.url, item_id: item.id, custom_label_classes: custom_label_classes -%}
+					<div class="mobile-nav__children__inner w100">
+						{%- if item.type == 'mm_sub_link_list' -%}
+							{%- assign links = linklists[item.settings.link_list] -%}
+							{%- unless item.settings.two_columns -%}
+								{%- render 'mobile-nav-render-links' with links: links.links, item_id: item.id, custom_label_classes: custom_label_classes -%}
+							{%- else -%}
+								{%- render 'mobile-nav-render-links-two-columns' with links: links.links, no_gutter_left_class: no_gutter_left_class, no_gutter_right_class: no_gutter_right_class, item_id: item.id, custom_label_classes: custom_label_classes -%}	
+							{%- endunless -%}
+						{%- elsif item.type == 'mm_sub_image' -%}
+							{%- if item.settings.url -%}
+								<a href="{{ item.settings.url }}" title="{{ item.settings.name | escape }}" class="db w100 gutter-ele-small-top">
+							{%- else -%}
+								<div class="gutter-ele-small-top">		
+							{%- endif -%}
+								{%- if item.settings.image != blank -%}
+									{%- assign img_url = item.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+									<div class="img-container loading" style="padding-top:{{ 1 | divided_by: item.settings.image.aspect_ratio | times: 100}}%;">
+						        <img data-aspectratio="{{ item.settings.image.aspect_ratio }}"
+						            data-src="{{ img_url }}"
+						            data-sizes="auto" class="img-responsive center-block img-abs center-abs lazyload w100"{% render 'img-one-pixel' %} alt="{{ item.settings.image.alt | escape }}" data-image-size="1x1"/>
+						        {%- if item.settings.image_text != blank -%}
+						        	<span class="mobile-nav__text-overlay text-center w100 mobile-nav__level3 mobile-nav__level3--{{ item.id }}">{{ item.settings.image_text }}</span>
+						        {%- endif -%}     
+						      </div>
+						    {%- else -%}
+						    	<div class="por">
+							    	{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+							    	{%- if item.settings.image_text != blank -%}
+						        	<span class="mobile-nav__text-overlay text-center w100 mobile-nav__level3 mobile-nav__level3--{{ item.id }}">{{ item.settings.image_text }}</span>
+						        {%- endif -%}
+					        </div>  
+								{%- endif -%}
+							{%- if item.settings.url -%}
+								</a>
+							{%- else -%}
+								</div>	
+							{%- endif -%}						
+						{%- elsif item.type == 'mm_html' -%}
+							{%- if item.settings.html != blank -%}
+								<div class="mobile-nav__html mobile-nav__level3 mobile-nav__level3--{{ item.id }}">
+									{{ item.settings.html }}
+								</div>
+							{%- endif -%}
+						{%- endif -%}
+					</div>			
+				</div>
+				{%- endunless -%}		
+			{%- endif -%}
+		{%- endfor -%}
+		{%- if opened_parent_tag -%}
+				</div>
+			</li>
+		{%- endif -%}
+	</ul>
+{%- endif -%}
+{%- style -%}
+:root {
+  --level1_color_mb:{{ section.settings.level1_color }};
+  --level2_color_mb:{{ section.settings.level3_color }};
+  --level3_color_mb:{{ section.settings.level3_color }};
+  --level3_bkg_mb:{{ section.settings.level_3_bkg | color_modify: 'alpha', 0.7 }};
+  --label_text_color_mb:{{ section.settings.label_text_color }};
+  --label_bkg_color_mb:{{ section.settings.label_bkg_color }};
+  --level1_fs_mb:{{ section.settings.level1_fs }}px;
+  --level2_fs_mb:{{ section.settings.level2_fs }}px;
+  --level3_fs_mb:{{ section.settings.level3_fs }}px;
+  --label_fs_mb:{{ section.settings.label_fs }}px;
+}
+.mobile-nav__item__label{ {{ left_holder }}:auto;{{ right_holder }}:0;}
+{%- for item in section.blocks -%}
+  {%- unless item.settings.extend_colors -%}
+    .mobile-nav__item__label--{{ item.id }}{color:{{ item.settings.color_label }};background:{{ item.settings.bkg_label }};}
+    {%- if item.type == 'mm_top_items' or item.type == 'mm_parent' -%}
+      .mobile-nav__item__top-link--{{ item.id }}.mobile-nav__item__top-link,.mobile-nav__arrow--{{ item.id }}.mobile-nav__arrow{color:{{ item.settings.level_1_color }};}
+    {%- endif -%}
+    {%- if item.type != 'mm_parent' -%}
+      .mobile-nav__level2--{{ item.id }}.mobile-nav__level2{color:{{ item.settings.level_2_color }};}
+      .mobile-nav__level3--{{ item.id }}.mobile-nav__level3{color:{{ item.settings.level_3_color }};{%- if item.type == 'mm_sub_image' -%}background:{{ item.settings.level_3_bkg | color_modify: 'alpha', 0.7 }};{%- endif -%}}
+    {%- endif -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- endstyle -%}
+</nav>

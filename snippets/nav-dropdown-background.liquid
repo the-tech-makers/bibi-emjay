@@ -1,0 +1,11 @@
+{%- if item.settings.bkg_enable and item.settings.bkg_layout == bkg_layout -%}
+	{%- if item.settings.use_external_bkg and item.settings.external_bkg_url != blank -%}
+		background-image: url({{ item.settings.external_bkg_url }});background-position:{{ item.settings.bkg_position }};{%- if item.settings.bkg_no_repeat -%}background-repeat: no-repeat;background-size: contain;{%- endif -%}
+	{%- else -%}
+		{%- if item.settings.bkg_color != blank -%}
+			background-color: {{ item.settings.bkg_color  }};
+		{%- endif -%}
+		{%- if item.settings.bkg_image != blank -%}
+			background-position:{{ item.settings.bkg_position }};{%- if item.settings.bkg_no_repeat -%}background-repeat: no-repeat;background-size: contain;{%- endif -%}
+		{%- endif -%}
+	{%- endif -%}{%- endif -%}

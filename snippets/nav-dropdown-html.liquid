@@ -1,0 +1,10 @@
+{%- assign html = item.settings.html -%}
+{%- if html != blank -%}
+{%- assign color_html = item.settings.color_html -%}
+{%- if item.settings.color_html_extend -%}
+	{%- assign color_html = color_text -%}
+{%- endif -%}
+<div id="nav_html_{{ item.id }}"{% if color_html != blank %} class="use-color-inline" style="color: {{ color_html }};"{% endif %}>
+{{ item.settings.html | raw }}
+</div>
+{%- endif -%}

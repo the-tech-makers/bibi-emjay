@@ -1,0 +1,6 @@
+{%- if image_size == 'master' -%}width="{{ image.width }}" height="{{ image.height }}"
+{%- else -%}
+{%- assign width = image_size | split: 'x' | first | times: 1 -%}
+{%- assign height = width | divided_by: image.aspect_ratio | round -%}
+width="{{ width }}" height="{{ height }}"
+{%- endif -%}

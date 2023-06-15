@@ -1,0 +1,3 @@
+{%- if template.suffix == 'quick_view' -%}
+<a class="dib w100 gutter-ele-top pg__sync-url gutter-ele-top-tbs" href="{% if collection %}{{ product.url | within: collection }}{% else %}{{ product.url }}{% endif %}" title="{{ 'products.product.quick_view_details_link' | t | escape }}"><u>{{ 'products.product.quick_view_details_link' | t }}</u></a>
+{%- endif -%}

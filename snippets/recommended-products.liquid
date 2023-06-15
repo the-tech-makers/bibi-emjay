@@ -1,0 +1,30 @@
+{% if settings.rp_active and settings.rp_collection %}
+{%- assign rp_collection = collections[settings.rp_collection] -%}
+{%- assign image_size = settings.rp_image_size -%}
+{% if rp_collection and rp_collection.products.size > 0 %}
+{%- assign rp_limit = settings.rp_limit -%}
+<div style="display: none;" class="rp ele-fixed-distance{% if settings.rp_hidden_mobile %} hidden-xs{% endif %}" data-limit="{{ rp_limit | escape }}" data-minute-from="{{ settings.rp_minute_from | escape }}" data-minute-to="{{ settings.rp_minute_to | escape }}" data-interval="{{ settings.rp_interval | escape }}" data-closing-interval="{{ settings.rp_closing_interval | escape }}">
+	<a href="javascript:void(0);" class="rp__close" title="close">{% include 'icon-close' %}</a>
+	{% for product in rp_collection.products limit: rp_limit %}
+	<div class="rp__item flex flex-align-ver" style="display: none;" data-index="{{ forloop.index0 }}">
+		<div class="rp__item-left">
+			{%- assign img_url = product.featured_image | img_url: '180x' -%}
+			<a href="{{ product.url }}" class="product-image img-container" title="{{ product.title | escape }}" style="padding-top:{{ 1 | divided_by: product.featured_image.aspect_ratio | times: 100}}%;">
+				<img data-src="{{ img_url }}"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}" width="70" height="{{ 70 | divided_by: product.featured_image.aspect_ratio | round }}"{% include 'img-one-pixel' %} class="img-abs center-abs img-responsive lazyload"/>
+			</a>
+		</div>
+		<div class="rp__item-right">
+			<div class="rp__text">
+				{{ 'products.recommended.text' | t }}
+			</div>
+			<a class="rp__product-name" href="{{ product.url | within: collection }}" title="{{ product.title | escape }}">{%- if settings.rp_product_name_size > 0 -%}{{ product.title | truncatewords: settings.rp_product_name_size }}{%- else -%}{{ product.title }}{%- endif -%}</a>
+			<div class="rp__minutes-ago">
+				{{ 'products.recommended.minute_ago_html' | t: number: '<span class="rp__minute-number"></span>' }}
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endif %}
+{% endif %}

@@ -1,0 +1,18 @@
+<div class="sidebar__item grid__item">
+  <div class="sidebar__content dib w100">
+     <form action="{{ routes.search_url }}" method="get" role="search" class="search">
+      <div class="por">
+        <input type="search"
+          id="SearchInput"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          aria-label="{{ 'general.search.placeholder' | t }}"
+          class="w100 h100 search__input-article">
+        <button type="submit" class="search__btn-article" aria-label="button" title="{{ 'general.search.submit' | t | escape }}">{%- render 'icon-search' -%}</button>
+      </div>
+      <input type="hidden" name="type" value="article">
+      <input type="hidden" name="options[prefix]" value="last" aria-hidden="true" />
+    </form>
+  </div>
+</div>

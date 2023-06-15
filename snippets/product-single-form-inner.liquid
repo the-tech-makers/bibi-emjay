@@ -1,0 +1,77 @@
+{%- render 'product-single-customizable-fields' -%}
+<div class="product-form__item product-form__item--quantity{% if align_center_button %} center-block text-center{% endif %} gutter-ele-top gutter-ele-bottom flex">
+  {%- if section.settings.show_quantity_selector -%}
+  <div class="qty-box qty-box--single flex flex-align-ver flex-align-space-between{% if full_qty_box %} qty-box--single-full{% endif %}">
+    <a href="#" class="qty-box__ctrl qty-box__ctrl--descrease flex flex-align-hoz flex-align-ver" aria-label="button">
+      {%- render 'icon-minus' -%}
+    </a>
+    <input type="number" name="quantity" value="1" min="1" class="qty-box__input w100{% if template.suffix != 'quick_view' %} qty-box__input--sync{% endif %} text-center h100 qty-box__input--single" aria-label="form" style="font-size:20px;">
+    <a href="#" class="qty-box__ctrl qty-box__ctrl--increase flex flex-align-hoz flex-align-ver" aria-label="button">
+      {%- render 'icon-plus' -%}
+    </a>
+  </div>
+  {%- endif -%}
+  {%- if current_variant.available -%}
+    {%- unless settings.pre_order_enable and product.first_available_variant.inventory_policy == 'continue' and product.first_available_variant.inventory_quantity <= 0 -%}
+      {%- assign cart_text = 'products.product.add_to_cart' | t -%}
+    {%- else -%}
+      {%- assign cart_text = 'products.product.pre_order' | t -%}
+    {%- endunless -%}
+  {%- else -%}
+    {%- assign cart_text = 'products.product.sold_out' | t -%}  
+  {%- endif -%}  
+  <button class="button button--rad button--one-line add-cart-btn button--single-cart button--cart button--border-transparent flex flex-align-ver flex-align-hoz add-cart-btn--state por{% if template.suffix != 'quick_view' %} button--single-cart-main{% endif %}" type="submit" name="add" title="{{ cart_text | escape }}" aria-label="button" style="height:45px;flex-grow:1;"{% unless current_variant.available %} disabled="disabled"{% endunless %}>
+    {%- render 'icon-cart' with add_class: 'button__icon' -%}
+    <span class="ring-little">{{ cart_text }}</span>
+  </button>
+</div>
+{%- if template.suffix != 'quick_view' -%}
+  {% if section.settings.enable_payment_button %}
+  <div class="shopify-payment-btn-wrap w100">
+    {{ form | payment_button }}
+  </div>
+  {% endif %}
+{%- endif -%}
+{%- if template.suffix != 'quick_view' -%}
+  {%- assign cart_terms_for_id = 'single-page-' | append: section.id -%}
+  {%- include 'cart-terms' with for_id: cart_terms_for_id -%}
+  <div class="gutter-ele-bottom gutter-ele-bottom-tbs"></div>
+{%- endif -%}
+{%- assign has_compare_btn = false -%}
+{%- assign has_wishlist_btn = false -%}
+{%- if section.settings.show_compare_btn and settings.enable_compare -%}
+  {%- assign has_compare_btn = true -%}
+{%- endif -%}
+{%- if section.settings.show_wishlist_btn and settings.enable_wishlist -%}
+  {%- assign has_wishlist_btn = true -%}
+{%- endif -%}
+{%- if has_compare_btn or has_wishlist_btn -%}
+<div class="gutter-ele-top gutter-ele-bottom">
+  {%- if has_compare_btn -%}
+  <a title="{{ 'collections.product_item.add_to_compare'|t|escape }}" data-handle="{{ product.handle }}" href="#" class="button--cp button--cp-single dib{% if full_qty_box %} w100{% endif %}" data-product-title="{{ product.title | escape }}">
+    {%- unless enable_rtl -%}
+      {% render 'icon-compare' %}&nbsp;{{ 'collections.product_item.add_to_compare'|t }}
+    {%- else -%}
+      {{ 'collections.product_item.add_to_compare'|t }}&nbsp;{%- render 'icon-compare' -%} 
+    {%- endunless -%}
+  </a>
+  {%- endif -%}
+  {%- if has_wishlist_btn -%}
+  <a title="{{ 'collections.product_item.add_to_wishlist'|t|escape }}" data-handle="{{ product.handle }}" href="#" class="button--wl button--wl-text button--wl-single dib {% if full_qty_box %}w100 distance-top-ele{% else %}{% if section.settings.show_compare_btn and settings.enable_compare %}button--wl-single-distance {% endif %}gutter-ele-top-tbs{% endif %}" data-product-title="{{ product.title | escape }}">
+    {%- unless enable_rtl -%}
+      {% render 'icon-wishlist' %}&nbsp;<span class="wishlist-text">{{ 'collections.product_item.add_to_wishlist'|t }}</span>
+    {%- else -%}
+      <span class="wishlist-text">{{ 'collections.product_item.add_to_wishlist'|t }}</span>&nbsp;{%- render 'icon-wishlist' -%}
+    {%- endunless -%}
+  </a>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+<select name="id" class="hide variant-id">
+  {%- for variant in product.variants -%}
+    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+      {{ variant.title }}
+    </option>
+  {%- endfor -%}
+</select>

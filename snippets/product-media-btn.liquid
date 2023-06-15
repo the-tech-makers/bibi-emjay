@@ -1,0 +1,5 @@
+{%- if show_media_btn -%}
+<a href="{{ product.url }}" class="button--media button pull-left flex{% if btn_style_classes %} {{ btn_style_classes }}{% endif %}" {% if showTooltip %} data-toggle="tooltip" data-original-title="{{ 'collections.product_item.media' | t | escape }}"{% endif %} title="{{ 'collections.product_item.media' | t | escape }}">
+	{%- render 'icon-image' %}{% unless hide_media_text %} {{ 'collections.product_item.media' | t }}{% endunless %}
+</a>
+{% endif %}

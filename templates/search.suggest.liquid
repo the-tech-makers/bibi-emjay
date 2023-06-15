@@ -1,0 +1,94 @@
+{%- layout none -%}
+{%- if search.results.size > 0 -%}
+  <h5 class="gutter-bottom margin0">
+  {%- if search.types.size == 1 -%}
+    {%- if search.types contains 'product' -%}
+      {{ 'general.search.products_with_count_html' | t: terms: search.terms, count: search.results_count }}
+    {%- elsif search.types contains 'article' -%}
+      {{ 'general.search.articles_with_count_html' | t: terms: search.terms, count: search.results_count }}  
+    {%- else -%} 
+      {{ 'general.search.pages_with_count_html' | t: terms: search.terms, count: search.results_count }}   
+    {%- endif -%}
+  {%- else -%}
+    {{ 'general.search.results_with_count_html' | t: terms: search.terms, count: search.results_count }}  
+  {%- endif -%}
+  </h5>
+  <div{% if search.types contains 'product' %} class="grid grid--medium grid--product-search-full"{% endif %}>
+  {%- paginate search.results by settings.search_suggest_limit -%}
+    {%- for item in search.results -%}
+      {%- if item.object_type == 'product' -%}
+        {%- render 'product-grid-item' with
+          product: item, 
+          use_slider: false, 
+          limit_first: 0, 
+          index: forloop.index, 
+          lazy_index: 15,
+          column_count: 5, 
+          main_thumbnail: settings.search_suggest_main_thumbnail, 
+          image_size: '1x', 
+          truncate_count: settings.search_suggest_product_name_size, enable_product_options: settings.search_suggest_enable_product_options,
+          show_review_stars: settings.search_suggest_show_review_stars,
+          enable_small_images: false,
+          show_wishlist_btn: settings.search_suggest_show_wishlist_btn,
+          small_image: '1x',
+          show_label : settings.search_suggest_show_label,
+          show_cart_btn: settings.search_suggest_show_cart_btn,
+          show_wishlist : false,
+          show_compare_btn: settings.search_suggest_show_compare_btn,
+          show_qs_btn: settings.search_suggest_show_qs_btn,
+          show_desc: true,
+          additional_classes: 'transition',
+          highlight_text: search.terms -%}
+      {%- elsif item.object_type == 'article' -%}
+        <div class="gutter-ele-top">
+          <h4><a href="{{ item.url }}" title="{{ item.title | escape }}">
+            {{ item.title | truncatewords: 10 | highlight: search.terms }}
+          </a></h4>
+          <p>
+            {{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}
+          </p>
+        </div>
+      {%- else -%}
+        <div class="gutter-ele-top">
+          <h4><a href="{{ item.url }}" title="{{ item.title | escape }}">
+            {{ item.title | truncatewords: 10 | highlight: search.terms }}
+          </a></h4>
+          <p>
+            {{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}
+          </p>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endpaginate -%}  
+  </div>
+  {%- if search.results_count > settings.search_suggest_limit -%}
+  <div class="text-center big-gutter-top">
+    <a href="{{ routes.search_url }}?q={{ search.terms }}{% if search.types.size != 3 %}&type={{ search.types | join: ',' }}{% endif %}&options%5Bprefix%5D=last" title="{{ 'general.search.see_all_html' | t: count: search.results_count | escape }}" class="button button--style1">
+      {%- if search.types.size == 1 -%}
+        {%- if search.types contains 'product' -%}
+          {{ 'general.search.see_all_products_html' | t: terms: search.terms, count: search.results_count }}
+        {%- elsif search.types contains 'article' -%}
+          {{ 'general.search.see_all_articles_html' | t: terms: search.terms, count: search.results_count }}  
+        {%- else -%} 
+          {{ 'general.search.see_all_pages_html' | t: terms: search.terms, count: search.results_count }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'general.search.see_all_html' | t: count: search.results_count }}
+      {%- endif -%}
+    </a>
+  </div>
+  {%- endif -%}
+{%- else -%}
+  <h5 class="text-center big-gutter-bottom search-full__msg">
+    {%- if search.types contains 'product' -%}
+      {{ 'general.search.no_results_product_html' | t: terms: search.terms }}
+    {%- elsif search.types contains 'article' -%}
+      {{ 'general.search.no_results_article_html' | t: terms: search.terms }}
+    {%- else -%}
+      {{ 'general.search.no_results_page_html' | t: terms: search.terms }}    
+    {%- endif -%}
+  </h5>
+  <div class="text-center">
+    <a class="button button--style1 search-full__close-js" href="#" title="{{ 'cart.general.continue_shopping' | t | escape }}">{{ 'cart.general.continue_shopping' | t }}</a>  
+  </div>
+{%- endif -%} 
